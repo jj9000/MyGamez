@@ -11,7 +11,7 @@ import json
 
 class GameTasks():
 
-    def FindGames(self, manualSearchGame,nzbmatrixusername, nzbmatrixapi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath):
+    def FindGames(self, manualSearchGame,nzbmatrixusername, nzbmatrixapi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath):
         if(isSabEnabled == "1"):       
             GameTasks().CheckIfPostProcessExistsInSab(sabnzbdApi,sabnzbdHost,sabnzbdPort)
         nzbmatrixusername = nzbmatrixusername.replace('"','')
@@ -35,10 +35,10 @@ class GameTasks():
                         LogEvent("NZB Matrix Settings Incomplete.")
                 
                 if(isNewznabEnabled == "1"):
-                    if(newznabWiiCat <> '' and newznabXbox360Cat <> '' and newznabApi <> '' and newznabHost <> '' and newznabPort <> ''):
+                    if(newznabWiiCat <> '' and newznabXbox360Cat <> '' and newznabPS3Cat <> '' and newznabPCCat <> '' and newznabApi <> '' and newznabHost <> '' and newznabPort <> ''):
                         if(isDownloaded == False):
                             LogEvent("Checking for game [" + game_name + "] on Newznab")
-                            isDownloaded = GameTasks().FindGameOnNewznabServer(game_name,game_id,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,system,newznabXbox360Cat,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath)
+                            isDownloaded = GameTasks().FindGameOnNewznabServer(game_name,game_id,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,system,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath)
                     else:
                         LogEvent("NZB Matrix Settings Incomplete.")  
                         
@@ -88,11 +88,15 @@ class GameTasks():
             LogEvent("Error getting game [" + game_name + "] from NZB Matrix")
             return False
 
-    def FindGameOnNewznabServer(self,game_name,game_id,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,system,newznabXbox360Cat,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath):
+    def FindGameOnNewznabServer(self,game_name,game_id,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,system,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath):
         if(system == "Wii"):
             catToUse = newznabWiiCat
         elif(system == "Xbox360"):
             catToUse = newznabXbox360Cat
+        elif(system == "PS3"):
+            catToUse = newznabPS3Cat
+        elif(system == "PC"):
+            catToUse = newznabPCCat		
         else:
             LogEvent("Unrecognized System")
             return False

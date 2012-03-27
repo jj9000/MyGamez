@@ -316,7 +316,9 @@ class WebRoot:
         torrentDownloadProcessChecked = config.get('SystemGenerated','process_torrent_download_folder_enabled').replace('"','')
         downloadProcessWiiChecked = config.get('SystemGenerated','process_download_folder_wii_enabled').replace('"','')
         downloadProcessXbox360Checked = config.get('SystemGenerated','process_download_folder_xbox360_enabled').replace('"','')
-        
+        downloadProcessPS3Checked = config.get('SystemGenerated','process_download_folder_ps3_enabled').replace('"','')
+        downloadProcessPCChecked = config.get('SystemGenerated','process_download_folder_pc_enabled').replace('"','')
+
         defaultSearch = config.get('SystemGenerated','default_search').replace('"','')
         if(sabChecked == "1"):
             sabChecked = "CHECKED"
@@ -375,6 +377,14 @@ class WebRoot:
             downloadProcessXbox360Checked = "CHECKED"
         else:
             downloadProcessXbox360Checked = ""              
+        if(downloadProcessPS3Checked == "1"):
+            downloadProcessPS3Checked = "CHECKED"
+        else:
+            downloadProcessPS3Checked = ""
+        if(downloadProcessPCChecked == "1"):
+            downloadProcessPCChecked = "CHECKED"
+        else:
+            downloadProcessPCChecked = ""
         if(defaultSearch == "Wii"):
             defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
         elif(defaultSearch == "Xbox360"):
@@ -800,7 +810,13 @@ class WebRoot:
 							<br /><br />
 							<input type="checkbox" name="processXbox360Enabled" id="processXbox360Enabled" value="processXbox360Enabled" """ + downloadProcessXbox360Checked + """ />
 							<b>Post Process XBOX 360 Games</b>
-						</td>
+			                <br /><br />
+							<input type="checkbox" name="processPS3Enabled" id="processPS3Enabled" value="processPS3Enabled" """ + downloadProcessPS3Checked + """ />
+							<b>Post Process PS 3 Games</b>
+							<br /><br />
+							<input type="checkbox" name="processPCEnabled" id="processPCEnabled" value="processPCEnabled" """ + downloadProcessPCChecked + """ />
+							<b>Post Process PC Games</b>				
+			            </td>
 						<td width="10px">&nbsp;</td>
 						<td style="border:solid 1px" valign="top">
 							<legend><b><u>Folders</u></b></legend>
@@ -841,7 +857,21 @@ class WebRoot:
 										<input style="width:400px" type="text" name="xbox360Destination" id="xbox360Destination" value='""" + config.get('Folders','xbox360_destination').replace('"','').replace("\\\\","\\") +  """' />
 									</td>
 								</tr>								
-							</table>	
+							    <tr>
+									<td>
+										<label><b>PS3 Destination Directory</b></label>
+										<br />
+										<input style="width:400px" type="text" name="PS3Destination" id="PS3Destination" value='""" + config.get('Folders','ps3_destination').replace('"','').replace("\\\\","\\") +  """' />
+									</td>
+								</tr>
+                                <tr>
+									<td>
+										<label><b>PC Destination Directory</b></label>
+										<br />
+										<input style="width:400px" type="text" name="PCDestination" id="pcDestination" value='""" + config.get('Folders','pc_destination').replace('"','').replace("\\\\","\\") +  """' />
+									</td>
+								</tr>									
+                            </table>	
 						</td>						
 					</tr>
 				</table>
@@ -1171,7 +1201,7 @@ class WebRoot:
             raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
-    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',prowlApi='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled=''):
+    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled=''):
         cherrypyHost = '"' + cherrypyHost + '"'
         nzbMatrixUsername = '"' + nzbMatrixUsername + '"'
         nzbMatrixApi = '"' + nzbMatrixApi + '"'
@@ -1196,6 +1226,8 @@ class WebRoot:
         torrentBlackholePath = '"' + torrentBlackholePath + '"'
         wiiDestination = '"' + wiiDestination.replace("\\","\\\\") + '"'
         xbox360Destination = '"' + xbox360Destination.replace("\\","\\\\") + '"'
+        PS3Destination = '"' + PS3Destination.replace("\\","\\\\") + '"'
+        PCDestination = '"' + PCDestination.replace("\\","\\\\") + '"'
         nzbBlackholeDownloadDirectory = '"' + nzbBlackholeDownloadDirectory.replace("\\","\\\\") + '"'
         torrentBlackholeDownloadDirectory = '"' + torrentBlackholeDownloadDirectory.replace("\\","\\\\") + '"'
         sabDownloadDirectory = '"' + sabDownloadDirectory.replace("\\","\\\\") + '"'
@@ -1256,6 +1288,14 @@ class WebRoot:
             processWiiEnabled = "1"
         else:
             processWiiEnabled = "0"               
+        if(processPS3Enabled == 'processPS3Enabled'):
+            processPS3Enabled = "1"
+        else:
+            processPS3Enabled = "0"
+        if(processPCEnabled == 'processPCEnabled'):
+            processPCEnabled = "1"
+        else:
+            processPCEnabled = "0"
         config = ConfigParser.RawConfigParser()
         configFilePath = os.path.join(WebRoot.appPath,'Gamez.ini')
         config.read(configFilePath)
@@ -1287,6 +1327,8 @@ class WebRoot:
         config.set('SystemGenerated','process_sabnzbd_download_folder_enabled',processSabDirectoryEnabled)
         config.set('SystemGenerated','process_download_folder_xbox360_enabled',processXbox360Enabled)
         config.set('SystemGenerated','process_download_folder_wii_enabled',processWiiEnabled)
+        config.set('SystemGenerated','process_download_folder_ps3_enabled',processPS3Enabled)
+        config.set('SystemGenerated','process_download_folder_pc_enabled',processPCEnabled)
         config.set('Newznab','host',newznabHost)
         config.set('Newznab','port',newznabPort)
         config.set('Newznab','wii_category_id',newznabWiiCat)
@@ -1307,6 +1349,8 @@ class WebRoot:
         config.set('Folders','sabnzbd_completed',sabDownloadDirectory)
         config.set('Folders','xbox360_destination',xbox360Destination)
         config.set('Folders','wii_destination',wiiDestination)
+        config.set('Folders','ps3_destination',PS3Destination)
+        config.set('Folders','pc_destination',PCDestination)
         with open(configFilePath,'wb') as configFile:
             config.write(configFile)
         status = "Application Settings Updated Successfully. Gamez is restarting. If after 5 seconds, Gamez isn't working, update the Gamez.ini file and re-launch Gamez"
@@ -1392,5 +1436,5 @@ class WebRoot:
         torrentBlackholePath  = config.get('Blackhole','torrent_blackhole_path').replace('"','')
         manualSearchGame = dbid
         LogEvent("Searching for games")
-        GameTasks().FindGames(manualSearchGame,nzbMatrixUser,nzbMatrixApi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath)
+        GameTasks().FindGames(manualSearchGame,nzbMatrixUser,nzbMatrixApi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPCCat,newznabPS3Cat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath)
         raise cherrypy.InternalRedirect('/')

@@ -21,6 +21,19 @@ def ProcessDownloaded(game_id,status,filePath):
             LogEvent("Skipping Post Processing because settings is to not post process Xbox360 downloads")
             return
         destPath = config.get('Folders','xbox360_destination').replace('"','')
+    
+    elif(system == "PS3"):
+        if(config.get('SystemGenerated','process_download_folder_ps3_enabled').replace('"','') == "0"):
+            LogEvent("Skipping Post Processing because settings is to not post process ps3 downloads")
+            return
+        destPath = config.get('Folders','ps3_destination').replace('"','')
+
+    elif(system == "PC"):
+        if(config.get('SystemGenerated','process_download_folder_pc_enabled').replace('"','') == "0"):
+            LogEvent("Skipping Post Processing because settings is to not post process pc downloads")
+            return
+        destPath = config.get('Folders','pc_destination').replace('"','')
+	
     for subdir,dirs,files in os.walk(filePath):
         for file in files:
             LogEvent(file)
@@ -89,15 +102,27 @@ def ProcessFolder(folderPath):
                     if(CheckForSameGame(game_name)):
                         processForWii = False
                         processForXbox360 = False
+                        processForPsThree = False
+                        processForPC = False 			
                         if("WII" in subdir.upper() or "WII" in file.upper()):
                             processForWii = True
                         if("XBOX360" in subdir.upper() or "XBOX360" in file.upper() or "360" in subdir.upper() or "360" in file.upper()):
                             processForXbox360 = True
+                        if("PS3" in subdir.upper() or "PS3" in file.upper()):
+                            processForWii = True
+                        if("PC" in subdir.upper() or "PC" in file.upper()):
+                            processForWii = True							
                         if(processForWii):
                             system = "Wii"
                             moveFile = True
                         elif(processForXbox360):
                             system = "Xbox360"
+                            moveFile = True
+                        elif(processForPsThree):
+                            system = "PS3"
+                            moveFile = True
+                        elif(processForPC):
+                            system = "PC"
                             moveFile = True
                         else:
                             LogEvent("Same game name found for multiple systems and unable to parse system from file name. Skipping Image File")
@@ -118,6 +143,16 @@ def ProcessFolder(folderPath):
                             LogEvent("Skipping Post Processing because settings is to not post process Xbox360 downloads")
                             return
                         destPath = config.get('Folders','xbox360_destination').replace('"','').replace("\\\\","\\")
+                    elif(system == "PS3"):
+                        if(config.get('SystemGenerated','process_download_folder_ps3_enabled').replace('"','') == "0"):
+                            LogEvent("Skipping Post Processing because settings is to not post process PS3 downloads")
+                            return
+                        destPath = config.get('Folders','ps3_destination').replace('"','').replace("\\\\","\\")
+                    elif(system == "Xbox360"):
+                        if(config.get('SystemGenerated','process_download_folder_pc_enabled').replace('"','') == "0"):
+                            LogEvent("Skipping Post Processing because settings is to not post process PC downloads")
+                            return
+                        destPath = config.get('Folders','pc_destination').replace('"','').replace("\\\\","\\")
                     #Copy File
                     if(destPath <> ""):
                         if(destPath.endswith(os.sep) == False):

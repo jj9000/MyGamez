@@ -154,10 +154,18 @@ def CheckConfigForAllKeys(app_path):
         config.set('SystemGenerated','process_download_folder_wii_enabled','0')
         changesMade = True   
         
+    if(config.has_option('SystemGenerated','process_download_folder_ps3_enabled') == False):
+        config.set('SystemGenerated','process_download_folder_ps3_enabled','0')
+        changesMade = True         
+    
+    if(config.has_option('SystemGenerated','process_download_folder_pc_enabled') == False):
+        config.set('SystemGenerated','process_download_folder_pc_enabled','0')
+        changesMade = True    
+
     if(config.has_option('SystemGenerated','process_download_folder_xbox360_enabled') == False):
         config.set('SystemGenerated','process_download_folder_xbox360_enabled','0')
-        changesMade = True         
-        
+        changesMade = True    
+ 		
     if(config.has_option('SystemGenerated','default_search') == False):
         config.set('SystemGenerated','default_search','"---"')
         changesMade = True  
@@ -179,6 +187,14 @@ def CheckConfigForAllKeys(app_path):
         config.set('Newznab','xbox360_category_id','"1050"')
         changesMade = True
 
+    if(config.has_option('Newznab','ps3_category_id') == False):
+        config.set('Newznab','ps3_category_id','"1060"')
+        changesMade = True
+
+    if(config.has_option('Newznab','pc_category_id') == False):
+        config.set('Newznab','pc_category_id','"1070"')
+        changesMade = True
+	
     if(config.has_option('Newznab','host') == False):
         config.set('Newznab','host','""')
         changesMade = True
@@ -239,6 +255,14 @@ def CheckConfigForAllKeys(app_path):
         config.set('Folders','xbox360_destination','""')
         changesMade = True	
 
+    if(config.has_option('Folders','ps3_destination') == False):
+        config.set('Folders','ps3_destination','""')
+        changesMade = True	
+
+    if(config.has_option('Folders','pc_destination') == False):
+        config.set('Folders','pc_destination','""')
+        changesMade = True	
+		
     if(changesMade):
         with open(configFilePath,'wb') as configFile:
             config.write(configFile)
