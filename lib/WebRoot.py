@@ -13,6 +13,7 @@ import random
 from lib.FolderFunctions import *
 from Constants import *
 from GameTasks import *
+from TheGameDBSearcher import AddGamefromTheGameDB
 
 class WebRoot:
     appPath = ''
@@ -29,11 +30,15 @@ class WebRoot:
         config.read(configFilePath)
         defaultSearch = config.get('SystemGenerated','default_search').replace('"','')
         if(defaultSearch == "Wii"):
-            defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option>"
+            defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
         elif(defaultSearch == "Xbox360"):
-            defaultSearch = "<option>---</option><option>Wii</option><option selected>Xbox360</option>"
+            defaultSearch = "<option>---</option><option>Wii</option><option selected>Xbox360</option><option>PS3</option><option>PC</option>"
+        elif(defaultSearch == "PS3"):
+            defaultSearch = "<option>---</option><option>Wii</option><option>Xbox360</option><option selected>PS3</option><option>PC</option>"
+        elif(defaultSearch == "PC"):
+            defaultSearch = "<option>---</option><option>Wii</option><option>Xbox360</option><option>PS3</option><option selected>PC</option>"
         else:
-            defaultSearch = "<option selected>---</option><option>Wii</option><option>Xbox360</option>"        
+            defaultSearch = "<option selected>---</option><option>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"        
         html = """
 
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -164,11 +169,15 @@ class WebRoot:
         config.read(configFilePath)
         defaultSearch = config.get('SystemGenerated','default_search').replace('"','')
         if(defaultSearch == "Wii"):
-            defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option>"
+            defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
         elif(defaultSearch == "Xbox360"):
-            defaultSearch = "<option>---</option><option>Wii</option><option selected>Xbox360</option>"
+            defaultSearch = "<option>---</option><option>Wii</option><option selected>Xbox360</option><option>PS3</option><option>PC</option>"
+        elif(defaultSearch == "PS3"):
+            defaultSearch = "<option>---</option><option>Wii</option><option>Xbox360</option><option selected>PS3</option><option>PC</option>"
+        elif(defaultSearch == "PC"):
+            defaultSearch = "<option>---</option><option>Wii</option><option>Xbox360</option><option>PS3</option><option selected>PC</option>"
         else:
-            defaultSearch = "<option selected>---</option><option>Wii</option><option>Xbox360</option>"              
+            defaultSearch = "<option selected>---</option><option>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"                     
         html = """
 
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -244,8 +253,16 @@ class WebRoot:
             </div>
             <div style="visibility:hidden"><a href="http://apycom.com/">jQuery Menu by Apycom</a></div>
             <div id="container">"""
+        #if(system =='PS3'):
+        #   AddPsThreeGametoDB(term,system)
+        #   db_result = GetGameDataFromTerm(term,system)
+        #else:
         db_result = GetGameDataFromTerm(term,system)
         if(db_result == ''):
+            html  = html + """Nothing in DataBase. Lets have a look at TheGameDB.net\n"""
+            AddGamefromTheGameDB(term,system)
+            db_result = GetGameDataFromTerm(term,system)
+        if(db_result == ''):   
             html  = html + """No Results Found. Try Searching Again"""
         else:
             html = html + """
@@ -359,11 +376,15 @@ class WebRoot:
         else:
             downloadProcessXbox360Checked = ""              
         if(defaultSearch == "Wii"):
-            defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option>"
+            defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
         elif(defaultSearch == "Xbox360"):
-            defaultSearch = "<option>---</option><option>Wii</option><option selected>Xbox360</option>"
+            defaultSearch = "<option>---</option><option>Wii</option><option selected>Xbox360</option><option>PS3</option><option>PC</option>"
+        elif(defaultSearch == "PS3"):
+            defaultSearch = "<option>---</option><option>Wii</option><option>Xbox360</option><option selected>PS3</option><option>PC</option>"
+        elif(defaultSearch == "PC"):
+            defaultSearch = "<option>---</option><option>Wii</option><option>Xbox360</option><option>PS3</option><option selected>PC</option>"
         else:
-            defaultSearch = "<option selected>---</option><option>Wii</option><option>Xbox360</option>"
+            defaultSearch = "<option selected>---</option><option>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
         html = """
 
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -648,6 +669,16 @@ class WebRoot:
 										<br />
 										<input style="width:225px" type="text" name="newznabXbox360Cat" id="newznabXbox360Cat" value='""" + config.get('Newznab','xbox360_category_id').replace('"','') +  """' />
 									</td>
+								    <td>
+										<label><b>Newznab PS3 Category ID</b></label>
+										<br />
+										<input style="width:225px" type="text" name="newznabPS3Cat" id="newznabPS3Cat" value='""" + config.get('Newznab','ps3_category_id').replace('"','') +  """' />
+									</td>
+									<td>
+										<label><b>Newznab PC Category ID</b></label>
+										<br />
+										<input style="width:225px" type="text" name="newznabPCCat" id="newznabPCCat" value='""" + config.get('Newznab','pc_category_id').replace('"','') +  """' />
+									</td>
 								</tr>
 								<tr><td>&nbsp;</td></tr>
 								<tr>
@@ -849,11 +880,15 @@ class WebRoot:
         config.read(configFilePath)
         defaultSearch = config.get('SystemGenerated','default_search').replace('"','')
         if(defaultSearch == "Wii"):
-            defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option>"
+            defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
         elif(defaultSearch == "Xbox360"):
-            defaultSearch = "<option>---</option><option>Wii</option><option selected>Xbox360</option>"
+            defaultSearch = "<option>---</option><option>Wii</option><option selected>Xbox360</option><option>PS3</option><option>PC</option>"
+        elif(defaultSearch == "PS3"):
+            defaultSearch = "<option>---</option><option>Wii</option><option>Xbox360</option><option selected>PS3</option><option>PC</option>"
+        elif(defaultSearch == "PC"):
+            defaultSearch = "<option>---</option><option>Wii</option><option>Xbox360</option><option>PS3</option><option selected>PC</option>"
         else:
-            defaultSearch = "<option selected>---</option><option>Wii</option><option>Xbox360</option>"              
+            defaultSearch = "<option selected>---</option><option>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"        
         html = """
 
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -970,11 +1005,15 @@ class WebRoot:
         config.read(configFilePath)
         defaultSearch = config.get('SystemGenerated','default_search').replace('"','')
         if(defaultSearch == "Wii"):
-            defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option>"
+            defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
         elif(defaultSearch == "Xbox360"):
-            defaultSearch = "<option>---</option><option>Wii</option><option selected>Xbox360</option>"
+            defaultSearch = "<option>---</option><option>Wii</option><option selected>Xbox360</option><option>PS3</option><option>PC</option>"
+        elif(defaultSearch == "PS3"):
+            defaultSearch = "<option>---</option><option>Wii</option><option>Xbox360</option><option selected>PS3</option><option>PC</option>"
+        elif(defaultSearch == "PC"):
+            defaultSearch = "<option>---</option><option>Wii</option><option>Xbox360</option><option>PS3</option><option selected>PC</option>"
         else:
-            defaultSearch = "<option selected>---</option><option>Wii</option><option>Xbox360</option>"              
+            defaultSearch = "<option selected>---</option><option>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"        
         html = """
 
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -1144,6 +1183,8 @@ class WebRoot:
         newznabApi = '"' + newznabApi + '"'
         newznabWiiCat = '"' + newznabWiiCat + '"'
         newznabXbox360Cat = '"' + newznabXbox360Cat + '"'
+        newznabPS3Cat = '"' + newznabPS3Cat + '"'
+        newznabPCCat = '"' + newznabPCCat + '"'
         prowlApi = '"' + prowlApi + '"'
         gamezUsername = '"' + gamezUsername + '"'
         gamezPassword = '"' + gamezPassword + '"'
@@ -1250,6 +1291,8 @@ class WebRoot:
         config.set('Newznab','port',newznabPort)
         config.set('Newznab','wii_category_id',newznabWiiCat)
         config.set('Newznab','xbox360_category_id',newznabXbox360Cat)
+        config.set('Newznab','ps3_category_id',newznabPS3Cat)
+        config.set('Newznab','pc_category_id',newznabPCCat)
         config.set('Newznab','api_key',newznabApi)
         config.set('Notifications','prowl_api',prowlApi)
         config.set('Notifications','growl_host',growlHost)
@@ -1334,6 +1377,8 @@ class WebRoot:
         sabnzbdCategory = config.get('Sabnzbd','category').replace('"','')
         newznabWiiCat = config.get('Newznab','wii_category_id').replace('"','')
         newznabXbox360Cat = config.get('Newznab','xbox360_category_id').replace('"','')
+        newznabPS3Cat = config.get('Newznab','ps3_category_id').replace('"','')
+        newznabPCCat = config.get('Newznab','pc_category_id').replace('"','')
         newznabApi = config.get('Newznab','api_key').replace('"','')
         newznabHost = config.get('Newznab','host').replace('"','')
         newznabPort = config.get('Newznab','port').replace('"','')
