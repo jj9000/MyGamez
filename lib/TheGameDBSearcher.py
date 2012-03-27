@@ -21,9 +21,7 @@ def AddGamefromTheGameDB(term,system):
     elif(system == 'Xbox360'):
        Platform = "Microsoft+Xbox+360"
     gamefile = urllib2.urlopen('http://thegamesdb.net/api/GetGame.php?name=' + term.replace(' ','+') + '&platform=' + Platform)
-    #convert to string:
     gamedata = gamefile.read()
-    #close file because we dont need it anymore:
     gamefile.close()
     dom = parseString(gamedata)
     TagElements = dom.getElementsByTagName("Game")
@@ -34,21 +32,18 @@ def AddGamefromTheGameDB(term,system):
         LogEvent("Find Game: " + xmlGameTitle)
         xmlTagid = dom.getElementsByTagName('id')[tagnbr].toxml()
         xmlGameid=xmlTagid.replace('<id>','').replace('</id>','')
-        game_name = xmlGameTitle
         gamefileid = urllib2.urlopen('http://thegamesdb.net/api/GetGame.php?id=' + xmlGameid) 
-        LogEvent('http://thegamesdb.net/api/GetGame.php?id=' + xmlGameid)
+        LogEvent('Search for "' + xmlGameTitle +'" http://thegamesdb.net/api/GetGame.php?id=' + xmlGameid)
         gamedataid = gamefileid.read()
         gamefileid.close()
         dom2 = parseString(gamedataid)
-        game_type = GetDetailsgenre(dom2)
-        game_cover_raw = GetDetailscover(dom2,system)
-        game_cover = "http://thegamesdb.net/banners/" + game_cover_raw
+        game_cover = "http://thegamesdb.net/banners/" + GetDetailscover(dom2,system)
         db_path = os.path.join(os.path.abspath(""),"Gamez.db")
         connection = sqlite3.connect(db_path)
-        LogEvent("Adding PS3 Game [" + game_name.replace("'","''") + "] to Game List. Cover :" + game_cover.replace("'","''"))
+        LogEvent("Adding PS3 Game [ " + xmlGameTitle.replace("'","''") + " ] to Game List. Cover :" + game_cover.replace("'","''"))
         #LogEvent("There are "+ tagelements + "Elements") 
-        if(game_name <> ''):
-            sql = "INSERT INTO games (game_name,game_type,system,cover) values('" + game_name.replace("'","''") + "','" + game_type + "','" + system + "','" + game_cover + "')"
+        if(xmlGameTitle <> ''):
+            sql = "INSERT INTO games (game_name,game_type,system,cover) values('" + xmlGameTitle.replace("'","''") + "','" + GetDetailsgenre(dom2) + "','" + system + "','" + game_cover + "')"
             cursor = connection.cursor()
             cursor.execute(sql)
             connection.commit()
@@ -69,9 +64,9 @@ def GetDetailsgenre(TheMoveDBurl):
 def GetDetailscover(TheMoveDBurl,system):
     try:
         xmlTagcover = TheMoveDBurl.getElementsByTagName('boxart')[0].toxml()  
-        coverside=xmlTagcover.getAttribute('side')
-        xmlGamecover=xmlTagcover.replace('<boxart(.*)>','').replace('</boxart>','')    
-        LogEvent("Found a Cover: " + xmlGamecover + coverside)
+        #coverside=xmlTagcover.getAttribute('side')
+        xmlGamecover=xmlTagcover.replace('<boxart (.*)>','').replace('</boxart>','')    
+        LogEvent("Found a Cover: " + xmlGamecover)
         return str(xmlGamecover)
     except:
         if(system == "PS3"):
