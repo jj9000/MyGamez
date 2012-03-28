@@ -18,7 +18,7 @@ def GetGamesFromTerm(term):
     for record in result:
         try:
             game_name = str(record[0])
-            system = str(record[1])
+            system_db = str(record[1])
             rowdata = '{"value":"' + game_name + '"},'
             data = data + rowdata
         except:
