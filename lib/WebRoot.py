@@ -13,7 +13,7 @@ import random
 from lib.FolderFunctions import *
 from Constants import *
 from GameTasks import *
-from TheGameDBSearcher import AddGamefromTheGameDB
+from TheGameDBSearcher import GetGameDataFromTheGameDB, AddGameToDbFromTheGameDb
 
 class WebRoot:
     appPath = ''
@@ -253,14 +253,9 @@ class WebRoot:
             </div>
             <div style="visibility:hidden"><a href="http://apycom.com/">jQuery Menu by Apycom</a></div>
             <div id="container">"""
-        #if(system =='PS3'):
-        #   AddPsThreeGametoDB(term,system)
-        #   db_result = GetGameDataFromTerm(term,system)
-        #else:
-        db_result = GetGameDataFromTerm(term,system)
-        if(db_result == ''):
-            html  = html + """Nothing in DataBase. Lets have a look at TheGameDB.net\n"""
-            AddGamefromTheGameDB(term,system)
+        if(system == 'PS3' or system == 'PC'):
+           db_result = GetGameDataFromTheGameDB(term,system)
+        else:
             db_result = GetGameDataFromTerm(term,system)
         if(db_result == ''):   
             html  = html + """No Results Found. Try Searching Again"""
@@ -1173,7 +1168,14 @@ class WebRoot:
             os.chdir(WebRoot.appPath)
         AddGameToDb(dbid,'Wanted')
         raise cherrypy.InternalRedirect('/')
-        
+
+    @cherrypy.expose
+    def addgambythegamedb(self,thegamedbid):
+        if(os.name <> 'nt'):
+            os.chdir(WebRoot.appPath)
+        AddGameToDbFromTheGameDb(thegamedbid,'Wanted')
+        raise cherrypy.InternalRedirect('/')
+
     @cherrypy.expose
     def addgameupcoming(self,dbid): 
         if(os.name <> 'nt'):

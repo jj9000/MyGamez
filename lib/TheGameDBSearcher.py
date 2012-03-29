@@ -8,12 +8,10 @@ import json
 import DBFunctions
 from xml.dom.minidom import parseString
 
-def AddGamefromTheGameDB(term,system):
-    gamefile = None
-    gamedata = None
-    fakeid = "fake"
+def GetGameDataFromTheGameDB(term,system):
     tagnbr = 0
-    TheGameDBxml = GetXmlFromTheGameDB(term,system,fakeid)
+    data=""
+    TheGameDBxml = GetXmlFromTheGameDB(term,system,'fake')
     TagElements = TheGameDBxml.getElementsByTagName("Game")
     for d in TagElements:
         xmlTagTitle = TheGameDBxml.getElementsByTagName('GameTitle')[tagnbr].toxml()
@@ -24,16 +22,11 @@ def AddGamefromTheGameDB(term,system):
         TheGameDBxml_byid = GetXmlFromTheGameDB(term,system,xmlGameid)
         game_cover = "http://thegamesdb.net/banners/" + GetDetailscover(TheGameDBxml_byid,system,)
         game_genre = GetDetailsgenre(TheGameDBxml_byid)
-        db_path = os.path.join(os.path.abspath(""),"Gamez.db")
-        connection = sqlite3.connect(db_path)
-        LogEvent("Adding " + system + "Game [ " + xmlGameTitle.replace("'","''") + " ] to Game List. Cover :" + game_cover.replace("'","''"))
-        if(xmlGameTitle <> ''):
-            sql = "INSERT INTO games (game_name,game_type,system,cover) values('" + xmlGameTitle.replace("'","''") + "','" + game_genre + "','" + system + "','" + game_cover + "')"
-            cursor = connection.cursor()
-            cursor.execute(sql)
-            connection.commit()
-            cursor.close()
-            tagnbr = tagnbr + 1
+        LogEvent("Get Data from TheGameDB ! Type: [ " + system + " ]   Game: [ " + xmlGameTitle.replace("'","''") + " ] Cover : [ " + game_cover.replace("'","''") + " ]")
+        rowdata = "<tr align='center'><td><a href='addgambythegamedb?thegamedbid=" + xmlGameid + "'>Download</a></td><td><img width='85' height='120'  src='" + game_cover + "' /></td><td>" + xmlGameTitle + "</td><td>" + game_genre + "</td><td>" + system + "</td></tr>"
+        data = data + rowdata
+        tagnbr = tagnbr + 1
+    return data
       
 def GetDetailsgenre(TheGameDBurl):
     try:
@@ -86,3 +79,28 @@ def GetXmlFromTheGameDB(term,system,TheGameDB_id):
        return dom
     except:
         LogEvent("ERROR: I can not get any Data from TheGameDB.org")
+
+def AddGameToDbFromTheGameDb(thegamedbid,status):
+    TheGameDBxml = GetXmlFromTheGameDB('none','none',thegamedbid)
+    xmlTagTitle = TheGameDBxml.getElementsByTagName('GameTitle')[0].toxml()
+    xmlGameTitle=xmlTagTitle.replace('<GameTitle>','').replace('</GameTitle>','')
+    LogEvent("Found Game: " + xmlGameTitle)
+    xmlTagSystem = TheGameDBxml.getElementsByTagName('Platform')[0].toxml()
+    xmlGameSystem=xmlTagSystem.replace('<Platform>','').replace('</Platform>','')
+    if(xmlGameSystem == 'PC'):
+        raw_system = 'PC'
+    elif(xmlGameSystem == 'Sony Playstation 3'):
+        raw_system = 'PS3'
+    else:
+        LogEvent("ERROR: No System found" + xmlGameSystem)
+        raw_system = 'NONE'
+    game_cover = "http://thegamesdb.net/banners/" + GetDetailscover(TheGameDBxml,raw_system)
+    game_genre = GetDetailsgenre(TheGameDBxml)
+    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    connection = sqlite3.connect(db_path)
+    LogEvent("Adding " + raw_system + " Game [ " + xmlGameTitle.replace("'","''") + " ] to Game List. Cover :" + game_cover.replace("'","''"))
+    sql = "insert into requested_games(GAME_NAME,SYSTEM,GAME_TYPE,status,cover)  values('" + xmlGameTitle.replace("'","''") + "','" + raw_system + "','" + game_genre + "','" + status + "','" + game_cover + "')"
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    connection.commit()
+    cursor.close()
