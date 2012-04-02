@@ -6,7 +6,7 @@ from Logger import LogEvent
 import urllib2
 import json
 import DBFunctions
-from xml.dom.minidom import parseString
+from xml.dom.minidom import *
 
 def GetGameDataFromTheGameDB(term,system):
     tagnbr = 0
@@ -42,12 +42,12 @@ def GetDetailsgenre(TheGameDBurl):
 def GetDetailscover(TheGameDBurl,system):
     try:
         try:
-            xmlTagcover = TheGameDBurl.getElementsByTagName('boxart')[1].toxml()
+            xmlrawTagcover = TheGameDBurl.getElementsByTagName('boxart')[1] 
         except:
-            xmlTagcover = TheGameDBurl.getElementsByTagName('boxart')[0].toxml()
-        xmlGamecover=xmlTagcover.replace('<boxart (.*)>','').replace('</boxart>','')    
-        LogEvent("Found a Cover: " + xmlGamecover)
-        return str(xmlGamecover)
+            xmlTagcover = TheGameDBurl.getElementsByTagName('boxart')[0]
+        xmlTagcover = xmlrawTagcover.childNodes[0]
+        LogEvent("Found a Cover: " + xmlTagcover.nodeValue)
+        return str(xmlTagcover.nodeValue)
     except:
         if(system == "PS3"):
             xmlGamecover="_platformviewcache/platform/boxart/12-1.jpg"
