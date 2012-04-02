@@ -41,8 +41,10 @@ def GetDetailsgenre(TheGameDBurl):
 
 def GetDetailscover(TheGameDBurl,system):
     try:
-        xmlTagcover = TheGameDBurl.getElementsByTagName('boxart')[0].toxml()  
-        #coverside=xmlTagcover.getAttribute('side')
+        try:
+            xmlTagcover = TheGameDBurl.getElementsByTagName('boxart')[1].toxml()
+        except:
+            xmlTagcover = TheGameDBurl.getElementsByTagName('boxart')[0].toxml()
         xmlGamecover=xmlTagcover.replace('<boxart (.*)>','').replace('</boxart>','')    
         LogEvent("Found a Cover: " + xmlGamecover)
         return str(xmlGamecover)
