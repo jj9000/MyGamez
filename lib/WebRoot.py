@@ -253,10 +253,9 @@ class WebRoot:
             </div>
             <div style="visibility:hidden"><a href="http://apycom.com/">jQuery Menu by Apycom</a></div>
             <div id="container">"""
-        if(system == 'PS3' or system == 'PC'):
+        db_result = GetGameDataFromTerm(term,system)
+        if(db_result == ''):
            db_result = GetGameDataFromTheGameDB(term,system)
-        else:
-            db_result = GetGameDataFromTerm(term,system)
         if(db_result == ''):   
             html  = html + """No Results Found. Try Searching Again"""
         else:
