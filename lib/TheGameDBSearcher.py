@@ -44,7 +44,7 @@ def GetDetailscover(TheGameDBurl,system):
         try:
             xmlrawTagcover = TheGameDBurl.getElementsByTagName('boxart')[1] 
         except:
-            xmlTagcover = TheGameDBurl.getElementsByTagName('boxart')[0]
+            xmlrawTagcover = TheGameDBurl.getElementsByTagName('boxart')[0]
         xmlTagcover = xmlrawTagcover.childNodes[0]
         LogEvent("Found a Cover: " + xmlTagcover.nodeValue)
         return str(xmlTagcover.nodeValue)
