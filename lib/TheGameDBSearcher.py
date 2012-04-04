@@ -101,8 +101,19 @@ def AddGameToDbFromTheGameDb(thegamedbid,status):
     db_path = os.path.join(os.path.abspath(""),"Gamez.db")
     connection = sqlite3.connect(db_path)
     LogEvent("Adding " + raw_system + " Game [ " + xmlGameTitle.replace("'","''") + " ] to Game List. Cover :" + game_cover.replace("'","''"))
-    sql = "insert into requested_games(GAME_NAME,SYSTEM,GAME_TYPE,status,cover)  values('" + xmlGameTitle.replace("'","''") + "','" + raw_system + "','" + game_genre + "','" + status + "','" + game_cover + "')"
-    cursor = connection.cursor()
-    cursor.execute(sql)
-    connection.commit()
-    cursor.close()
+    try:
+        sql = "insert into requested_games(GAME_NAME,SYSTEM,GAME_TYPE,status,cover,thegamedb_id)  values('" + xmlGameTitle.replace("'","''") + "','" + raw_system + "','" + game_genre + "','" + status + "','" + game_cover + "','" + thegamedbid + "')"
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        connection.commit()
+        cursor.close()
+    except:
+        sql = "alter table requested_games add column thegamedb_id text"
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        connection.commit()
+        sql = "insert into requested_games(GAME_NAME,SYSTEM,GAME_TYPE,status,cover,thegamedb_id)  values('" + xmlGameTitle.replace("'","''") + "','" + raw_system + "','" + game_genre + "','" + status + "','" + game_cover + "','" + thegamedbid + "')"
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        connection.commit()
+        cursor.close()
