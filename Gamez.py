@@ -144,6 +144,8 @@ def RunGameTask():
         sabnzbdCategory = config.get('Sabnzbd','category').replace('"','')
         newznabWiiCat = config.get('Newznab','wii_category_id').replace('"','')
         newznabXbox360Cat = config.get('Newznab','xbox360_category_id').replace('"','')
+        newznabPS3Cat = config.get('Newznab','ps3_category_id').replace('"','')
+        newznabPCCat = config.get('Newznab','pc_category_id').replace('"','')
         newznabApi = config.get('Newznab','api_key').replace('"','')
         newznabHost = config.get('Newznab','host').replace('"','')
         newznabPort = config.get('Newznab','port').replace('"','')
@@ -157,7 +159,7 @@ def RunGameTask():
         torrentBlackholePath  = config.get('Blackhole','torrent_blackhole_path').replace('"','')
         manualSearchGame = ''
         LogEvent("Searching for games")
-        lib.GameTasks.GameTasks().FindGames(manualSearchGame,nzbMatrixUser,nzbMatrixApi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath)
+        lib.GameTasks.GameTasks().FindGames(manualSearchGame,nzbMatrixUser,nzbMatrixApi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath)
     except:
         errorMessage = "Major error occured when running scheduled tasks"
         for message in sys.exc_info():
