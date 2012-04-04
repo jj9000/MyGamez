@@ -309,7 +309,17 @@ def ValidateDB():
 	cursor.execute(sql)
 	connection.commit()
         cursor.close()
-        AddComingSoonGames()  
+        AddComingSoonGames()
+
+    connection = sqlite3.connect(db_path)
+    cursor = connection.cursor()
+    try:
+        cursor.execute('SELECT thegamedb_id from requested_games')
+    except sqlite3.OperationalError:
+        cursor.execute('ALTER TABLE requested_games ADD COLUMN thegamedb_id TEXT')
+    connection.commit()
+    cursor.close()
+      
     	
 def AddEventToDB(message):
     db_path = os.path.join(os.path.abspath(""),"Gamez.db")
