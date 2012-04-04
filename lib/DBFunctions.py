@@ -96,9 +96,9 @@ def AddGameUpcomingToDb(db_id,status):
 def GetRequestedGames(filter=''):
     db_path = os.path.join(os.path.abspath(""),"Gamez.db")
     if(filter <> ''):
-        sql = "SELECT id,game_name,game_type,status,system,cover FROM requested_games Where status='" + filter + "' order by game_name asc"
+        sql = "SELECT id,game_name,game_type,status,system,cover,thegamedb_id FROM requested_games Where status='" + filter + "' order by game_name asc"
     else:        
-    	sql = "SELECT id,game_name,game_type,status,system,cover FROM requested_games order by game_name asc"
+    	sql = "SELECT id,game_name,game_type,status,system,cover,thegamedb_id FROM requested_games order by game_name asc"
     data = ''
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
@@ -112,7 +112,12 @@ def GetRequestedGames(filter=''):
             status = str(record[3])
             system = str(record[4])
             cover = str(record[5])
-            rowdata = "<tr align='center'><td><a href='removegame?dbid=" + db_id + "'>Delete</a>&nbsp;|&nbsp;<a href='forcesearch?dbid=" + db_id + "'>Force Search</a></td><td><center><img width='85' height='120'  src='" + cover + "' /></center></td><td>" + game_name + "</td><td>" + game_type + "</td><td>" + system + "</td><td>" + status + "</td><td><select id=updateSatusSelectObject class=ui-widget onchange=UpdateGameStatus(this.options[this.selectedIndex].value,'" + db_id + "')>"
+            thegamedbid = str(record[6])
+            LogEvent("Debug: " + thegamedbid)
+            if(thegamedbid != 'None'):
+                rowdata = "<tr align='center'><td><a href='removegame?dbid=" + db_id + "'>Delete</a>&nbsp;|&nbsp;<a href='forcesearch?dbid=" + db_id + "'>Force Search</a></td><td><center><img width='85' height='120'  src='" + cover + "' /></center></td><td><a href='http://thegamesdb.net/game/" + thegamedbid + "'>" + game_name + "</td><td>" + game_type + "</td><td>" + system + "</td><td>" + status + "</td><td><select id=updateSatusSelectObject class=ui-widget onchange=UpdateGameStatus(this.options[this.selectedIndex].value,'" + db_id + "')>"
+            else:
+                rowdata = "<tr align='center'><td><a href='removegame?dbid=" + db_id + "'>Delete</a>&nbsp;|&nbsp;<a href='forcesearch?dbid=" + db_id + "'>Force Search</a></td><td><center><img width='85' height='120'  src='" + cover + "' /></center></td><td>" + game_name + "</a></td><td>" + game_type + "</td><td>" + system + "</td><td>" + status + "</td><td><select id=updateSatusSelectObject class=ui-widget onchange=UpdateGameStatus(this.options[this.selectedIndex].value,'" + db_id + "')>"
             if(status == "Snatched"):
                 rowdata = rowdata + "<option>Downloaded</option><option selected=true>Snatched</option><option>Wanted</option>"
             elif(status == "Downloaded"):
