@@ -120,7 +120,10 @@ class GameTasks():
             for item in jsonObject:
                 nzbID = item["guid"]
                 LogEvent("Game found on Newznab")
-                nzbUrl = "http://" + newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID
+                if(newznabPort == '80' or newznabPort == ''):
+                    nzbUrl = "http://" + newznabHost + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID
+                else:
+                    nzbUrl = "http://" + newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID  
                 result = GameTasks().DownloadNZB(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system)
                 if(result):
                     UpdateStatus(game_id,"Snatched")
@@ -147,6 +150,7 @@ class GameTasks():
         url = "http://" + sabnzbdHost + ":" +  sabnzbdPort + "/sabnzbd/api?mode=addurl&pp=3&apikey=" + sabnzbdApi + "&script=gamezPostProcess.py&name=" + nzbUrl + "&nzbname=[" + game_id + "] - "+ game_name
         if(sabnzbdCategory <> ''):
             url = url + "&cat=" + sabnzbdCategory
+        LogEvent("DEBUG: " + url) 
         try:
             responseObject = urllib.FancyURLopener({}).open(url)
             responseObject.read()
