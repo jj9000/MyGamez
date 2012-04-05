@@ -673,7 +673,9 @@ class WebRoot:
 										<br />
 										<input style="width:225px" type="text" name="newznabXbox360Cat" id="newznabXbox360Cat" value='""" + config.get('Newznab','xbox360_category_id').replace('"','') +  """' />
 									</td>
-								    <td>
+								 </tr> 
+                                                         <tr><td>&nbsp;</td></tr>
+                                                               <td>
 										<label><b>Newznab PS3 Category ID</b></label>
 										<br />
 										<input style="width:225px" type="text" name="newznabPS3Cat" id="newznabPS3Cat" value='""" + config.get('Newznab','ps3_category_id').replace('"','') +  """' />
