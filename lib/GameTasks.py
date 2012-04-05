@@ -35,12 +35,12 @@ class GameTasks():
                         LogEvent("NZB Matrix Settings Incomplete.")
                 
                 if(isNewznabEnabled == "1"):
-                    if(newznabWiiCat <> '' and newznabXbox360Cat <> '' and newznabPS3Cat <> '' and newznabPCCat <> '' and newznabApi <> '' and newznabHost <> '' and newznabPort <> ''):
+                    if(newznabWiiCat <> '' and newznabXbox360Cat <> '' and newznabPS3Cat <> '' and newznabPCCat <> '' and newznabApi <> '' and newznabHost <> ''):
                         if(isDownloaded == False):
                             LogEvent("Checking for game [" + game_name + "] on Newznab")
                             isDownloaded = GameTasks().FindGameOnNewznabServer(game_name,game_id,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,system,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath)
                     else:
-                        LogEvent("NZB Matrix Settings Incomplete.")  
+                        LogEvent("Newznab Settings Incomplete.")  
                         
                 if(isTorrentBlackholeEnabled == "1"):
                 	if(isTorrentKATEnabled == "1"):
@@ -100,12 +100,16 @@ class GameTasks():
         else:
             LogEvent("Unrecognized System")
             return False
-        url = "http://" + newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=search&cat=" + catToUse + "&q=" + game_name + "&o=json"
+        if(newznabPort == '80' or newznabPort == ''):
+            url = "http://" + newznabHost + "/api?apikey=" + newznabApi + "&t=search&cat=" + catToUse + "&q=" + game_name.replace(" ","+") + "&o=json"
+        else:
+            url = "http://" + newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=search&cat=" + catToUse + "&q=" + game_name.replace(" ","+") + "&o=json"
         try:
             opener = urllib.FancyURLopener({})
             responseObject = opener.open(url)
             response = responseObject.read()
             responseObject.close()
+            LogEvent("Debug: " + url)
         except:
             LogEvent("Unable to connect to Newznab Server: " + url)
             return False
