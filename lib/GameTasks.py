@@ -5,6 +5,7 @@ import urllib2
 import os
 import shutil
 import stat
+from Helper import replace_all
 from subprocess import call
 from Logger import LogEvent
 import json
@@ -100,6 +101,7 @@ class GameTasks():
         else:
             LogEvent("Unrecognized System")
             return False
+        game_name = replace_all(game_name)
         if(newznabPort == '80' or newznabPort == ''):
             url = "http://" + newznabHost + "/api?apikey=" + newznabApi + "&t=search&cat=" + catToUse + "&q=" + game_name.replace(" ","+") + "&o=json"
         else:
