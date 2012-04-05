@@ -7,7 +7,7 @@ import shutil
 import stat
 from Helper import replace_all
 from subprocess import call
-from Logger import LogEvent
+from Logger import LogEvent,DebugLogEvent
 import json
 
 class GameTasks():
@@ -38,7 +38,7 @@ class GameTasks():
                 if(isNewznabEnabled == "1"):
                     if(newznabWiiCat <> '' and newznabXbox360Cat <> '' and newznabPS3Cat <> '' and newznabPCCat <> '' and newznabApi <> '' and newznabHost <> ''):
                         if(isDownloaded == False):
-                            LogEvent("Checking for game [" + game_name + "] on Newznab")
+                            LogEvent("Checking for game [" + game_name + "] for ["+ system + "] on Newznab")
                             isDownloaded = GameTasks().FindGameOnNewznabServer(game_name,game_id,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,system,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath)
                     else:
                         LogEvent("Newznab Settings Incomplete.")  
@@ -90,14 +90,17 @@ class GameTasks():
             return False
 
     def FindGameOnNewznabServer(self,game_name,game_id,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,system,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath):
+        catToUse = ''
         if(system == "Wii"):
             catToUse = newznabWiiCat
         elif(system == "Xbox360"):
             catToUse = newznabXbox360Cat
         elif(system == "PS3"):
             catToUse = newznabPS3Cat
+            DebugLogEvent("System [ " + system + " ] and catToUse [ " + catToUse + " ] original Cat [" + newznabPS3Cat + "]") 
         elif(system == "PC"):
             catToUse = newznabPCCat		
+            DebugLogEvent("PC: System [ " + system + " ] and catToUse [ " + catToUse + " ]")
         else:
             LogEvent("Unrecognized System")
             return False
@@ -111,7 +114,7 @@ class GameTasks():
             responseObject = opener.open(url)
             response = responseObject.read()
             responseObject.close()
-            LogEvent("Debug: " + url)
+            DebugLogEvent("Search for " + url)
         except:
             LogEvent("Unable to connect to Newznab Server: " + url)
             return False
@@ -152,7 +155,7 @@ class GameTasks():
         url = "http://" + sabnzbdHost + ":" +  sabnzbdPort + "/sabnzbd/api?mode=addurl&pp=3&apikey=" + sabnzbdApi + "&script=gamezPostProcess.py&name=" + nzbUrl + "&nzbname=[" + game_id + "] - "+ game_name
         if(sabnzbdCategory <> ''):
             url = url + "&cat=" + sabnzbdCategory
-        LogEvent("DEBUG: " + url) 
+        DebugLogEvent("Send to sabnzdb: " + url) 
         try:
             responseObject = urllib.FancyURLopener({}).open(url)
             responseObject.read()

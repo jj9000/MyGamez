@@ -2,7 +2,7 @@ import os
 import sqlite3
 import sys
 import datetime
-from Logger import LogEvent
+from Logger import LogEvent,DebugLogEvent
 import urllib2
 import json
 import DBFunctions
@@ -22,7 +22,7 @@ def GetGameDataFromTheGameDB(term,system):
         TheGameDBxml_byid = GetXmlFromTheGameDB(term,system,xmlGameid)
         game_cover = "http://thegamesdb.net/banners/" + GetDetailscover(TheGameDBxml_byid,system,)
         game_genre = GetDetailsgenre(TheGameDBxml_byid)
-        LogEvent("Get Data from TheGameDB ! Type: [ " + system + " ]   Game: [ " + xmlGameTitle.replace("'","''") + " ] Cover : [ " + game_cover.replace("'","''") + " ]")
+        DebugLogEvent("Get Data from TheGameDB ! Type: [ " + system + " ]   Game: [ " + xmlGameTitle.replace("'","''") + " ] Cover : [ " + game_cover.replace("'","''") + " ]")
         rowdata = "<tr align='center'><td><a href='addgambythegamedb?thegamedbid=" + xmlGameid + "'>Download</a></td><td><img width='85' height='120'  src='" + game_cover + "' /></td><td>" + xmlGameTitle + "</td><td>" + game_genre + "</td><td>" + system + "</td></tr>"
         data = data + rowdata
         tagnbr = tagnbr + 1
@@ -32,7 +32,7 @@ def GetDetailsgenre(TheGameDBurl):
     try:
         xmlTaggenre = TheGameDBurl.getElementsByTagName('genre')[0].toxml()
         xmlGamegenre=xmlTaggenre.replace('<genre>','').replace('</genre>','')
-        LogEvent("Found a Genre: " + xmlGamegenre)
+        DebugLogEvent("Found a Genre: " + xmlGamegenre)
         return str(xmlGamegenre)
     except:
         xmlGamegenre="Game"
@@ -46,7 +46,7 @@ def GetDetailscover(TheGameDBurl,system):
         except:
             xmlrawTagcover = TheGameDBurl.getElementsByTagName('boxart')[0]
         xmlTagcover = xmlrawTagcover.childNodes[0]
-        LogEvent("Found a Cover: " + xmlTagcover.nodeValue)
+        DebugLogEvent("Found a Cover: " + xmlTagcover.nodeValue)
         return str(xmlTagcover.nodeValue)
     except:
         if(system == "PS3"):
@@ -71,10 +71,10 @@ def GetXmlFromTheGameDB(term,system,TheGameDB_id):
     try:
        if(TheGameDB_id != "fake"):
            gamefile = urllib2.urlopen('http://thegamesdb.net/api/GetGame.php?id=' + TheGameDB_id)
-           LogEvent('Search for [ "' + term + '" ] http://thegamesdb.net/api/GetGame.php?id=' + TheGameDB_id)
+           DebugLogEvent('Search for [ "' + term + '" ] http://thegamesdb.net/api/GetGame.php?id=' + TheGameDB_id)
        else:
            gamefile = urllib2.urlopen('http://thegamesdb.net/api/GetGame.php?name=' + term.replace(' ','+') + '&platform=' + Platform)
-           LogEvent( 'Search for [ "' + term + '" ] http://thegamesdb.net/api/GetGame.php?name=' + term.replace(' ','+') + '&platform=' + Platform)
+           DebugLogEvent( 'Search for [ "' + term + '" ] http://thegamesdb.net/api/GetGame.php?name=' + term.replace(' ','+') + '&platform=' + Platform)
        gamedata = gamefile.read()
        gamefile.close()
        dom = parseString(gamedata)    		
@@ -86,7 +86,7 @@ def AddGameToDbFromTheGameDb(thegamedbid,status):
     TheGameDBxml = GetXmlFromTheGameDB('none','none',thegamedbid)
     xmlTagTitle = TheGameDBxml.getElementsByTagName('GameTitle')[0].toxml()
     xmlGameTitle=xmlTagTitle.replace('<GameTitle>','').replace('</GameTitle>','')
-    LogEvent("Found Game: " + xmlGameTitle)
+    DebugLogEvent("Found Game: " + xmlGameTitle)
     xmlTagSystem = TheGameDBxml.getElementsByTagName('Platform')[0].toxml()
     xmlGameSystem=xmlTagSystem.replace('<Platform>','').replace('</Platform>','')
     if(xmlGameSystem == 'PC'):
