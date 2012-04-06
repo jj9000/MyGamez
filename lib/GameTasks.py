@@ -228,7 +228,7 @@ class GameTasks():
         
         path = os.path.abspath("postprocess")
         srcPath = os.path.join(path,"gamezPostProcess.py")
-        url = urllib.quote("http://" + sabnzbdHost + ":" + sabnzbdPort + "/sabnzbd/api?mode=get_config&apikey=" + sabnzbdApi + "&section=misc&keyword=script_dir")
+        url = "http://" + sabnzbdHost + ":" + sabnzbdPort + "/sabnzbd/api?mode=get_config&apikey=" + sabnzbdApi + "&section=misc&keyword=script_dir"
         try:
             opener = urllib.FancyURLopener({})
             responseObject = opener.open(url)
