@@ -284,6 +284,7 @@ class WebRoot:
         config = ConfigParser.RawConfigParser()
         configFilePath = os.path.join(WebRoot.appPath,'Gamez.ini')
         config.read(configFilePath)
+        debugChecked = config.get('global','debug_enabled').replace('"','')
         sabChecked = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
         nzbmatrixChecked = config.get('SystemGenerated','nzbmatrix_enabled').replace('"','')
         newznabChecked = config.get('SystemGenerated','newznab_enabled').replace('"','')
@@ -301,6 +302,10 @@ class WebRoot:
         downloadProcessXbox360Checked = config.get('SystemGenerated','process_download_folder_xbox360_enabled').replace('"','')
         
         defaultSearch = config.get('SystemGenerated','default_search').replace('"','')
+        if(debugChecked == "1"):
+   	     debugChecked = "CHECKED"
+   	 else:
+   	     debugChecked = ""
         if(sabChecked == "1"):
             sabChecked = "CHECKED"
         else:
@@ -507,6 +512,10 @@ class WebRoot:
 							<br />
 							<select name="defaultSearch" id="defaultSearch" style="width:200px">""" + defaultSearch + """</select>
 						</td>
+						<div style="float:middle">
+							<input type="checkbox" name="debugEnabled" id="debugEnabled" value="debugEnabled" """ + debugChecked + """ />Enabled Debug
+						/div>
+					<br />
 					</tr>
 				</table>
 			</p>
@@ -1132,7 +1141,7 @@ class WebRoot:
             raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
-    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',prowlApi='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled=''):
+    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled=''):
         cherrypyHost = '"' + cherrypyHost + '"'
         nzbMatrixUsername = '"' + nzbMatrixUsername + '"'
         nzbMatrixApi = '"' + nzbMatrixApi + '"'
@@ -1159,6 +1168,10 @@ class WebRoot:
         torrentBlackholeDownloadDirectory = '"' + torrentBlackholeDownloadDirectory.replace("\\","\\\\") + '"'
         sabDownloadDirectory = '"' + sabDownloadDirectory.replace("\\","\\\\") + '"'
         defaultSearch = '"' + defaultSearch + '"'
+        if(debugEnabled == 'debugEnabled'):
+   	     debugEnabled = "1"
+   	 else:
+   	     debugEnabled = "0"
         if(sabnzbdEnabled == 'sabnzbdEnabled'):
             sabnzbdEnabled = "1"
         else:
@@ -1222,6 +1235,7 @@ class WebRoot:
         config.set('global','server.socket_port',cherrypyPort)
         config.set('global','user_name',gamezUsername)
         config.set('global','password',gamezPassword)
+        config.set('global','debug_enabled',debugEnabled)
         config.set('NZBMatrix','username',nzbMatrixUsername)
         config.set('NZBMatrix','api_key',nzbMatrixApi)
         config.set('Sabnzbd','host',sabHost)
@@ -1326,6 +1340,7 @@ class WebRoot:
             os.chdir(WebRoot.appPath)
         config = ConfigParser.RawConfigParser()
         config.read(os.path.join(WebRoot.appPath,'Gamez.ini'))
+        isDebugEnabled = config.get('global','debug_enabled').replace('"','')
         nzbMatrixUser = config.get('NZBMatrix','username').replace('"','')
         nzbMatrixApi = config.get('NZBMatrix','api_key').replace('"','')
         sabnzbdHost = config.get('Sabnzbd','host').replace('"','')

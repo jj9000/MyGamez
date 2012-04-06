@@ -136,6 +136,7 @@ def RunGameTask():
     try:
         config = ConfigParser.RawConfigParser()
         config.read('Gamez.ini')
+        isDebugEnabled = config.get('global','debug_enabled').replace('"','')
         nzbMatrixUser = config.get('NZBMatrix','username').replace('"','')
         nzbMatrixApi = config.get('NZBMatrix','api_key').replace('"','')
         sabnzbdHost = config.get('Sabnzbd','host').replace('"','')
