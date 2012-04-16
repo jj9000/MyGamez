@@ -60,6 +60,10 @@ def CheckConfigForAllKeys(app_path):
         
     if(config.has_option('global','password') == False):
         config.set('global','password','""')
+        changesMade = True
+
+    if(config.has_option('global','debug_enabled') == False):
+        config.set('global','debug_enabled','')
         changesMade = True        
 
     if(config.has_option('NZBMatrix','username') == False):
