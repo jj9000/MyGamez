@@ -193,7 +193,6 @@ def RunFolderProcessingTask():
 
 if __name__ == '__main__':
     app_path = sys.path[0]
-    LogEvent("Checking DB")
     ValidateDB()
     LogEvent("Checking config file for completeness")
     CheckConfigForAllKeys(app_path)

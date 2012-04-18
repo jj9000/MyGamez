@@ -263,27 +263,31 @@ def ValidateDB():
         cursor.close()
         AddWiiGamesIfMissing()
         print "Database upgrade complete"
-	
-    try:
-        sql = "alter table games add column cover text"
-	connection = sqlite3.connect(db_path)
-	cursor = connection.cursor()
-	cursor.execute(sql)
-	connection.commit()
-	cursor.close()
-    except:
-	status = "Do Nothing"
-	
-    try:
-        sql = "alter table requested_games add column cover text"
-	connection = sqlite3.connect(db_path)
-	cursor = connection.cursor()
-	cursor.execute(sql)
-	connection.commit()
-	cursor.close()
-    except:
-	status = "Do Nothing"	
+
+    # Just when Table not exists
+    connection = sqlite3.connect(db_path)
+    cursor = connection.cursor()
+    cursor.execute("CREATE TABLE IF NOT EXISTS GAMES (ID INTEGER PRIMARY KEY,GAME_NAME TEXT,SYSTEM TEXT,GAME_TYPE TEXT,COVER TEXT)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS requested_games (ID INTEGER PRIMARY KEY,GAME_NAME TEXT,SYSTEM TEXT,GAME_TYPE TEXT,STATUS TEXT,COVER TEXT,THEGAMEDB_ID TEXT)")
     
+    try:
+        cursor.execute("SELECT cover from games")
+    except sqlite3.OperationalError:
+        cursor.execute("ALTER TABLE games ADD COLUMN cover TEXT")
+    
+    try:
+        cursor.execute("SELECT cover from requested_games")
+    except sqlite3.OperationalError:
+        cursor.execute("ALTER TABLE requested_games ADD COLUMN cover TEXT")
+
+    try:
+        cursor.execute("SELECT thegamedb_id from requested_games")
+    except sqlite3.OperationalError:
+        cursor.execute("ALTER TABLE requested_games ADD COLUMN thegamedb_id TEXT")
+
+    connection.commit()
+    cursor.close()
+   	 
     #loop requested games where cover is null
     sql = "select game_name,cover,system from requested_games where cover is null"
     connection = sqlite3.connect(db_path)
@@ -311,16 +315,6 @@ def ValidateDB():
         cursor.close()
         AddComingSoonGames()
 
-    connection = sqlite3.connect(db_path)
-    cursor = connection.cursor()
-    try:
-        cursor.execute('SELECT thegamedb_id from requested_games')
-    except sqlite3.OperationalError:
-        cursor.execute('ALTER TABLE requested_games ADD COLUMN thegamedb_id TEXT')
-    connection.commit()
-    cursor.close()
-      
-    	
 def AddEventToDB(message):
     db_path = os.path.join(os.path.abspath(""),"Gamez.db")
     createdDate = datetime.datetime.now()
@@ -416,6 +410,7 @@ def AddXbox360GamesIfMissing():
     except:
         LogEvent("Unable to connect to web service: " + url)
         return
+    json_data = json.loads(response)
     ClearGames("Xbox360")
     for data in json_data:
         game_name = data['GameTitle']
