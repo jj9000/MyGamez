@@ -379,10 +379,10 @@ def AddWiiGamesIfMissing():
             responseObject = urllib.FancyURLopener({}).open(wiiWebServiceUrl)
             response = responseObject.read()
             responseObject.close()
+            json_data = json.loads(response)
         except:
             LogEvent("Unable to connect to web service: " + wiiWebServiceUrl)
             return
-        json_data = json.loads(response)
         ClearGames("Wii")
         for data in json_data:
             game_name = data['GameTitle']
@@ -412,10 +412,10 @@ def AddXbox360GamesIfMissing():
         responseObject = urllib.FancyURLopener({}).open(url)
         response = responseObject.read()
         responseObject.close()
+        json_data = json.loads(response)
     except:
         LogEvent("Unable to connect to web service: " + url)
         return
-    json_data = json.loads(response)
     ClearGames("Xbox360")
     for data in json_data:
         game_name = data['GameTitle']
@@ -455,10 +455,10 @@ def AddComingSoonGames():
             responseObject = urllib.FancyURLopener({}).open(comingSoonWebServiceUrl)
             response = responseObject.read()
             responseObject.close()
+            json_data = json.loads(response)
         except:
             LogEvent("Unable to connect to web service: " + comingSoonWebServiceUrl)
             return
-        json_data = json.loads(response)
         ClearComingSoonGames()
         for data in json_data:
             game_name = data['GameTitle']
