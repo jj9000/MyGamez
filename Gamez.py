@@ -4,6 +4,7 @@ import cherrypy
 import os
 from lib.WebRoot import WebRoot
 import sys
+import socket
 import sched
 import time
 import threading
@@ -92,7 +93,8 @@ class RunApp():
 def GenerateSabPostProcessScript():
     config = ConfigParser.RawConfigParser()
     config.read(os.path.join(app_path,'Gamez.ini'))
-    gamezWebHost = config.get('global','server.socket_host').replace('"','')
+    sys_name = socket.gethostname()
+    gamezWebHost = socket.gethostbyname(sys_name)
     gamezWebport = config.get('global','server.socket_port').replace('"','')
     gamezBaseUrl = "http://" + gamezWebHost + ":" + gamezWebport + "/"
     postProcessPath = os.path.join(app_path,'postprocess')
