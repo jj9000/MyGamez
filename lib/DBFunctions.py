@@ -2,7 +2,7 @@ import os
 import sqlite3
 import sys
 import datetime
-from Logger import LogEvent
+from Logger import LogEvent, DebugLogEvent
 import urllib
 import json
 import Notifications
@@ -600,4 +600,8 @@ def ApiGetRequestedGames():
     data = '["Games":' + data + ']'
     return data
     
-      
+def ApiUpdateRequestedStatus(db_id,status):
+    DebugLogEvent("DB ID [ " + db_id + " ] and Status [ " + status + " ]")
+    UpdateStatus(db_id,status)
+    data = '["RequestedStatus":{"' + status + '"}]'
+    return data

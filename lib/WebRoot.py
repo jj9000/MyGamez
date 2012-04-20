@@ -1,7 +1,7 @@
 import cherrypy
 import json
 import os
-from DBFunctions import GetGamesFromTerm, GetGameDataFromTerm, AddGameToDb, GetRequestedGames, RemoveGameFromDb, UpdateStatus, GetLog, ClearDBLog,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,ApiGetGamesFromTerm,AddComingSoonGames,GetUpcomingGames,AddGameUpcomingToDb,ApiGetRequestedGames
+from DBFunctions import GetGamesFromTerm, GetGameDataFromTerm, AddGameToDb, GetRequestedGames, RemoveGameFromDb, UpdateStatus, GetLog, ClearDBLog,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,ApiGetGamesFromTerm,AddComingSoonGames,GetUpcomingGames,AddGameUpcomingToDb,ApiGetRequestedGames,ApiUpdateRequestedStatus
 from UpgradeFunctions import CheckForNewVersion,IgnoreVersion,UpdateToLatestVersion
 import ConfigParser
 from time import sleep
@@ -1379,7 +1379,7 @@ class WebRoot:
         raise cherrypy.InternalRedirect('/') 
 
     @cherrypy.expose
-    def api(self,api_key='',mode='',term='',system=''):
+    def api(self,api_key='',mode='',term='',system='',status='',db_id=''):
         config = ConfigParser.RawConfigParser()
         configFilePath = os.path.join(WebRoot.appPath,'Gamez.ini')
         config.read(configFilePath)
@@ -1406,7 +1406,10 @@ class WebRoot:
             elif(mode == 'DELETEREQUESTED'):
             	response = {"Error" : mode + " Mode Not Implemented"}   
             elif(mode == 'UPDATEREQUESTEDSTATUS'):
-            	response = {"Error" : mode + " Mode Not Implemented"}
+                try:
+                    return ApiUpdateRequestedStatus(db_id,status)
+                except:
+                    response = {"Error" : " Status was not updatet"}
             elif(mode == 'SEARCHUPCOMING'):
             	response = {"Error" : mode + " Mode Not Implemented"}     
             elif(mode == 'ADDUPCOMINGTOREQUESTED'):
