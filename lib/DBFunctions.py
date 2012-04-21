@@ -96,9 +96,9 @@ def AddGameUpcomingToDb(db_id,status):
 def GetRequestedGames(filter=''):
     db_path = os.path.join(os.path.abspath(""),"Gamez.db")
     if(filter <> ''):
-        sql = "SELECT id,game_name,game_type,status,system,cover,thegamedb_id FROM requested_games Where status='" + filter + "' order by game_name asc"
+        sql = "SELECT id,game_name,game_type,status,system,cover,thegamesdb_id FROM requested_games Where status='" + filter + "' order by game_name asc"
     else:        
-    	sql = "SELECT id,game_name,game_type,status,system,cover,thegamedb_id FROM requested_games order by game_name asc"
+    	sql = "SELECT id,game_name,game_type,status,system,cover,thegamesdb_id FROM requested_games order by game_name asc"
     data = ''
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
@@ -112,10 +112,10 @@ def GetRequestedGames(filter=''):
             status = str(record[3])
             system = str(record[4])
             cover = str(record[5])
-            thegamedbid = str(record[6])
-            LogEvent("Debug: " + thegamedbid)
-            if(thegamedbid != 'None'):
-                rowdata = "<tr align='center'><td><a href='removegame?dbid=" + db_id + "'>Delete</a>&nbsp;|&nbsp;<a href='forcesearch?dbid=" + db_id + "'>Force Search</a></td><td><center><img width='85' height='120'  src='" + cover + "' /></center></td><td><a href='http://thegamesdb.net/game/" + thegamedbid + "'>" + game_name + "</td><td>" + game_type + "</td><td>" + system + "</td><td>" + status + "</td><td><select id=updateSatusSelectObject class=ui-widget onchange=UpdateGameStatus(this.options[this.selectedIndex].value,'" + db_id + "')>"
+            thegamesdbid = str(record[6])
+            DebugLogEvent("Debug: " + thegamesdbid)
+            if(thegamesdbid != 'None'):
+                rowdata = "<tr align='center'><td><a href='removegame?dbid=" + db_id + "'>Delete</a>&nbsp;|&nbsp;<a href='forcesearch?dbid=" + db_id + "'>Force Search</a></td><td><center><img width='85' height='120'  src='" + cover + "' /></center></td><td><a href='http://thegamesdb.net/game/" + thegamesdbid + "'>" + game_name + "</td><td>" + game_type + "</td><td>" + system + "</td><td>" + status + "</td><td><select id=updateSatusSelectObject class=ui-widget onchange=UpdateGameStatus(this.options[this.selectedIndex].value,'" + db_id + "')>"
             else:
                 rowdata = "<tr align='center'><td><a href='removegame?dbid=" + db_id + "'>Delete</a>&nbsp;|&nbsp;<a href='forcesearch?dbid=" + db_id + "'>Force Search</a></td><td><center><img width='85' height='120'  src='" + cover + "' /></center></td><td>" + game_name + "</a></td><td>" + game_type + "</td><td>" + system + "</td><td>" + status + "</td><td><select id=updateSatusSelectObject class=ui-widget onchange=UpdateGameStatus(this.options[this.selectedIndex].value,'" + db_id + "')>"
             if(status == "Snatched"):
@@ -268,7 +268,7 @@ def ValidateDB():
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS GAMES (ID INTEGER PRIMARY KEY,GAME_NAME TEXT,SYSTEM TEXT,GAME_TYPE TEXT,COVER TEXT)")
-    cursor.execute("CREATE TABLE IF NOT EXISTS requested_games (ID INTEGER PRIMARY KEY,GAME_NAME TEXT,SYSTEM TEXT,GAME_TYPE TEXT,STATUS TEXT,COVER TEXT,THEGAMEDB_ID TEXT)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS requested_games (ID INTEGER PRIMARY KEY,GAME_NAME TEXT,SYSTEM TEXT,GAME_TYPE TEXT,STATUS TEXT,COVER TEXT,THEGAMESDB_ID TEXT)")
     
     try:
         cursor.execute("SELECT cover from games")
@@ -281,9 +281,9 @@ def ValidateDB():
         cursor.execute("ALTER TABLE requested_games ADD COLUMN cover TEXT")
 
     try:
-        cursor.execute("SELECT thegamedb_id from requested_games")
+        cursor.execute("SELECT thegamesdb_id from requested_games")
     except sqlite3.OperationalError:
-        cursor.execute("ALTER TABLE requested_games ADD COLUMN thegamedb_id TEXT")
+        cursor.execute("ALTER TABLE requested_games ADD COLUMN thegamesdb_id TEXT")
 
     connection.commit()
     cursor.close()

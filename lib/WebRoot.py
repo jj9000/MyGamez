@@ -13,7 +13,7 @@ import random
 from lib.FolderFunctions import *
 from Constants import *
 from GameTasks import *
-from TheGameDBSearcher import GetGameDataFromTheGameDB, AddGameToDbFromTheGameDb
+from TheGamesDBSearcher import GetGameDataFromTheGamesDB, AddGameToDbFromTheGamesDb
 
 class WebRoot:
     appPath = ''
@@ -255,7 +255,7 @@ class WebRoot:
             <div id="container">"""
         db_result = GetGameDataFromTerm(term,system)
         if(db_result == ''):
-           db_result = GetGameDataFromTheGameDB(term,system)
+           db_result = GetGameDataFromTheGamesDB(term,system)
         if(db_result == ''):   
             html  = html + """No Results Found. Try Searching Again"""
         else:
@@ -1180,10 +1180,10 @@ class WebRoot:
         raise cherrypy.InternalRedirect('/')
 
     @cherrypy.expose
-    def addgambythegamedb(self,thegamedbid):
+    def addgambythegamesdb(self,thegamesdbid):
         if(os.name <> 'nt'):
             os.chdir(WebRoot.appPath)
-        AddGameToDbFromTheGameDb(thegamedbid,'Wanted')
+        AddGameToDbFromTheGamesDb(thegamesdbid,'Wanted')
         raise cherrypy.InternalRedirect('/')
 
     @cherrypy.expose
