@@ -47,6 +47,7 @@ class RunApp():
         checkpassword = cherrypy.lib.auth_basic.checkpassword_dict(userPassDict)
         conf = {
         	'/':{'tools.auth_basic.on':useAuth,'tools.auth_basic.realm':'Gamez','tools.auth_basic.checkpassword':checkpassword},
+                '/api':{'tools.auth_basic.on':False},
                 '/css': {'tools.staticdir.on':True,'tools.staticdir.dir':css_path},
                 '/js':{'tools.staticdir.on':True,'tools.staticdir.dir':js_path},
                 '/css/redmond':{'tools.staticdir.on':True,'tools.staticdir.dir':theme_path},
@@ -120,15 +121,17 @@ def GenerateSabPostProcessScript():
     file.write("\n")
     file.write("    downloadStatus = 'Downloaded'")
     file.write("\n")
-    file.write('url = "' + gamezBaseUrl + 'updatestatus?game_id=" + gamezID + "&filePath=" + urllib.quote(filePath) + "&status=" + downloadStatus')
+    file.write('url = "' + gamezBaseUrl + 'api?api_key=' + gamezApi + '&mode=UPDATEREQUESTEDSTATUS&db_id=" + gamezID + "&status=" + downloadStatus')
     file.write("\n")
     file.write('responseObject = urllib.FancyURLopener({}).open(url)')
     file.write("\n")
-    file.write('responseObject.read()')
+    file.write('answer = responseObject.read()')
     file.write("\n")
     file.write('responseObject.close()')
     file.write("\n")
-    file.write('print("Processing Completed Successfully")')
+    file.write("print(answer)")
+    file.write("\n")
+    file.write("exit(0)")
     file.close
     LogEvent("Setting permissions on post process script")
     cmd = "chmod +x '" + postProcessScript + "'"
