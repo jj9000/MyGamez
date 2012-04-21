@@ -153,9 +153,11 @@
     <Compile Include="lib\feedparser.py" />
     <Compile Include="lib\FolderFunctions.py" />
     <Compile Include="lib\GameTasks.py" />
+    <Compile Include="lib\Helper.py" />
     <Compile Include="lib\Logger.py" />
     <Compile Include="lib\Notifications.py" />
     <Compile Include="lib\Notifo.py" />
+    <Compile Include="lib\TheGamesDBSearcher.py" />
     <Compile Include="lib\UpgradeFunctions.py" />
     <Compile Include="lib\WebRoot.py" />
     <Compile Include="lib\__init__.py" />
