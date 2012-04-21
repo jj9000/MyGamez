@@ -54,7 +54,15 @@ To Be Added
 <br /><br />
 ***UPDATEREQUESTEDSTATUS***
 <br />
-To Be Added
+This mode updates the Status for a selectet Game on your list. A json response will be returned with either an error or success message. There are two parameters needed
+First is &status and allowed values are { Wanted , Snatched , Downloaded}
+The second paramter is &db_id. Here must enter the db  DB Id number of the game
+
+Examples:
+<br />
+&nbsp;&nbsp;&nbsp;Set game with ID 1 to status Downloaded: http://127.0.0.1:8085/api?api_key=ikzFRzA1Y8I1UajNJAOQ803TbTYk1vLB64A9SxrAxAw&mode=UPDATEREQUESTEDSTATUS&db_id=1&status=Downloaded
+<br />
+</hr>
 <br /><br />
 ***SEARCHUPCOMING***
 <br />
