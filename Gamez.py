@@ -96,6 +96,7 @@ def GenerateSabPostProcessScript():
     config.read(os.path.join(app_path,'Gamez.ini'))
     sys_name = socket.gethostname()
     gamezWebHost = socket.gethostbyname(sys_name)
+    gamezApi = config.get('SystemGenerated','api_key').replace('"','')
     gamezWebport = config.get('global','server.socket_port').replace('"','')
     gamezBaseUrl = "http://" + gamezWebHost + ":" + gamezWebport + "/"
     postProcessPath = os.path.join(app_path,'postprocess')
