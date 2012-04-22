@@ -315,8 +315,6 @@ class WebRoot:
         downloadProcessPCChecked = config.get('SystemGenerated','process_download_folder_pc_enabled').replace('"','')
 
         defaultSearch = config.get('SystemGenerated','default_search').replace('"','')
-        defaultWebinterface = config.get('SystemGenerated','webinterface').replace('"','')
-
         if(debugChecked == "1"):
            debugChecked = "CHECKED"
         else:
@@ -396,13 +394,6 @@ class WebRoot:
             defaultSearch = "<option>---</option><option>Wii</option><option>Xbox360</option><option>PS3</option><option selected>PC</option>"
         else:
             defaultSearch = "<option selected>---</option><option>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
-        
-        if (defaultWebinterface == "grey"):
-            defaultWebinterface = "<option>default</option><option selected>grey</option>"
-            DebugLogEvent("It is the [" + defaultWebinterface + "] Theme for Webinterface selectet")
-        else:
-            defaultWebinterface = "<option selected>default</option><option>grey</option>"
-            DebugLogEvent("It is the [" + defaultWebinterface + "] Theme for Webinterface selectet")
         html = """
 
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -545,11 +536,6 @@ class WebRoot:
 							<label><b>Default System for Search</b></label>
 							<br />
 							<select name="defaultSearch" id="defaultSearch" style="width:200px">""" + defaultSearch + """</select>
-						</td>
-						<td>
-							<label><b>Webinterface Theme</b></label>
-							<br />
-							<select name="webinterface" id="webinterface" style="width:200px">""" + defaultWebinterface + """</select>
 						</td>
 						<div style="float:middle">
 							<input type="checkbox" name="debugEnabled" id="debugEnabled" value="debugEnabled" """ + debugChecked + """ />Enabled Debug
@@ -1227,7 +1213,7 @@ class WebRoot:
             raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
-    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface=''):
+    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled=''):
         cherrypyHost = '"' + cherrypyHost + '"'
         nzbMatrixUsername = '"' + nzbMatrixUsername + '"'
         nzbMatrixApi = '"' + nzbMatrixApi + '"'
@@ -1258,7 +1244,6 @@ class WebRoot:
         torrentBlackholeDownloadDirectory = '"' + torrentBlackholeDownloadDirectory.replace("\\","\\\\") + '"'
         sabDownloadDirectory = '"' + sabDownloadDirectory.replace("\\","\\\\") + '"'
         defaultSearch = '"' + defaultSearch + '"'
-        webinterface = '"' + webinterface + '"'
         if(debugEnabled == 'debugEnabled'):
             debugEnabled = "1"
         else:
@@ -1361,7 +1346,6 @@ class WebRoot:
         config.set('SystemGenerated','process_download_folder_wii_enabled',processWiiEnabled)
         config.set('SystemGenerated','process_download_folder_ps3_enabled',processPS3Enabled)
         config.set('SystemGenerated','process_download_folder_pc_enabled',processPCEnabled)
-        config.set('SystemGenerated','webinterface',webinterface)
         config.set('Newznab','host',newznabHost)
         config.set('Newznab','port',newznabPort)
         config.set('Newznab','wii_category_id',newznabWiiCat)

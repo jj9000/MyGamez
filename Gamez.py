@@ -29,18 +29,15 @@ class RunApp():
     def RunWebServer(self,isToDaemonize):
         LogEvent("Generating CherryPy configuration")
         cherrypy.config.update(config_path)
-        config = ConfigParser.RawConfigParser()
-        config.read('Gamez.ini')
-        # Set Webinterface Path
-        css_webinterface = "css/" + config.get('SystemGenerated','webinterface').replace('"','')
-        
-        css_path = os.path.join(app_path,css_webinterface)
+        css_path = os.path.join(app_path,'css')
         images_path = os.path.join(app_path,'images')
         navigation_images_path = os.path.join(css_path,'navigation_images')
         datatables_images_path = os.path.join(css_path,'datatables_images')
         js_path = os.path.join(app_path,'js')
         theme_path = os.path.join(css_path,'redmond')
         theme_images_path = os.path.join(theme_path,'images')
+        config = ConfigParser.RawConfigParser()
+        config.read('Gamez.ini')
         username = config.get('global','user_name').replace('"','')
         password = config.get('global','password').replace('"','')
         useAuth = False

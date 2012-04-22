@@ -179,10 +179,6 @@ def CheckConfigForAllKeys(app_path):
         config.set('SystemGenerated','api_key','"' + apiKey + '"')
         changesMade = True
 
-    if(config.has_option('SystemGenerated','webinterface') == False):
-        config.set('SystemGenerated','webinterface','"default"')
-        changesMade = True
-
     if(config.has_option('Newznab','api_key') == False):
         config.set('Newznab','api_key','""')
         changesMade = True
