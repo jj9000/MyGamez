@@ -315,8 +315,7 @@ class WebRoot:
         downloadProcessPCChecked = config.get('SystemGenerated','process_download_folder_pc_enabled').replace('"','')
 
         defaultSearch = config.get('SystemGenerated','default_search').replace('"','')
-        defaultWebinterface = config.get('SystemGenerated','webinterface').replace('"','')
-
+        
         if(debugChecked == "1"):
            debugChecked = "CHECKED"
         else:
@@ -397,12 +396,13 @@ class WebRoot:
         else:
             defaultSearch = "<option selected>---</option><option>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
         
-        if (defaultWebinterface == "grey"):
+        webinterfacetheme = config.get('SystemGenerated','webinterface').replace('"','')
+        if (webinterfacetheme == "grey"):
             defaultWebinterface = "<option>default</option><option selected>grey</option>"
-            DebugLogEvent("It is the [" + defaultWebinterface + "] Theme for Webinterface selectet")
+            DebugLogEvent("It is the [" + webinterfacetheme + "] Theme for Webinterface selectet")
         else:
             defaultWebinterface = "<option selected>default</option><option>grey</option>"
-            DebugLogEvent("It is the [" + defaultWebinterface + "] Theme for Webinterface selectet")
+            DebugLogEvent("It is the [" + webinterfacetheme + "] Theme for Webinterface selectet")
         html = """
 
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
