@@ -58,11 +58,15 @@ class GameTasks():
             catToUse = "44"
         elif(system == "Xbox360"):
             catToUse = "14"
+        elif(system == "PS3"):
+            catToUse = "43"
+        elif(system == "PS3"):
+            catToUse = "10"
         else:
             LogEvent("Unrecognized System")
             return False
         url = "http://api.nzbmatrix.com/v1.1/search.php?search=" + game_name + "&num=1&catid=" + catToUse + "&username=" + username + "&apikey=" + api
-        
+        DebugLogEvent("Search URL [ " + url + " ]")
         try:
             opener = urllib.FancyURLopener({})
             responseObject = opener.open(url)
