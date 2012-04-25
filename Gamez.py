@@ -36,7 +36,7 @@ class RunApp():
         
         css_path = os.path.join(app_path,css_webinterface)
         DebugLogEvent("CSS Path : [ " + css_path + " ]")
-	 images_path = os.path.join(app_path,'images')
+        images_path = os.path.join(app_path,'images')
         navigation_images_path = os.path.join(css_path,'navigation_images')
         datatables_images_path = os.path.join(css_path,'datatables_images')
         js_path = os.path.join(app_path,'js')
