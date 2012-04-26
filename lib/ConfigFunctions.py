@@ -50,8 +50,8 @@ def CheckConfigForAllKeys(app_path):
         config.set('global','server.socket_host','"127.0.0.1"')
         changesMade = True
 
-    if(config.has_option('global','server.socket_port') == False):
-        config.set('global','server.socket_port','8085')
+    if(config.has_option('global','gamez_port') == False):
+        config.set('global','gamez_port','8085')
         changesMade = True
 
     if(config.has_option('global','user_name') == False):

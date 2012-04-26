@@ -13,7 +13,7 @@ import datetime
 import lib.GameTasks
 import ConfigParser
 import cherrypy.process.plugins
-from cherrypy.process.plugins import Daemonizer
+from cherrypy.process.plugins import Daemonizer,PIDFile
 from lib.ConfigFunctions import CheckConfigForAllKeys
 from lib.DBFunctions import ValidateDB,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,AddComingSoonGames
 from lib.Logger import LogEvent
@@ -26,7 +26,7 @@ config_path = os.path.join(app_path,'Gamez.ini')
 class RunApp():
 
 
-    def RunWebServer(self,isToDaemonize):
+    def RunWebServer(self):
         LogEvent("Generating CherryPy configuration")
         cherrypy.config.update(config_path)
         config = ConfigParser.RawConfigParser()
@@ -50,7 +50,7 @@ class RunApp():
         userPassDict = {username:password}  
         checkpassword = cherrypy.lib.auth_basic.checkpassword_dict(userPassDict)
         conf = {
-        	'/':{'tools.auth_basic.on':useAuth,'tools.auth_basic.realm':'Gamez','tools.auth_basic.checkpassword':checkpassword},
+        	  '/':{'tools.auth_basic.on':useAuth,'tools.auth_basic.realm':'Gamez','tools.auth_basic.checkpassword':checkpassword},
                 '/api':{'tools.auth_basic.on':False},
                 '/css': {'tools.staticdir.on':True,'tools.staticdir.dir':css_path},
                 '/js':{'tools.staticdir.on':True,'tools.staticdir.dir':js_path},
@@ -59,11 +59,7 @@ class RunApp():
                 '/css/navigation_images':{'tools.staticdir.on':True,'tools.staticdir.dir':navigation_images_path},
                 '/css/datatables_images':{'tools.staticdir.on':True,'tools.staticdir.dir':datatables_images_path},
             }
-        
-        if(isToDaemonize == 1):
-            LogEvent("Preparing to run in daemon mode")  
-            daemon = Daemonizer(cherrypy.engine)
-            daemon.subscribe()        
+         
         isSabEnabled = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
         if(isSabEnabled == "1"):
             LogEvent("Generating Post Process Script")
@@ -96,13 +92,12 @@ class RunApp():
             sys.exit()
         
 def GenerateSabPostProcessScript():
-    config = ConfigParser.RawConfigParser()
-    config.read(os.path.join(app_path,'Gamez.ini'))
     sys_name = socket.gethostname()
     gamezWebHost = socket.gethostbyname(sys_name)
     gamezApi = config.get('SystemGenerated','api_key').replace('"','')
-    gamezWebport = config.get('global','server.socket_port').replace('"','')
-    gamezBaseUrl = "http://" + gamezWebHost + ":" + gamezWebport + "/"
+    gamezWebport = config.get('global','gamez_port').replace('"','')
+    realWebport = str(cherrypy.config.get('server.socket_port', gamezWebport))
+    gamezBaseUrl = "http://" + gamezWebHost + ":" + realWebport + "/"
     postProcessPath = os.path.join(app_path,'postprocess')
     postProcessScript = os.path.join(postProcessPath,'gamezPostProcess.py')
     file = open(postProcessScript,'w')
@@ -144,8 +139,6 @@ def GenerateSabPostProcessScript():
 
 def RunGameTask():
     try:
-        config = ConfigParser.RawConfigParser()
-        config.read('Gamez.ini')
         isDebugEnabled = config.get('global','debug_enabled').replace('"','')
         nzbMatrixUser = config.get('NZBMatrix','username').replace('"','')
         nzbMatrixApi = config.get('NZBMatrix','api_key').replace('"','')
@@ -201,6 +194,56 @@ def RunFolderProcessingTask():
             errorMessage = errorMessage + " - " + str(message)
         LogEvent(errorMessage)
 
+def ComandoLine():    
+    from optparse import OptionParser
+ 
+    p = OptionParser()
+    p.add_option('-d', '--daemonize', action = "store_true",
+                 dest = 'daemonize', help = "Run the server as a daemon")
+    p.add_option('--debug', action = "store_true",
+                 dest = 'debug', help = "Enable Debug Log")
+    p.add_option('--pidfile',
+                 dest = 'pidfile', default = None,
+                 help = "Store the process id in the given file")
+    p.add_option('--port',
+                 dest = 'port', default = None,
+                 help = "Force webinterface to listen on this port")
+
+    options, args = p.parse_args()
+
+    # Daemonize
+    if options.daemonize:
+       print "------------------- Preparing to run in daemon mode -------------------"
+       LogEvent("Preparing to run in daemon mode")  
+       daemon = Daemonizer(cherrypy.engine)
+       daemon.subscribe()
+   
+    # Debug
+    if options.debug:
+        config.set('global','debug_enabled','1')
+        print "------------------- Gamez run in Debug -------------------"
+        LogEvent('Gamez run in Debug')
+    
+    # Set port
+    if options.port:
+        print "------------------- Port manual set to " + options.port + " -------------------"
+        port = int(options.port)
+    else:    
+        port = int(config.get('global','gamez_port'))
+     
+    # PIDfile
+    if options.pidfile:
+        print "------------------- Set PIDfile to " + options.pidfile + " -------------------"
+        PIDFile(cherrypy.engine, options.pidfile).subscribe()
+
+    # update config for cherrypy
+    cherrypy.config.update({
+                                'global': {
+                                           'server.socket_port': port
+                                          }
+                            })
+
+
 if __name__ == '__main__':
     app_path = sys.path[0]
     ValidateDB()
@@ -213,6 +256,7 @@ if __name__ == '__main__':
     sabnzbdPort = config.get('Sabnzbd','port').replace('"','')
     sabnzbdApi = config.get('Sabnzbd','api_key').replace('"','')
     LogEvent("Attempting to get download completed directory from Sabnzbd")
+    ComandoLine()
     sabCompleted = lib.GameTasks.GameTasks().CheckSabDownloadPath(sabnzbdApi,sabnzbdHost,sabnzbdPort)
     if(sabCompleted <> ""):
     	LogEvent("Setting Value")
@@ -220,10 +264,5 @@ if __name__ == '__main__':
     	LogEvent("Trying to save")
     	with open(configFilePath,'wb') as configFile:
             config.write(configFile)    
-    isToDaemonize = 0
-    params = sys.argv
-    for param in params:
-        if(param == "-d"):
-            isToDaemonize = 1
-
-    RunApp().RunWebServer(isToDaemonize)
+  
+    RunApp().RunWebServer()
