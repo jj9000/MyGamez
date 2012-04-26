@@ -501,7 +501,7 @@ class WebRoot:
 						<td>
 							<label><b>Gamez Port</b></label>
 							<br />
-                					<input style="width:250px" type="text" name="cherrypyPort" id="cherrypyPort" value='""" + config.get('global','server.socket_port').replace('"','') +  """' />
+                					<input style="width:250px" type="text" name="cherrypyPort" id="cherrypyPort" value='""" + config.get('global','gamez_port').replace('"','') +  """' />
 						</td>
 						<td>
 							<label><b>Gamez Username</b></label>
@@ -1331,7 +1331,7 @@ class WebRoot:
         configFilePath = os.path.join(WebRoot.appPath,'Gamez.ini')
         config.read(configFilePath)
         config.set('global','server.socket_host',cherrypyHost)
-        config.set('global','server.socket_port',cherrypyPort)
+        config.set('global','gamez_port',cherrypyPort)
         config.set('global','user_name',gamezUsername)
         config.set('global','password',gamezPassword)
         config.set('global','debug_enabled',debugEnabled)
