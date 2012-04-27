@@ -18,6 +18,7 @@ from cherrypy import server
 from lib.ConfigFunctions import CheckConfigForAllKeys
 from lib.DBFunctions import ValidateDB,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,AddComingSoonGames
 from lib.Logger import LogEvent
+from lib.Helper import launchBrowser
 import cherrypy.lib.auth_basic
 from lib.FolderFunctions import *
 
