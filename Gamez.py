@@ -14,6 +14,7 @@ import lib.GameTasks
 import ConfigParser
 import cherrypy.process.plugins
 from cherrypy.process.plugins import Daemonizer,PIDFile
+from cherrypy import server
 from lib.ConfigFunctions import CheckConfigForAllKeys
 from lib.DBFunctions import ValidateDB,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,AddComingSoonGames
 from lib.Logger import LogEvent
@@ -208,6 +209,8 @@ def ComandoLine():
     p.add_option('--port',
                  dest = 'port', default = None,
                  help = "Force webinterface to listen on this port")
+    p.add_option('--nolaunch', action = "store_true",
+                 dest = 'nolaunch', help="Don't start browser")
 
     options, args = p.parse_args()
 
@@ -228,13 +231,26 @@ def ComandoLine():
     if options.port:
         print "------------------- Port manual set to " + options.port + " -------------------"
         port = int(options.port)
-    else:    
+        server.socket_port = port
+    else:
         port = int(config.get('global','gamez_port'))
-     
+        server.socket_port = port
+	 
     # PIDfile
     if options.pidfile:
         print "------------------- Set PIDfile to " + options.pidfile + " -------------------"
         PIDFile(cherrypy.engine, options.pidfile).subscribe()
+
+    # from couchpotato
+    host = config.get('global', 'server.socket_host').replace('"','')
+    try:
+        if not options.nolaunch:
+            print "------------------- launch Browser ( " + str(host) + ":" + str(port) + ") -------------------"
+            timer = threading.Timer(5,launchBrowser,[host,port])
+            timer.start()
+        return
+    except:
+        pass
 
     # update config for cherrypy
     cherrypy.config.update({
