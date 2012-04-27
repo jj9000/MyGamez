@@ -173,7 +173,23 @@ def CheckConfigForAllKeys(app_path):
     if(config.has_option('SystemGenerated','default_search') == False):
         config.set('SystemGenerated','default_search','"---"')
         changesMade = True  
-        
+    
+    if(config.has_option('SystemGenerated','ps3_tb_enable') == False):
+        config.set('SystemGenerated','ps3_tb_enable','0')
+        changesMade = True
+    
+    if(config.has_option('SystemGenerated','ps3_jb_enable') == False):
+        config.set('SystemGenerated','ps3_jb_enable','0')
+        changesMade = True
+    
+    if(config.has_option('SystemGenerated','required_words_xbox360') == False):
+        config.set('SystemGenerated','required_words_xbox360','""')
+        changesMade = True
+     
+    if(config.has_option('SystemGenerated','required_words_wii') == False):
+        config.set('SystemGenerated','required_words_wii','""')
+        changesMade = True 
+
     if(config.has_option('SystemGenerated','api_key') == False):
         apiKey = base64.b64encode(hashlib.sha256( str(random.getrandbits(256)) ).digest(), random.choice(['rA','aZ','gQ','hH','hG','aR','DD'])).rstrip('==')
         config.set('SystemGenerated','api_key','"' + apiKey + '"')

@@ -315,7 +315,11 @@ class WebRoot:
         downloadProcessPCChecked = config.get('SystemGenerated','process_download_folder_pc_enabled').replace('"','')
 
         defaultSearch = config.get('SystemGenerated','default_search').replace('"','')
-        
+        ps3_tb_Checked = config.get('SystemGenerated','ps3_tb_enable').replace('"','')
+        ps3_jb_Checked = config.get('SystemGenerated','ps3_jb_enable').replace('"','')       
+        required_words_xbox360 = config.get('SystemGenerated','required_words_xbox360').replace('"','')
+        required_words_wii = config.get('SystemGenerated','required_words_wii').replace('"','')
+
         if(debugChecked == "1"):
            debugChecked = "CHECKED"
         else:
@@ -385,6 +389,15 @@ class WebRoot:
             downloadProcessPCChecked = "CHECKED"
         else:
             downloadProcessPCChecked = ""
+        if(ps3_tb_Checked == "1"):
+            ps3_tb_Checked = "CHECKED"
+        else:
+            ps3_tb_Checked = ""
+        if(ps3_jb_Checked == "1"):
+            ps3_jb_Checked = "CHECKED"
+        else:
+            ps3_jb_Checked = ""
+
         if(defaultSearch == "Wii"):
             defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
         elif(defaultSearch == "Xbox360"):
@@ -716,7 +729,8 @@ class WebRoot:
 										<br />
 										<input style="width:400px" type="text" name="newznabApi" id="newznabApi" value='""" + config.get('Newznab','api_key').replace('"','') +  """' />
 									</td>
-								</tr>							
+								</tr>
+															
 							</table>	
 						</td>						
 					</tr>
@@ -729,6 +743,42 @@ class WebRoot:
 							<input type="checkbox" name="katEnabled" id="katEnabled" value="katEnabled" """ + katChecked + """ />&nbsp;<b>KickAss Torrents</b>
 						</td>
 					</tr>
+					<tr><td>&nbsp;</td></tr>
+						<td  style="border:solid 1px" width="45%" valign="top">
+						     Note: This option isn't implemented yet
+							<br />
+							<label style="float:left"><b><u>Advance Search Options</u></b></label>
+							<br />
+							<br />
+							<table>
+								<tr>
+									<td>
+										<label><b>Required Word for XBOX360</b></label>
+										<br />
+										<input style="width:400px" type="text" name="required_words_xbox360" id="required_words_xbox360" value='""" + config.get('SystemGenerated','required_words_xbox360').replace('"','') +  """' />
+									       <br />Note: This option can be use for Regions example (JPN;USA;RF)
+									</td>
+								</tr>
+								<tr><td>&nbsp;</td></tr>
+								<tr>
+									<td>
+										<label><b>Required Word for Wii</b></label>
+										<br />
+										<input style="width:400px" type="text" name="required_words_wii" id="required_words_wii" value='""" + config.get('SystemGenerated','required_words_wii').replace('"','') +  """' />
+									       <br />Note: This option can be use for Regions example (JPN;USA;RF)
+									</td>
+								</tr>
+								<tr><td>&nbsp;</td></tr>	
+							<td>
+								<label style="float:left"><b><u>Advance search for PS3 Games</u></b></label>
+								<br />
+								<br />
+								<input type="checkbox" name="ps3_tb_enable" id="ps3_tb_enable" value="ps3_tb_enable" """ + ps3_tb_Checked + """ />&nbsp;<b>Search only for True Blue</b>
+								<input  align="right" type="checkbox" name="ps3_jb_enable" id="ps3_jb_enable" value="ps3_jb_enable" """ + ps3_jb_Checked + """ />&nbsp;<b>Search only for Jail Break</b>
+							</td>
+						</tr>
+					</table>
+						</td>
 				</table>
 			</p>
 		</div>
@@ -1227,7 +1277,7 @@ class WebRoot:
             raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
-    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface=''):
+    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',required_words_xbox360='',required_words_wii=''):
         cherrypyHost = '"' + cherrypyHost + '"'
         nzbMatrixUsername = '"' + nzbMatrixUsername + '"'
         nzbMatrixApi = '"' + nzbMatrixApi + '"'
@@ -1259,6 +1309,9 @@ class WebRoot:
         sabDownloadDirectory = '"' + sabDownloadDirectory.replace("\\","\\\\") + '"'
         defaultSearch = '"' + defaultSearch + '"'
         webinterface = '"' + webinterface + '"'
+        required_words_wii = '"' + required_words_wii + '"'
+        required_words_xbox360 = '"' + required_words_xbox360 + '"'
+        
         if(debugEnabled == 'debugEnabled'):
             debugEnabled = "1"
         else:
@@ -1327,6 +1380,15 @@ class WebRoot:
             processPCEnabled = "1"
         else:
             processPCEnabled = "0"
+        if(ps3_tb_enable == 'ps3_tb_enable'):
+            ps3_tb_enable = "1"
+        else:
+            ps3_tb_enable = "0"
+        if(ps3_jb_enable == 'ps3_jb_enable'):
+            ps3_jb_enable = "1"
+        else:
+            ps3_jb_enable = "0"
+
         config = ConfigParser.RawConfigParser()
         configFilePath = os.path.join(WebRoot.appPath,'Gamez.ini')
         config.read(configFilePath)
@@ -1362,6 +1424,10 @@ class WebRoot:
         config.set('SystemGenerated','process_download_folder_ps3_enabled',processPS3Enabled)
         config.set('SystemGenerated','process_download_folder_pc_enabled',processPCEnabled)
         config.set('SystemGenerated','webinterface',webinterface)
+        config.set('SystemGenerated','ps3_tb_enable',ps3_tb_enable)
+        config.set('SystemGenerated','ps3_jb_enable',ps3_jb_enable)      
+        config.set('SystemGenerated','required_words_xbox360',required_words_xbox360)
+        config.set('SystemGenerated','required_words_wii',required_words_wii)
         config.set('Newznab','host',newznabHost)
         config.set('Newznab','port',newznabPort)
         config.set('Newznab','wii_category_id',newznabWiiCat)
