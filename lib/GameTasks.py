@@ -199,9 +199,9 @@ class GameTasks():
         except:
             LogEvent("Unable to connect to Newznab Server: " + url)
             return False
-        #try:           
-        d = feedparser.parse(data)
-        for item in d.entries:
+        try:           
+            d = feedparser.parse(data)
+            for item in d.entries:
                 LogEvent("Game found on Newznab")
                 nzbUrl = item.link
                 DebugLogEvent("Link URL [" + nzbUrl + "]")
@@ -210,9 +210,9 @@ class GameTasks():
                     UpdateStatus(game_id,"Snatched")
                     return True
                 return False
-        #except:
-        #    LogEvent("Error getting game [" + game_name + "] from http://nzb.su")
-        #    return False
+        except:
+            LogEvent("Error getting game [" + game_name + "] from http://nzb.su")
+            return False
 
     def DownloadNZB(self,nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system):
         try:
