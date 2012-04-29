@@ -33,7 +33,7 @@ class GameTasks():
         newznabWiiCat = newznabWiiCat.replace('"','')  
         games = GetRequestedGamesAsArray(manualSearchGame)
         for game in games:
-            #try:
+            try:
                 game_name = str(game[0])
                 game_id = str(game[1])
                 system = str(game[2])
@@ -83,8 +83,8 @@ class GameTasks():
                 		if(isDownloaded == False):
                 		    LogEvent("Checking for game [" + game_name + "] on KickAss Torrents")
                 		    isDownloaded = GameTasks().FindGameOnKAT(game_id,game_name,system,torrentBlackholePath,requiredwords)
-            #except:
-            #    continue
+            except:
+                continue
         return
 
     def FindGameOnNZBMatrix(self,game_name,game_id,username,api,sabnzbdApi,sabnzbdHost,sabnzbdPort,system,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,requiredwords):
@@ -202,9 +202,9 @@ class GameTasks():
         try:           
             d = feedparser.parse(data)
             for item in d.entries:
-                LogEvent("Game found on Newznab")
+                LogEvent("Game found on http://nzb.su")
                 nzbUrl = item.link
-                DebugLogEvent("Link URL [" + nzbUrl + "]")
+                DebugLogEvent("Link URL [ " + nzbUrl + " ]")
                 result = GameTasks().DownloadNZB(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system)
                 if(result):
                     UpdateStatus(game_id,"Snatched")
