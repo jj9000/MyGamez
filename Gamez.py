@@ -144,6 +144,7 @@ def RunGameTask():
         isDebugEnabled = config.get('global','debug_enabled').replace('"','')
         nzbMatrixUser = config.get('NZBMatrix','username').replace('"','')
         nzbMatrixApi = config.get('NZBMatrix','api_key').replace('"','')
+        nzbsuApi = config.get('NZBSU','api_key').replace('"','')
         sabnzbdHost = config.get('Sabnzbd','host').replace('"','')
         sabnzbdPort = config.get('Sabnzbd','port').replace('"','')
         sabnzbdApi = config.get('Sabnzbd','api_key').replace('"','')
@@ -157,6 +158,7 @@ def RunGameTask():
         newznabPort = config.get('Newznab','port').replace('"','')
         isSabEnabled = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
         isNzbMatrixEnabled = config.get('SystemGenerated','nzbmatrix_enabled').replace('"','')
+        isnzbsuEnable = config.get('SystemGenerated','nzbsu_enabled').replace('"','')
         isNewznabEnabled = config.get('SystemGenerated','newznab_enabled').replace('"','')
         isNzbBlackholeEnabled = config.get('SystemGenerated','blackhole_nzb_enabled').replace('"','')
         nzbBlackholePath = config.get('Blackhole','nzb_blackhole_path').replace('"','')
@@ -165,7 +167,7 @@ def RunGameTask():
         torrentBlackholePath  = config.get('Blackhole','torrent_blackhole_path').replace('"','')
         manualSearchGame = ''
         LogEvent("Searching for games")
-        lib.GameTasks.GameTasks().FindGames(manualSearchGame,nzbMatrixUser,nzbMatrixApi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath)
+        lib.GameTasks.GameTasks().FindGames(manualSearchGame,nzbMatrixUser,nzbMatrixApi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath,isnzbsuEnable,nzbsuApi)
     except:
         errorMessage = "Major error occured when running scheduled tasks"
         for message in sys.exc_info():

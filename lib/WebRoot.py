@@ -299,6 +299,7 @@ class WebRoot:
         sabChecked = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
         nzbmatrixChecked = config.get('SystemGenerated','nzbmatrix_enabled').replace('"','')
         newznabChecked = config.get('SystemGenerated','newznab_enabled').replace('"','')
+        nzbsuChecked = config.get('SystemGenerated','nzbsu_enabled').replace('"','')
         growlChecked = config.get('SystemGenerated','growl_enabled').replace('"','')
         prowlChecked = config.get('SystemGenerated','prowl_enabled').replace('"','')
         notifoChecked = config.get('SystemGenerated','notifo_enabled').replace('"','')
@@ -336,6 +337,10 @@ class WebRoot:
             newznabChecked = "CHECKED"
         else:
             newznabChecked = ""       
+        if(nzbsuChecked == "1"):
+            nzbsuChecked = "CHECKED"
+        else:
+            nzbsuChecked = ""
         if(growlChecked == "1"):
             growlChecked = "CHECKED"
         else:
@@ -734,6 +739,23 @@ class WebRoot:
 							</table>	
 						</td>						
 					</tr>
+					<tr><td>&nbsp;</td></tr>
+						<td  style="border:solid 1px" width="45%" valign="top">
+							<label style="float:left"><b><u>NZB.su</u></b></label>
+								<div style="float:right">
+									<input type="checkbox" name="nzbsuEnabled" id="nzbsuEnabled" value="nzbsuEnabled" """ + nzbsuChecked + """ />Enabled
+								</div>
+							<br />
+							<table>
+								<tr>
+									<td>
+										<label><b>NZB.su API</b></label>
+										<br />
+										<input style="width:400px" type="text" name="nzbsuapi" id="nzbsuapi" value='""" + config.get('NZBSU','api_key').replace('"','') +  """' />
+									</td>
+								</tr>
+							</table>
+						</td>
 					<tr><td>&nbsp;</td></tr>
 					<tr>
 						<td  style="border:solid 1px" width="45%" valign="top">
@@ -1277,10 +1299,11 @@ class WebRoot:
             raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
-    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',required_words_xbox360='',required_words_wii=''):
+    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',required_words_xbox360='',required_words_wii='',nzbsuEnabled='',nzbsuapi=''):
         cherrypyHost = '"' + cherrypyHost + '"'
         nzbMatrixUsername = '"' + nzbMatrixUsername + '"'
         nzbMatrixApi = '"' + nzbMatrixApi + '"'
+        nzbsuapi = '"' + nzbsuapi + '"'
         sabApi = '"' + sabApi + '"'
         sabHost = '"' + sabHost + '"'
         sabCategory = '"' + sabCategory + '"'
@@ -1324,6 +1347,10 @@ class WebRoot:
             nzbmatrixEnabled = "1"
         else:
             nzbmatrixEnabled = "0"
+        if(nzbsuEnabled == 'nzbsuEnabled'):
+            nzbsuEnabled = "1"
+        else:
+            nzbsuEnabled = "0"
         if(newznabEnabled == 'newznabEnabled'):
             newznabEnabled = "1"
         else:
@@ -1399,6 +1426,7 @@ class WebRoot:
         config.set('global','debug_enabled',debugEnabled)
         config.set('NZBMatrix','username',nzbMatrixUsername)
         config.set('NZBMatrix','api_key',nzbMatrixApi)
+        config.set('NZBSU','api_key',nzbsuapi)
         config.set('Sabnzbd','host',sabHost)
         config.set('Sabnzbd','port',sabPort)
         config.set('Sabnzbd','api_key',sabApi)
@@ -1408,6 +1436,7 @@ class WebRoot:
         config.set('SystemGenerated','api_key',gamezApiKey)
         config.set('SystemGenerated','sabnzbd_enabled',sabnzbdEnabled)
         config.set('SystemGenerated','nzbmatrix_enabled',nzbmatrixEnabled)
+        config.set('SystemGenerated','nzbsu_enabled',nzbsuEnabled)
         config.set('SystemGenerated','newznab_enabled',newznabEnabled)  
         config.set('SystemGenerated','growl_enabled',growlEnabled)
         config.set('SystemGenerated','prowl_enabled',prowlEnabled)
@@ -1518,6 +1547,7 @@ class WebRoot:
         isDebugEnabled = config.get('global','debug_enabled').replace('"','')
         nzbMatrixUser = config.get('NZBMatrix','username').replace('"','')
         nzbMatrixApi = config.get('NZBMatrix','api_key').replace('"','')
+        nzbsuapi = config.get('NZBSU','api_key').replace('"','')
         sabnzbdHost = config.get('Sabnzbd','host').replace('"','')
         sabnzbdPort = config.get('Sabnzbd','port').replace('"','')
         sabnzbdApi = config.get('Sabnzbd','api_key').replace('"','')
@@ -1531,7 +1561,8 @@ class WebRoot:
         newznabPort = config.get('Newznab','port').replace('"','')
         isSabEnabled = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
         isNzbMatrixEnabled = config.get('SystemGenerated','nzbmatrix_enabled').replace('"','')
-        isNewznabEnabled = config.get('SystemGenerated','newznab_enabled').replace('"','')
+        isNewznabEnabled = config.get('SystemGenerated','nzbmatrix_enabled').replace('"','')
+        isnzbsuEnable = config.get('SystemGenerated','nzbsu_enabled').replace('"','')
         isNzbBlackholeEnabled = config.get('SystemGenerated','blackhole_nzb_enabled').replace('"','')
         nzbBlackholePath = config.get('Blackhole','nzb_blackhole_path').replace('"','')
         isTorrentBlackholeEnabled = config.get('SystemGenerated','blackhole_torrent_enabled').replace('"','')
@@ -1539,5 +1570,5 @@ class WebRoot:
         torrentBlackholePath  = config.get('Blackhole','torrent_blackhole_path').replace('"','')
         manualSearchGame = dbid
         LogEvent("Searching for games")
-        GameTasks().FindGames(manualSearchGame,nzbMatrixUser,nzbMatrixApi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath)
+        GameTasks().FindGames(manualSearchGame,nzbMatrixUser,nzbMatrixApi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath,isnzbsuEnable,nzbsuapi)
         raise cherrypy.InternalRedirect('/')

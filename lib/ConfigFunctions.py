@@ -30,6 +30,10 @@ def CheckConfigForAllKeys(app_path):
         config.add_section('Scheduler')
         changesMade = True
 
+    if(config.has_section('NZBSU') == False):
+        config.add_section('NZBSU')
+        changesMade = True
+
     if(config.has_section('SystemGenerated') == False):
         config.add_section('SystemGenerated')
         changesMade = True
@@ -114,6 +118,10 @@ def CheckConfigForAllKeys(app_path):
         config.set('SystemGenerated','nzbmatrix_enabled','0')
         changesMade = True
         
+    if(config.has_option('SystemGenerated','nzbsu_enabled') == False):
+        config.set('SystemGenerated','nzbsu_enabled','0')
+        changesMade = True
+  
     if(config.has_option('SystemGenerated','newznab_enabled') == False):
         config.set('SystemGenerated','newznab_enabled','0')
         changesMade = True        
@@ -287,6 +295,10 @@ def CheckConfigForAllKeys(app_path):
         config.set('Folders','pc_destination','""')
         changesMade = True	
 		
+    if(config.has_option('NZBSU','api_key') == False):
+        config.set('NZBSU','api_key','""')
+        changesMade = True
+
     if(changesMade):
         with open(configFilePath,'wb') as configFile:
             config.write(configFile)
