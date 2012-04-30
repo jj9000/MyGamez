@@ -318,8 +318,8 @@ class WebRoot:
         defaultSearch = config.get('SystemGenerated','default_search').replace('"','')
         ps3_tb_Checked = config.get('SystemGenerated','ps3_tb_enable').replace('"','')
         ps3_jb_Checked = config.get('SystemGenerated','ps3_jb_enable').replace('"','')       
-        required_words_xbox360 = config.get('SystemGenerated','required_words_xbox360').replace('"','')
-        required_words_wii = config.get('SystemGenerated','required_words_wii').replace('"','')
+        blacklist_words_xbox360 = config.get('SystemGenerated','blacklist_words_xbox360').replace('"','')
+        blacklist_words_wii = config.get('SystemGenerated','blacklist_words_wii').replace('"','')
 
         if(debugChecked == "1"):
            debugChecked = "CHECKED"
@@ -766,7 +766,7 @@ class WebRoot:
 						</td>
 					</tr>
 					<tr><td>&nbsp;</td></tr>
-						<td  style="border:solid 1px" width="45%" valign="top">
+						<td  style="border:solid 1px" width="50%" valign="top">
 						     Note: This option isn't implemented yet
 							<br />
 							<label style="float:left"><b><u>Advance Search Options</u></b></label>
@@ -775,19 +775,19 @@ class WebRoot:
 							<table>
 								<tr>
 									<td>
-										<label><b>Required Word for XBOX360</b></label>
+										<label><b>Blacklisted Words for XBOX360</b></label>
 										<br />
-										<input style="width:400px" type="text" name="required_words_xbox360" id="required_words_xbox360" value='""" + config.get('SystemGenerated','required_words_xbox360').replace('"','') +  """' />
-									       <br />Note: This option can be use for Regions example (JPN;USA;RF)
+										<input style="width:400px" type="text" name="blacklist_words_xbox360" id="blacklist_words_xbox360" value='""" + config.get('SystemGenerated','blacklist_words_xbox360').replace('"','') +  """' />
+									       <br />Note: This option can be use for Regions example (JPN;USA)
 									</td>
 								</tr>
 								<tr><td>&nbsp;</td></tr>
 								<tr>
 									<td>
-										<label><b>Required Word for Wii</b></label>
+										<label><b>Blacklisted Word for Wii</b></label>
 										<br />
-										<input style="width:400px" type="text" name="required_words_wii" id="required_words_wii" value='""" + config.get('SystemGenerated','required_words_wii').replace('"','') +  """' />
-									       <br />Note: This option can be use for Regions example (JPN;USA;RF)
+										<input style="width:400px" type="text" name="blacklist_words_wii" id="blacklist_words_wii" value='""" + config.get('SystemGenerated','blacklist_words_wii').replace('"','') +  """' />
+									       <br />Note: This option can be use for Regions example (JPN;USA;)
 									</td>
 								</tr>
 								<tr><td>&nbsp;</td></tr>	
@@ -795,8 +795,8 @@ class WebRoot:
 								<label style="float:left"><b><u>Advance search for PS3 Games</u></b></label>
 								<br />
 								<br />
-								<input type="checkbox" name="ps3_tb_enable" id="ps3_tb_enable" value="ps3_tb_enable" """ + ps3_tb_Checked + """ />&nbsp;<b>Search only for True Blue</b>
-								<input  align="right" type="checkbox" name="ps3_jb_enable" id="ps3_jb_enable" value="ps3_jb_enable" """ + ps3_jb_Checked + """ />&nbsp;<b>Search only for Jail Break</b>
+								<input type="checkbox" name="ps3_tb_enable" id="ps3_tb_enable" value="ps3_tb_enable" """ + ps3_tb_Checked + """ />&nbsp;<b>Disable search for Games with True Blue support</b>
+								<input  align="right" type="checkbox" name="ps3_jb_enable" id="ps3_jb_enable" value="ps3_jb_enable" """ + ps3_jb_Checked + """ />&nbsp;<b>Disable search for Games with Jail Break support</b>
 							</td>
 						</tr>
 					</table>
@@ -1299,7 +1299,7 @@ class WebRoot:
             raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
-    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',required_words_xbox360='',required_words_wii='',nzbsuEnabled='',nzbsuapi=''):
+    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',nzbsuEnabled='',nzbsuapi=''):
         cherrypyHost = '"' + cherrypyHost + '"'
         nzbMatrixUsername = '"' + nzbMatrixUsername + '"'
         nzbMatrixApi = '"' + nzbMatrixApi + '"'
@@ -1332,8 +1332,8 @@ class WebRoot:
         sabDownloadDirectory = '"' + sabDownloadDirectory.replace("\\","\\\\") + '"'
         defaultSearch = '"' + defaultSearch + '"'
         webinterface = '"' + webinterface + '"'
-        required_words_wii = '"' + required_words_wii + '"'
-        required_words_xbox360 = '"' + required_words_xbox360 + '"'
+        blacklist_words_wii = '"' + blacklist_words_wii + '"'
+        blacklist_words_xbox360 = '"' + blacklist_words_xbox360 + '"'
         
         if(debugEnabled == 'debugEnabled'):
             debugEnabled = "1"
@@ -1455,8 +1455,8 @@ class WebRoot:
         config.set('SystemGenerated','webinterface',webinterface)
         config.set('SystemGenerated','ps3_tb_enable',ps3_tb_enable)
         config.set('SystemGenerated','ps3_jb_enable',ps3_jb_enable)      
-        config.set('SystemGenerated','required_words_xbox360',required_words_xbox360)
-        config.set('SystemGenerated','required_words_wii',required_words_wii)
+        config.set('SystemGenerated','blacklist_words_xbox360',blacklist_words_xbox360)
+        config.set('SystemGenerated','blacklist_words_wii',blacklist_words_wii)
         config.set('Newznab','host',newznabHost)
         config.set('Newznab','port',newznabPort)
         config.set('Newznab','wii_category_id',newznabWiiCat)
@@ -1561,7 +1561,7 @@ class WebRoot:
         newznabPort = config.get('Newznab','port').replace('"','')
         isSabEnabled = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
         isNzbMatrixEnabled = config.get('SystemGenerated','nzbmatrix_enabled').replace('"','')
-        isNewznabEnabled = config.get('SystemGenerated','nzbmatrix_enabled').replace('"','')
+        isNewznabEnabled = config.get('SystemGenerated','newznab_enabled').replace('"','')
         isnzbsuEnable = config.get('SystemGenerated','nzbsu_enabled').replace('"','')
         isNzbBlackholeEnabled = config.get('SystemGenerated','blackhole_nzb_enabled').replace('"','')
         nzbBlackholePath = config.get('Blackhole','nzb_blackhole_path').replace('"','')

@@ -190,12 +190,12 @@ def CheckConfigForAllKeys(app_path):
         config.set('SystemGenerated','ps3_jb_enable','0')
         changesMade = True
     
-    if(config.has_option('SystemGenerated','required_words_xbox360') == False):
-        config.set('SystemGenerated','required_words_xbox360','""')
+    if(config.has_option('SystemGenerated','blacklist_words_xbox360') == False):
+        config.set('SystemGenerated','blacklist_words_xbox360','""')
         changesMade = True
      
-    if(config.has_option('SystemGenerated','required_words_wii') == False):
-        config.set('SystemGenerated','required_words_wii','""')
+    if(config.has_option('SystemGenerated','blacklist_words_wii') == False):
+        config.set('SystemGenerated','blacklist_words_wii','""')
         changesMade = True 
 
     if(config.has_option('SystemGenerated','api_key') == False):

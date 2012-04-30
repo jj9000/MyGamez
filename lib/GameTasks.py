@@ -12,6 +12,7 @@ import json
 import lib
 import ConfigParser
 import feedparser
+import re
 
 class GameTasks():
 
@@ -22,9 +23,9 @@ class GameTasks():
         config.read(confFile)
         isPS3TBEnable = config.get('SystemGenerated','ps3_tb_enable').replace('"','')
         isPS3JBEnable = config.get('SystemGenerated','ps3_jb_enable').replace('"','')       
-        RequiredWordsXbox360 = config.get('SystemGenerated','required_words_xbox360').replace('"','')
-        RequiredWordsWii = config.get('SystemGenerated','required_words_wii').replace('"','')
-        requiredwords = ''
+        BlacklistWordsXbox360 = config.get('SystemGenerated','blacklist_words_xbox360').replace('"','')
+        BlacklistWordsWii = config.get('SystemGenerated','blacklist_words_wii').replace('"','')
+        blacklistwords = ''
         if(isSabEnabled == "1"):       
             GameTasks().CheckIfPostProcessExistsInSab(sabnzbdApi,sabnzbdHost,sabnzbdPort)
         nzbmatrixusername = nzbmatrixusername.replace('"','')
@@ -39,55 +40,59 @@ class GameTasks():
                 system = str(game[2])
                 LogEvent("Searching for game: " + game_name)
                 isDownloaded = False
-                if(system == "Xbox360" and RequiredWordsXbox360 <> ''):
-                     requiredwords = RequiredWordsXbox360
-                     DebugLogEvent("Required Words for XBOX360 [ " + requiredwords + " ]")
-                if(system == "Wii" and RequiredWordsWii <> ''):
-                     requiredwords = RequiredWordsWii
-                     DebugLogEvent("Required Words for Wii [ " + requiredwords + " ]")
+                if(system == "Xbox360" and BlacklistWordsXbox360 <> ''):
+                     blacklistwords = BlacklistWordsXbox360
+                     DebugLogEvent("Blacklisted Words for XBOX360 [ " + str(blacklistwords) + " ]")
+                if(system == "Wii" and BlacklistWordsWii <> ''):
+                     blacklistwords = BlacklistWordWii
+                     DebugLogEvent("Blacklisted Words for Wii [ " + blacklistwords + " ]")
                 if(system == "PS3"):
                      if(isPS3TBEnable == "1"):
-                        requiredwords = "TB;"
-                        DebugLogEvent("[PS3] Search for True Blue") 
+                        blacklistwords = "TB"
+                        DebugLogEvent("[PS3] execlude True Blue") 
                      if(isPS3JBEnable == "1"):
-                        requiredwords = requiredwords + "JB"
-                        DebugLogEvent("[PS3] Search for Jail Break")
-                     DebugLogEvent("Required Words for PS3 [ " + requiredwords + " ]")
-
+                        blacklistwords = "JB"
+                        DebugLogEvent("[PS3] execlude Jail Break")
+                blacklistwords = re.split(';|,',blacklistwords)
+                     		  
                 if(isNzbMatrixEnabled == "1"):
+                    DebugLogEvent("Matrix Enable")
                     if(nzbmatrixusername <> '' and nzbmatrixapi <> ''):
                         if(isDownloaded == False):
                             LogEvent("Checking for game [" + game_name + "] on NZB Matrix")
-                            isDownloaded = GameTasks().FindGameOnNZBMatrix(game_name,game_id,nzbmatrixusername,nzbmatrixapi,sabnzbdApi,sabnzbdHost,sabnzbdPort,system,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,requiredwords)
+                            isDownloaded = GameTasks().FindGameOnNZBMatrix(game_name,game_id,nzbmatrixusername,nzbmatrixapi,sabnzbdApi,sabnzbdHost,sabnzbdPort,system,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,blacklistwords)
                     else:
                         LogEvent("NZB Matrix Settings Incomplete.")
                 
                 if(isNewznabEnabled == "1"):
+                    DebugLogEvent("Newznab Enable")
                     if(newznabWiiCat <> '' and newznabXbox360Cat <> '' and newznabPS3Cat <> '' and newznabPCCat <> '' and newznabApi <> '' and newznabHost <> ''):
                         if(isDownloaded == False):
                             LogEvent("Checking for game [" + game_name + "] for ["+ system + "] on Newznab")
-                            isDownloaded = GameTasks().FindGameOnNewznabServer(game_name,game_id,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,system,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,requiredwords)
+                            isDownloaded = GameTasks().FindGameOnNewznabServer(game_name,game_id,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,system,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,blacklistwords)
                     else:
                         LogEvent("Newznab Settings Incomplete.")  
                         
                 if(isNZBSU == "1"):
+                    DebugLogEvent("nzb.su Enable")
                     if(nzbsuapi <> ''):
                         if(isDownloaded == False):
                             LogEvent("Checking for game [" + game_name + "] on nzb.su")
-                            isDownloaded = GameTasks().FindGameOnNZBSU(game_name,game_id,nzbsuapi,sabnzbdApi,sabnzbdHost,sabnzbdPort,system,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,requiredwords)
+                            isDownloaded = GameTasks().FindGameOnNZBSU(game_name,game_id,nzbsuapi,sabnzbdApi,sabnzbdHost,sabnzbdPort,system,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,blacklistwords)
                     else:
-                        LogEvent("NZB Matrix Settings Incomplete.")
+                        LogEvent("NZBSU Settings Incomplete.")
 
                 if(isTorrentBlackholeEnabled == "1"):
-                	if(isTorrentKATEnabled == "1"):
+                     DebugLogEvent("Torrent Enable")
+                     if(isTorrentKATEnabled == "1"):
                 		if(isDownloaded == False):
                 		    LogEvent("Checking for game [" + game_name + "] on KickAss Torrents")
-                		    isDownloaded = GameTasks().FindGameOnKAT(game_id,game_name,system,torrentBlackholePath,requiredwords)
+                		    isDownloaded = GameTasks().FindGameOnKAT(game_id,game_name,system,torrentBlackholePath,blacklistwords)
             except:
                 continue
         return
 
-    def FindGameOnNZBMatrix(self,game_name,game_id,username,api,sabnzbdApi,sabnzbdHost,sabnzbdPort,system,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,requiredwords):
+    def FindGameOnNZBMatrix(self,game_name,game_id,username,api,sabnzbdApi,sabnzbdHost,sabnzbdPort,system,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,blacklistwords):
         catToUse = ""
         DebugLogEvent("Here i am")
         if(system == "Wii"):
@@ -118,6 +123,7 @@ class GameTasks():
             nzbID = nzbID.replace(";","")
 
             if(nzbID <> "nothing_found" and nzbID <> "API_RATE_LIMIT_REACHED"):
+                
                 LogEvent("Game found on NZB Matrix")
                 nzbUrl = "http://api.nzbmatrix.com/v1.1/download.php?id=" + nzbID + "&username=" + username + "&apikey=" + api
                 result = GameTasks().DownloadNZB(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system)
@@ -129,7 +135,7 @@ class GameTasks():
             LogEvent("Error getting game [" + game_name + "] from NZB Matrix")
             return False
 
-    def FindGameOnNewznabServer(self,game_name,game_id,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,system,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,requiredwords):
+    def FindGameOnNewznabServer(self,game_name,game_id,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,system,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,blacklistwords):
         catToUse = ''
         if(system == "Wii"):
             catToUse = newznabWiiCat
@@ -163,22 +169,29 @@ class GameTasks():
                 return False            
             jsonObject = json.loads(response)
             for item in jsonObject:
+                nzbTitle = item["name"]
                 nzbID = item["guid"]
-                LogEvent("Game found on Newznab")
                 if(newznabPort == '80' or newznabPort == ''):
-                    nzbUrl = "http://" + newznabHost + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID
+                   nzbUrl = "http://" + newznabHost + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID
                 else:
-                    nzbUrl = "http://" + newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID  
-                result = GameTasks().DownloadNZB(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system)
-                if(result):
-                    UpdateStatus(game_id,"Snatched")
-                    return True
-            return False
+                   nzbUrl = "http://" + newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID  
+                for blacklistword in blacklistwords:
+                    DebugLogEvent(" The Word is " + str(blacklistword))
+                    if not str(blacklistword) in nzbTitle:
+                        LogEvent("Game found on Newznab")
+                        result = GameTasks().DownloadNZB(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system)
+                        if(result):
+                            UpdateStatus(game_id,"Snatched")
+                            return True
+                        return False
+                    else:
+                        LogEvent('Nothing found without blacklistet Word(s) "' + str(blacklistword) + '"')
+                        return False
         except:
             LogEvent("Error getting game [" + game_name + "] from Newznab")
             return False
             
-    def FindGameOnNZBSU(self,game_name,game_id,api,sabnzbdApi,sabnzbdHost,sabnzbdPort,system,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,requiredwords):
+    def FindGameOnNZBSU(self,game_name,game_id,api,sabnzbdApi,sabnzbdHost,sabnzbdPort,system,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,blacklistwords):
         catToUse = ''
         if(system == "Wii"):
             catToUse = "1030"
@@ -203,13 +216,21 @@ class GameTasks():
             d = feedparser.parse(data)
             for item in d.entries:
                 LogEvent("Game found on http://nzb.su")
-                nzbUrl = item.link
-                DebugLogEvent("Link URL [ " + nzbUrl + " ]")
-                result = GameTasks().DownloadNZB(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system)
-                if(result):
-                    UpdateStatus(game_id,"Snatched")
-                    return True
-                return False
+                nzbTitle = item.Title
+                for blacklistword in blacklistwords:
+                    DebugLogEvent(" The Word is " + str(blacklistword))
+                    if not str(blacklistword) in nzbTitle:
+                          LogEvent("Game found on http://nzb.su")
+                          nzbUrl = item.link
+                          DebugLogEvent("Link URL [ " + nzbUrl + " ]")
+                          result = GameTasks().DownloadNZB(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system)
+                          if(result):
+                              UpdateStatus(game_id,"Snatched")
+                              return True
+                          return False
+                else:
+                        LogEvent('Nothing found without blacklistet Word(s) "' + str(blacklistword) + '"')
+                        return False
         except:
             LogEvent("Error getting game [" + game_name + "] from http://nzb.su")
             return False
@@ -253,7 +274,7 @@ class GameTasks():
             return False
     	return True
     	
-    def FindGameOnKAT(self,game_id,game_name,system,torrentBlackholePath,requiredwords):
+    def FindGameOnKAT(self,game_id,game_name,system,torrentBlackholePath,blacklistwords):
     	url = "http://www.kickasstorrents.com/json.php?q=" + game_name
     	try:
 	    opener = urllib.FancyURLopener({})
