@@ -35,9 +35,8 @@ class RunApp():
         config.read('Gamez.ini')
         # Set Webinterface Path
         css_webinterface = "css/" + config.get('SystemGenerated','webinterface').replace('"','')
-        
         css_path = os.path.join(app_path,css_webinterface)
-        DebugLogEvent("CSS Path : [ " + css_path + " ]")
+        
         images_path = os.path.join(app_path,'images')
         navigation_images_path = os.path.join(css_path,'navigation_images')
         datatables_images_path = os.path.join(css_path,'datatables_images')
@@ -265,9 +264,8 @@ def ComandoLine():
 
 if __name__ == '__main__':
     app_path = sys.path[0]
-    ValidateDB()
-    LogEvent("Checking config file for completeness")
     CheckConfigForAllKeys(app_path)
+    ValidateDB()
     config = ConfigParser.RawConfigParser()
     configFilePath = os.path.join(app_path,'Gamez.ini')
     config.read(configFilePath)
