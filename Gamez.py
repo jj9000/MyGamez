@@ -72,8 +72,9 @@ class RunApp():
         config.read('Gamez.ini')
         interval = config.get('Scheduler','download_interval').replace('"','')
         updateGameListInterval = config.get('Scheduler','game_list_update_interval').replace('"','')
-        fInterval = float(interval)
-        fUpdateGameListInterval = float(updateGameListInterval)
+        # Turn in Minutes
+        fInterval = float(interval) * 60  
+        fUpdateGameListInterval = float(updateGameListInterval) * 60
         try:
             LogEvent("Setting up download scheduler")
             gameTasksScheduler = cherrypy.process.plugins.Monitor(cherrypy.engine,RunGameTask,fInterval)

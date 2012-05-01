@@ -99,7 +99,7 @@ def CheckConfigForAllKeys(app_path):
         changesMade = True
         
     if(config.has_option('Scheduler','game_list_update_interval') == False):
-        config.set('Scheduler','game_list_update_interval','86400')
+        config.set('Scheduler','game_list_update_interval','1440')
         changesMade = True
 
     if(config.has_option('SystemGenerated','is_to_ignore_update') == False):

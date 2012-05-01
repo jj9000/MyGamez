@@ -538,14 +538,14 @@ class WebRoot:
 						<td>
 							<label><b>Download Interval</b></label>
 							<br />
-							<label><b>(In Seconds)</b></label>
+							<label><b>(In Minutes)</b></label>
 							<br />
                 					<input style="width:250px" type="text" name="downloadInterval" id="downloadInterval" value='""" + config.get('Scheduler','download_interval').replace('"','') +  """' />
 						</td>
 						<td>
 							<label><b>Game List Update Interval</b></label>
 							<br />
-							<label><b>(In Seconds)</b></label>
+							<label><b>(In Minutes)</b></label>
 							<br />
 							<input style="width:250px" type="text" name="gameListUpdateInterval" id="gameListUpdateInterval" value='""" + config.get('Scheduler','game_list_update_interval').replace('"','') +  """' />
 						</td>
