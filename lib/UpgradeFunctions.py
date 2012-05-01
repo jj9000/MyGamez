@@ -29,7 +29,7 @@ def CheckForNewVersion(app_path):
 def GetLatestVersion():
     LogEvent("Retrieving the latest version")
     mostRecentVersion = '0.0.0.0'
-    url = 'https://api.github.com/repos/mdlesk/Gamez/tags'
+    url = 'https://api.github.com/repos/avjui/Gamez/tags'
     opener = urllib.FancyURLopener({})
     responseObject = opener.open(url)
     response = responseObject.read()
@@ -67,7 +67,7 @@ def UpdateToLatestVersion(app_path):
     if not os.path.exists(updatePath):     
         os.makedirs(updatePath)
     latestVersion = GetLatestVersion()
-    tagUrl = "https://github.com/mdlesk/Gamez/tarball/v" + latestVersion
+    tagUrl = "https://github.com/avjui/Gamez/tarball/TheGamedb/v" + latestVersion
     LogEvent("Downloading from GitHub")
     data = urllib2.urlopen(tagUrl)
     downloadPath = os.path.join(app_path,data.geturl().split('/')[-1])
