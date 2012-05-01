@@ -767,7 +767,7 @@ class WebRoot:
 					</tr>
 					<tr><td>&nbsp;</td></tr>
 						<td  style="border:solid 1px" width="50%" valign="top">
-						     Note: This option isn't implemented yet
+						     Note: This option is at the moment only for Newznab and nzb.su available
 							<br />
 							<label style="float:left"><b><u>Advance Search Options</u></b></label>
 							<br />
