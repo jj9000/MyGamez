@@ -2,7 +2,7 @@
 
 import cherrypy
 import os
-from lib.WebRoot import WebRoot
+from gamez.WebRoot import WebRoot
 import sys
 import socket
 import sched
@@ -10,17 +10,17 @@ import time
 import threading
 import thread
 import datetime
-import lib.GameTasks
+import gamez.GameTasks
 import ConfigParser
 import cherrypy.process.plugins
 from cherrypy.process.plugins import Daemonizer,PIDFile
 from cherrypy import server
-from lib.ConfigFunctions import CheckConfigForAllKeys
-from lib.DBFunctions import ValidateDB,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,AddComingSoonGames
-from lib.Logger import LogEvent
-from lib.Helper import launchBrowser
+from gamez.ConfigFunctions import CheckConfigForAllKeys
+from gamez.DBFunctions import ValidateDB,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,AddComingSoonGames
+from gamez.Logger import LogEvent
+from gamez.Helper import launchBrowser
 import cherrypy.lib.auth_basic
-from lib.FolderFunctions import *
+from gamez.FolderFunctions import *
 
 app_path = os.path.dirname(os.path.abspath("__FILE__"))
 config_path = os.path.join(app_path,'Gamez.ini')
@@ -40,7 +40,7 @@ class RunApp():
         images_path = os.path.join(app_path,'images')
         navigation_images_path = os.path.join(css_path,'navigation_images')
         datatables_images_path = os.path.join(css_path,'datatables_images')
-        js_path = os.path.join(app_path,'js')
+        js_path = os.path.join(app_path,'css/js')
         theme_path = os.path.join(css_path,'redmond')
         theme_images_path = os.path.join(theme_path,'images')
         username = config.get('global','user_name').replace('"','')
@@ -275,7 +275,7 @@ if __name__ == '__main__':
     sabnzbdApi = config.get('Sabnzbd','api_key').replace('"','')
     LogEvent("Attempting to get download completed directory from Sabnzbd")
     ComandoLine()
-    sabCompleted = lib.GameTasks.GameTasks().CheckSabDownloadPath(sabnzbdApi,sabnzbdHost,sabnzbdPort)
+    sabCompleted = gamez.GameTasks.GameTasks().CheckSabDownloadPath(sabnzbdApi,sabnzbdHost,sabnzbdPort)
     if(sabCompleted <> ""):
     	LogEvent("Setting Value")
     	config.set('Folders','sabnzbd_completed','"' + sabCompleted + '"')

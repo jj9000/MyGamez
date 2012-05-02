@@ -10,7 +10,7 @@ from xml.dom import minidom
 import base64
 import hashlib
 import random
-from lib.FolderFunctions import *
+from FolderFunctions import *
 from Constants import *
 from GameTasks import *
 from TheGamesDBSearcher import GetGameDataFromTheGamesDB, AddGameToDbFromTheGamesDb

@@ -9,7 +9,6 @@ from Helper import replace_all
 from subprocess import call
 from Logger import LogEvent,DebugLogEvent
 import json
-import lib
 import ConfigParser
 import feedparser
 import re
