@@ -10,7 +10,7 @@ from subprocess import call
 from Logger import LogEvent,DebugLogEvent
 import json
 import ConfigParser
-import feedparser
+import lib.feedparser as feedparser
 import re
 
 class GameTasks():
@@ -215,7 +215,7 @@ class GameTasks():
             d = feedparser.parse(data)
             for item in d.entries:
                 LogEvent("Game found on http://nzb.su")
-                nzbTitle = item.Title
+                nzbTitle = item.title
                 for blacklistword in blacklistwords:
                     DebugLogEvent(" The Word is " + str(blacklistword))
                     if not str(blacklistword) in nzbTitle:

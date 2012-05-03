@@ -1,9 +1,9 @@
 import ConfigParser
 import os
-import prowlpy
+import lib.prowlpy
 from Logger import LogEvent
-import gntp
-from Notifo import *
+import lib.gntp
+import lib.notifo as Notifo
 
 def HandleNotifications(status,message,appPath):
     config = ConfigParser.RawConfigParser()
