@@ -1,7 +1,7 @@
 import os
 import sqlite3
 import sys
-import datetime
+import time
 from Logger import LogEvent, DebugLogEvent
 import urllib
 import json
@@ -318,8 +318,8 @@ def ValidateDB():
 
 def AddEventToDB(message):
     db_path = os.path.join(os.path.abspath(""),"Gamez.db")
-    createdDate = datetime.datetime.now()
-    sql = "INSERT INTO gamez_log (message,created_date) values('" + message.replace("'","''") + "',datetime())"
+    createdDate = time.strftime("%a %d %b %Y / %X",time.localtime() )
+    sql = "INSERT INTO gamez_log (message,created_date) values('" + message.replace("'","''") + "','" + createdDate + "')"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
     cursor.execute(sql)
@@ -348,7 +348,6 @@ def GetLog():
 
 def ClearDBLog():
     db_path = os.path.join(os.path.abspath(""),"Gamez.db")
-    createdDate = datetime.datetime.now()
     sql = "delete from gamez_log"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
