@@ -77,9 +77,9 @@ def SendNotificationToNotifo(status,message,notifoUsername,notifoApiKey):
     return
     
 def SendNotificationToXbmc(message,appPath,xbmcHosts):
-    #try:
+    try:
         XbmcSend(str(message),appPath)
         DebugLogEvent("Sending Notification Message to " + xbmcHosts)
-    #except Exception,msg:
-    #	 LogEvent("XBMC Notification Error: " + str(msg))
+    except Exception,msg:
+        LogEvent("XBMC Notification Error: " + str(msg))
         return
