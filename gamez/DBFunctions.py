@@ -113,7 +113,7 @@ def GetRequestedGames(filter=''):
             system = str(record[4])
             cover = str(record[5])
             thegamesdbid = str(record[6])
-            DebugLogEvent("Debug: " + thegamesdbid)
+            DebugLogEvent("TheGamesDB ID [" + thegamesdbid + "]")
             if(thegamesdbid != 'None'):
                 rowdata = "<tr align='center'><td><a href='removegame?dbid=" + db_id + "'>Delete</a>&nbsp;|&nbsp;<a href='forcesearch?dbid=" + db_id + "'>Force Search</a></td><td><center><img width='85' height='120'  src='" + cover + "' /></center></td><td><a href='http://thegamesdb.net/game/" + thegamesdbid + "'>" + game_name + "</td><td>" + game_type + "</td><td>" + system + "</td><td>" + status + "</td><td><select id=updateSatusSelectObject class=ui-widget onchange=UpdateGameStatus(this.options[this.selectedIndex].value,'" + db_id + "')>"
             else:
@@ -178,6 +178,7 @@ def UpdateStatus(game_id,status):
     cursor.close()
     message = "Gamez Notification: " + system + " Game: " + game_name + " has been " + status
     appPath = os.path.abspath("")
+    DebugLogEvent(message)
     Notifications.HandleNotifications(status,message,appPath)
     return
 

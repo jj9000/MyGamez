@@ -303,6 +303,7 @@ class WebRoot:
         growlChecked = config.get('SystemGenerated','growl_enabled').replace('"','')
         prowlChecked = config.get('SystemGenerated','prowl_enabled').replace('"','')
         notifoChecked = config.get('SystemGenerated','notifo_enabled').replace('"','')
+        xbmcChecked = config.get('SystemGenerated','xbmc_enabled').replace('"','')
         nzbBlackholeChecked = config.get('SystemGenerated','blackhole_nzb_enabled').replace('"','')
         torrentBlackholeChecked = config.get('SystemGenerated','blackhole_torrent_enabled').replace('"','')
         katChecked = config.get('SystemGenerated','torrent_kat_enabled').replace('"','')
@@ -353,6 +354,10 @@ class WebRoot:
             notifoChecked = "CHECKED"
         else:
             notifoChecked = ""    
+        if(xbmcChecked == "1"):
+            xbmcChecked = "CHECKED"
+        else:
+            xbmcChecked = ""  
         if(nzbBlackholeChecked == "1"):
             nzbBlackholeChecked = "CHECKED"
         else:
@@ -877,6 +882,41 @@ class WebRoot:
 						</td>
 						<td width="10px">&nbsp;</td>						
 					</tr>
+					<tr><td>&nbsp;</td></tr>
+					<tr width="100%">
+						<td  style="border:solid 1px" width="45%" valign="top">
+							Note: At the Moment this feature is not implemented
+							<br />
+							<label style="float:left"><b><u>XBMC</u></b></label>
+								<div style="float:right">
+									<input type="checkbox" name="xbmcEnabled" id="xbmcEnabled" value="xbmcEnabled" """ + xbmcChecked + """ />Enabled
+								</div>
+							<br />	
+							<table>
+								<tr>
+									<td>
+										<label><b>XBMC Username</b></label>
+										<br />
+										<input style="width:300px" type="text" name="xbmcUsername" id="xbmcUsername" value='""" + config.get('Notifications','xbmc_username').replace('"','') +  """' />
+									</td>
+									<tr><td>&nbsp;</td></tr>
+									<td>
+										<label><b>XBMC Password</b></label>
+										<br />
+										<input style="width:300px" type="text" name="xbmcPassword" id="xbmcPassword" value='""" + config.get('Notifications','xbmc_password').replace('"','') +  """' />
+									</td>
+									<tr><td>&nbsp;</td></tr>
+									<td>
+										<label><b>XBMC Host(s)</b></label>
+										<br />
+										<input style="width:600px" type="text" name="xbmcHosts" id="xbmcHosts" value='""" + config.get('Notifications','xbmc_hosts').replace('"','') +  """' />
+									       <br />Please sepearate the Hosts with a ';'
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td width="10px">&nbsp;</td>						
+					</tr>
 				</table>
 			</p>
 		</div>	
@@ -1299,7 +1339,7 @@ class WebRoot:
             raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
-    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',nzbsuEnabled='',nzbsuapi=''):
+    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',nzbsuEnabled='',nzbsuapi=''):
         cherrypyHost = '"' + cherrypyHost + '"'
         nzbMatrixUsername = '"' + nzbMatrixUsername + '"'
         nzbMatrixApi = '"' + nzbMatrixApi + '"'
@@ -1321,6 +1361,9 @@ class WebRoot:
         growlPassword = '"' + growlPassword + '"'
         notifoUsername = '"' + notifoUsername + '"'
         notifoApi = '"' + notifoApi + '"'
+        xbmcUsername = '"' + xbmcUsername + '"'
+        xbmcPassword = '"' + xbmcPassword + '"'
+        xbmcHosts = '"' + xbmcHosts + '"'
         nzbBlackholePath = '"' + nzbBlackholePath + '"'
         torrentBlackholePath = '"' + torrentBlackholePath + '"'
         wiiDestination = '"' + wiiDestination.replace("\\","\\\\") + '"'
@@ -1367,6 +1410,10 @@ class WebRoot:
             notifoEnabled = "1"
         else:
             notifoEnabled = "0"     
+        if(xbmcEnabled == 'xbmcEnabled'):
+            xbmcEnabled = "1"
+        else:
+            xbmcEnabled = "0"     
         if(nzbBlackholeEnabled == 'nzbBlackholeEnabled'):
             nzbBlackholeEnabled = "1"
         else:
@@ -1441,6 +1488,7 @@ class WebRoot:
         config.set('SystemGenerated','growl_enabled',growlEnabled)
         config.set('SystemGenerated','prowl_enabled',prowlEnabled)
         config.set('SystemGenerated','notifo_enabled',notifoEnabled)
+        config.set('SystemGenerated','xbmc_enabled',xbmcEnabled)
         config.set('SystemGenerated','blackhole_nzb_enabled',nzbBlackholeEnabled)
         config.set('SystemGenerated','blackhole_torrent_enabled',torrentBlackholeEnabled)
         config.set('SystemGenerated','torrent_kat_enabled',katEnabled)
@@ -1470,6 +1518,9 @@ class WebRoot:
         config.set('Notifications','growl_password',growlPassword)
         config.set('Notifications','notifo_username',notifoUsername)
         config.set('Notifications','notifo_apikey',notifoApi)
+        config.set('Notifications','xbmc_username',xbmcUsername)
+        config.set('Notifications','xbmc_password',xbmcPassword)
+        config.set('Notifications','xbmc_hosts',xbmcHosts)
         config.set('Blackhole','nzb_blackhole_path',nzbBlackholePath)
         config.set('Blackhole','torrent_blackhole_path',torrentBlackholePath)	
         config.set('Folders','torrent_completed',torrentBlackholeDownloadDirectory)	

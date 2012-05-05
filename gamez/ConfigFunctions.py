@@ -138,6 +138,10 @@ def CheckConfigForAllKeys(app_path):
         config.set('SystemGenerated','notifo_enabled','0')
         changesMade = True   
         
+    if(config.has_option('SystemGenerated','xbmc_enabled') == False):
+        config.set('SystemGenerated','xbmc_enabled','0')
+        changesMade = True
+
     if(config.has_option('SystemGenerated','blackhole_nzb_enabled') == False):
         config.set('SystemGenerated','blackhole_nzb_enabled','0')
         changesMade = True  
@@ -257,6 +261,18 @@ def CheckConfigForAllKeys(app_path):
 
     if(config.has_option('Notifications','notifo_apikey') == False):
         config.set('Notifications','notifo_apikey','""')
+        changesMade = True
+
+    if(config.has_option('Notifications','xbmc_username') == False):
+        config.set('Notifications','xbmc_username','""')
+        changesMade = True	
+
+    if(config.has_option('Notifications','xbmc_password') == False):
+        config.set('Notifications','xbmc_password','""')
+        changesMade = True
+
+    if(config.has_option('Notifications','xbmc_hosts') == False):
+        config.set('Notifications','xbmc_hosts','""')
         changesMade = True
 
     if(config.has_option('Blackhole','nzb_blackhole_path') == False):

@@ -1,9 +1,10 @@
 import ConfigParser
 import os
 import lib.prowlpy
-from Logger import LogEvent
+from Logger import LogEvent,DebugLogEvent
 import lib.gntp
 import lib.notifo as Notifo
+from gamez.xbmc.Xbmc import XbmcSend 
 
 def HandleNotifications(status,message,appPath):
     config = ConfigParser.RawConfigParser()
@@ -18,6 +19,9 @@ def HandleNotifications(status,message,appPath):
     prowlEnabled = config.get('SystemGenerated','prowl_enabled').replace('"','')
     growlEnabled = config.get('SystemGenerated','growl_enabled').replace('"','')
     notifoEnabled = config.get('SystemGenerated','notifo_enabled').replace('"','')
+    xbmcEnabled = config.get('SystemGenerated','xbmc_enabled').replace('"','')
+    xbmcHosts = config.get('Notifications','xbmc_hosts').replace('"','')
+
     if(prowlEnabled == "1"):
         if(prowlApi <> ""):
             SendNotificationToProwl(status,message,prowlApi)  
@@ -35,6 +39,11 @@ def HandleNotifications(status,message,appPath):
     	    SendNotificationToNotifo(status,message,notifoUsername,notifoApi)
     	else:
     	    LogEvent("Notifo Settings Incomplete")
+    if(xbmcEnabled == "1"):
+    	if(xbmcHosts <> ""):
+    	    SendNotificationToXbmc(message,appPath,xbmcHosts)
+    	else:
+    	    LogEvent("XBMC Settings Incomplete. Please add a Host")
     return
     
 def SendNotificationToProwl(status,message,prowlApi):
@@ -50,7 +59,7 @@ def SendNotificationToGrowl(status,message,growlHost,growlPort,growlPassword):
     if(growlPort == ""):
     	growlPort = "23053"
     try:
-    	growl = gntp.notifier.GrowlNotifier(applicationName = "Gamez",notifications = ["Gamez Download Alert"],defaultNotifications=["Gamez Download Alert"],hostname=growlHost,port=growlPort,password=growlPassword)
+    	growl = lib.gntp.notifier.GrowlNotifier(applicationName = "Gamez",notifications = ["Gamez Download Alert"],defaultNotifications=["Gamez Download Alert"],hostname=growlHost,port=growlPort,password=growlPassword)
     	growl.register()
     	growl.notify(noteType="Gamez Download Alert",title=message,description=message,sticky=False,priority=1,)
     	LogEvent("Growl Notification Sent")
@@ -66,3 +75,11 @@ def SendNotificationToNotifo(status,message,notifoUsername,notifoApiKey):
     except Exception,msg:
     	LogEvent("Growl Notification Error: " + msg)
     return
+    
+def SendNotificationToXbmc(message,appPath,xbmcHosts):
+    #try:
+        XbmcSend(str(message),appPath)
+        DebugLogEvent("Sending Notification Message to " + xbmcHosts)
+    #except Exception,msg:
+    #	 LogEvent("XBMC Notification Error: " + str(msg))
+        return
