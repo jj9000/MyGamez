@@ -490,8 +490,11 @@ def GetUpcomingGames():
             releasedate = str(record[1])
             system = str(record[2])
             db_id = str(record[3])
-            rowdata = "<tr><td><a href='addgameupcoming?dbid=" + db_id + "'>Download</a></td><td>" + gametitle + "</td><td>" + releasedate + "</td><td>" + system + "</td></tr>"
-            data = data + rowdata
+            if releasedate > time.strftime("%m/%d/%Y"):    
+                 rowdata = "<tr><td><a href='addgameupcoming?dbid=" + db_id + "'>Download</a></td><td>" + gametitle + "</td><td>" + releasedate + "</td><td>" + system + "</td></tr>"
+                 data = data + rowdata
+            else:
+                 continue
         except:
             continue
     cursor.close()
