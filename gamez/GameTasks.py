@@ -5,7 +5,7 @@ import urllib2
 import os
 import shutil
 import stat
-from Helper import replace_all
+from Helper import replace_all,FindAddition
 from subprocess import call
 from Logger import LogEvent,DebugLogEvent
 import json
@@ -120,9 +120,14 @@ class GameTasks():
             fieldData = responseData[0].split(":")
             nzbID = fieldData[1]
             nzbID = nzbID.replace(";","")
+            nzbName = responseData[1].split(":")
+            nzbName = nzbName.replace(";","")
 
             if(nzbID <> "nothing_found" and nzbID <> "API_RATE_LIMIT_REACHED"):
                 
+                gamenameaddition = FindAddition(nzbName)
+                DebugLogEvent("Additions for " + game_name + " are " + gamenameaddition)
+                game_name = game_name + gamenameaddition
                 LogEvent("Game found on NZB Matrix")
                 nzbUrl = "http://api.nzbmatrix.com/v1.1/download.php?id=" + nzbID + "&username=" + username + "&apikey=" + api
                 result = GameTasks().DownloadNZB(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system)
@@ -177,6 +182,9 @@ class GameTasks():
                 for blacklistword in blacklistwords:
                     DebugLogEvent(" The Word is " + str(blacklistword))
                     if not str(blacklistword) in nzbTitle:
+                        gamenameaddition = FindAddition(nzbTitle)
+                        DebugLogEvent("Additions for " + game_name + " are " + gamenameaddition)
+                        game_name = game_name + gamenameaddition
                         LogEvent("Game found on Newznab")
                         result = GameTasks().DownloadNZB(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system)
                         if(result):
@@ -219,6 +227,9 @@ class GameTasks():
                 for blacklistword in blacklistwords:
                     DebugLogEvent(" The Word is " + str(blacklistword))
                     if not str(blacklistword) in nzbTitle:
+                          gamenameaddition = FindAddition(nzbTitle)
+                          DebugLogEvent("Additions for " + game_name + " are " + gamenameaddition)
+                          game_name = game_name + gamenameaddition
                           LogEvent("Game found on http://nzb.su")
                           nzbUrl = item.link
                           DebugLogEvent("Link URL [ " + nzbUrl + " ]")

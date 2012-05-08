@@ -22,3 +22,13 @@ def launchBrowser(host, port):
             webbrowser.open(url, 1, 1)
         except:
             log.error('Could not launch a browser.')
+
+def FindAddition(title):
+    dic = {'PAL', 'USA', 'NSTC', 'JAP', 'Region Free', 'RF', 'FRENCH', 'ITALIAN', 'GERMAN', 'SPANISH', 'ASIA', 'JTAG', 'XGD3', 'WiiWare', 'WiiVC', 'Mixed'}
+    regionword = ""
+    for word in dic:
+          if word.upper() in title:
+             regionword = regionword + " (" + word + ")" 
+          if word.lower() in title:
+             regionword = regionword + " (" + word + ")" 
+    return regionword
