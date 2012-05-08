@@ -349,3 +349,36 @@ class GameTasks():
             LogEvent("Unable to connect to Sanzbd: " + url)
             return
         return
+
+    def ForceSearch(self,dbid):
+        config = ConfigParser.RawConfigParser()
+        confFile = os.path.join(os.path.dirname(os.path.abspath("__FILE__")),'Gamez.ini')
+        config.read(confFile)
+        nzbMatrixUser = config.get('NZBMatrix','username').replace('"','')
+        nzbMatrixApi = config.get('NZBMatrix','api_key').replace('"','')
+        nzbsuapi = config.get('NZBSU','api_key').replace('"','')
+        sabnzbdHost = config.get('Sabnzbd','host').replace('"','')
+        sabnzbdPort = config.get('Sabnzbd','port').replace('"','')
+        sabnzbdApi = config.get('Sabnzbd','api_key').replace('"','')
+        sabnzbdCategory = config.get('Sabnzbd','category').replace('"','')
+        newznabWiiCat = config.get('Newznab','wii_category_id').replace('"','')
+        newznabXbox360Cat = config.get('Newznab','xbox360_category_id').replace('"','')
+        newznabPS3Cat = config.get('Newznab','ps3_category_id').replace('"','')
+        newznabPCCat = config.get('Newznab','pc_category_id').replace('"','')
+        newznabApi = config.get('Newznab','api_key').replace('"','')
+        newznabHost = config.get('Newznab','host').replace('"','')
+        newznabPort = config.get('Newznab','port').replace('"','')
+        isSabEnabled = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
+        isNzbMatrixEnabled = config.get('SystemGenerated','nzbmatrix_enabled').replace('"','')
+        isNewznabEnabled = config.get('SystemGenerated','newznab_enabled').replace('"','')
+        isnzbsuEnable = config.get('SystemGenerated','nzbsu_enabled').replace('"','')
+        isNzbBlackholeEnabled = config.get('SystemGenerated','blackhole_nzb_enabled').replace('"','')
+        nzbBlackholePath = config.get('Blackhole','nzb_blackhole_path').replace('"','')
+        isTorrentBlackholeEnabled = config.get('SystemGenerated','blackhole_torrent_enabled').replace('"','')
+        isTorrentKATEnabled = config.get('SystemGenerated','torrent_kat_enabled').replace('"','')
+        torrentBlackholePath  = config.get('Blackhole','torrent_blackhole_path').replace('"','')
+        manualSearchGame = dbid
+        LogEvent("Searching for games")
+        GameTasks().FindGames(manualSearchGame,nzbMatrixUser,nzbMatrixApi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath,isnzbsuEnable,nzbsuapi)
+            
+

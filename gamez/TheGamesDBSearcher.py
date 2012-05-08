@@ -110,6 +110,7 @@ def AddGameToDbFromTheGamesDb(thegamesdbid,status):
         cursor = connection.cursor()
         cursor.execute(sql)
         connection.commit()
+        id = str(cursor.lastrowid)    
     except:
         sql = "alter table requested_games add column thegamesdb_id text"
         cursor = connection.cursor()
@@ -119,9 +120,11 @@ def AddGameToDbFromTheGamesDb(thegamesdbid,status):
         cursor = connection.cursor()
         cursor.execute(sql)
         connection.commit()
+        id = str(cursor.lastrowid)
     #add for list
     sql = "INSERT INTO games (game_name,game_type,system,cover) values('" + xmlGameTitle.replace("'","''") + "','" + game_genre + "','" + raw_system + "','" + game_cover + "')"
     cursor = connection.cursor()
     cursor.execute(sql)
     connection.commit()
     cursor.close()       
+    return id

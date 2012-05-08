@@ -68,8 +68,9 @@ def AddGameToDb(db_id,status):
     cursor = connection.cursor()
     cursor.execute(sql)
     connection.commit()
+    id = str(cursor.lastrowid)
     cursor.close()
-    return
+    return id
 
 def AddGameUpcomingToDb(db_id,status):
     LogEvent("Adding game in 'Wanted' status")

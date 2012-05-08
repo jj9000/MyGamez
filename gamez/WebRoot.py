@@ -1302,14 +1302,16 @@ class WebRoot:
     def addgame(self,dbid): 
         if(os.name <> 'nt'):
             os.chdir(WebRoot.appPath)
-        AddGameToDb(dbid,'Wanted')
+        request_dbid = AddGameToDb(dbid,'Wanted')
+        GameTasks().ForceSearch(request_dbid)
         raise cherrypy.InternalRedirect('/')
 
     @cherrypy.expose
     def addgambythegamesdb(self,thegamesdbid):
         if(os.name <> 'nt'):
             os.chdir(WebRoot.appPath)
-        AddGameToDbFromTheGamesDb(thegamesdbid,'Wanted')
+        request_dbid = AddGameToDbFromTheGamesDb(thegamesdbid,'Wanted')
+        GameTasks().ForceSearch(request_dbid)
         raise cherrypy.InternalRedirect('/')
 
     @cherrypy.expose
@@ -1593,33 +1595,5 @@ class WebRoot:
     def forcesearch(self,dbid):
         if(os.name <> 'nt'):
             os.chdir(WebRoot.appPath)
-        config = ConfigParser.RawConfigParser()
-        config.read(os.path.join(WebRoot.appPath,'Gamez.ini'))
-        isDebugEnabled = config.get('global','debug_enabled').replace('"','')
-        nzbMatrixUser = config.get('NZBMatrix','username').replace('"','')
-        nzbMatrixApi = config.get('NZBMatrix','api_key').replace('"','')
-        nzbsuapi = config.get('NZBSU','api_key').replace('"','')
-        sabnzbdHost = config.get('Sabnzbd','host').replace('"','')
-        sabnzbdPort = config.get('Sabnzbd','port').replace('"','')
-        sabnzbdApi = config.get('Sabnzbd','api_key').replace('"','')
-        sabnzbdCategory = config.get('Sabnzbd','category').replace('"','')
-        newznabWiiCat = config.get('Newznab','wii_category_id').replace('"','')
-        newznabXbox360Cat = config.get('Newznab','xbox360_category_id').replace('"','')
-        newznabPS3Cat = config.get('Newznab','ps3_category_id').replace('"','')
-        newznabPCCat = config.get('Newznab','pc_category_id').replace('"','')
-        newznabApi = config.get('Newznab','api_key').replace('"','')
-        newznabHost = config.get('Newznab','host').replace('"','')
-        newznabPort = config.get('Newznab','port').replace('"','')
-        isSabEnabled = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
-        isNzbMatrixEnabled = config.get('SystemGenerated','nzbmatrix_enabled').replace('"','')
-        isNewznabEnabled = config.get('SystemGenerated','newznab_enabled').replace('"','')
-        isnzbsuEnable = config.get('SystemGenerated','nzbsu_enabled').replace('"','')
-        isNzbBlackholeEnabled = config.get('SystemGenerated','blackhole_nzb_enabled').replace('"','')
-        nzbBlackholePath = config.get('Blackhole','nzb_blackhole_path').replace('"','')
-        isTorrentBlackholeEnabled = config.get('SystemGenerated','blackhole_torrent_enabled').replace('"','')
-        isTorrentKATEnabled = config.get('SystemGenerated','torrent_kat_enabled').replace('"','')
-        torrentBlackholePath  = config.get('Blackhole','torrent_blackhole_path').replace('"','')
-        manualSearchGame = dbid
-        LogEvent("Searching for games")
-        GameTasks().FindGames(manualSearchGame,nzbMatrixUser,nzbMatrixApi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath,isnzbsuEnable,nzbsuapi)
+        GameTasks().ForceSearch(dbid)  
         raise cherrypy.InternalRedirect('/')
