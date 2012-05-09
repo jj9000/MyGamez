@@ -1303,6 +1303,7 @@ class WebRoot:
         if(os.name <> 'nt'):
             os.chdir(WebRoot.appPath)
         request_dbid = AddGameToDb(dbid,'Wanted')
+        DebugLogEvent("Requested ID for forceSearch [" + request_dbid + "]")
         GameTasks().ForceSearch(request_dbid)
         raise cherrypy.InternalRedirect('/')
 
@@ -1311,6 +1312,7 @@ class WebRoot:
         if(os.name <> 'nt'):
             os.chdir(WebRoot.appPath)
         request_dbid = AddGameToDbFromTheGamesDb(thegamesdbid,'Wanted')
+        DebugLogEvent("Requested ID for forceSearch [" + request_dbid + "]")
         GameTasks().ForceSearch(request_dbid)
         raise cherrypy.InternalRedirect('/')
 
