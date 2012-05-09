@@ -180,8 +180,11 @@ class GameTasks():
                 else:
                    nzbUrl = "http://" + newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID  
                 for blacklistword in blacklistwords:
-                    DebugLogEvent(" The Word is " + str(blacklistword))
-                    if not str(blacklistword) in nzbTitle:
+                    if(blacklistword == ''):
+                        DebugLogEvent("No blacklisted word(s) are given")
+                    else:
+                        DebugLogEvent(" The Word is " + str(blacklistword))
+                    if not str(blacklistword) in nzbTitle or blacklistword == '':
                         gamenameaddition = FindAddition(nzbTitle)
                         DebugLogEvent("Additions for " + game_name + " are " + gamenameaddition)
                         game_name = game_name + gamenameaddition
@@ -225,8 +228,11 @@ class GameTasks():
                 LogEvent("Game found on http://nzb.su")
                 nzbTitle = item.title
                 for blacklistword in blacklistwords:
-                    DebugLogEvent(" The Word is " + str(blacklistword))
-                    if not str(blacklistword) in nzbTitle:
+                    if(blacklistword == ''):
+                        DebugLogEvent("No blacklisted word(s) are given")
+                    else:
+                        DebugLogEvent(" The Word is " + str(blacklistword))
+                    if not str(blacklistword) in nzbTitle or blacklistword == '':
                           gamenameaddition = FindAddition(nzbTitle)
                           DebugLogEvent("Additions for " + game_name + " are " + gamenameaddition)
                           game_name = game_name + gamenameaddition
