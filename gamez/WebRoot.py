@@ -1320,7 +1320,9 @@ class WebRoot:
     def addgameupcoming(self,dbid): 
         if(os.name <> 'nt'):
             os.chdir(WebRoot.appPath)
-        AddGameUpcomingToDb(dbid,'Wanted')
+        request_dbid = AddGameUpcomingToDb(dbid,'Wanted')
+        DebugLogEvent("Requested ID for forceSearch [" + request_dbid + "]")
+        GameTasks().ForceSearch(request_dbid)
         raise cherrypy.InternalRedirect('/')
 
     @cherrypy.expose

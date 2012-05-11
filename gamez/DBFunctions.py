@@ -90,9 +90,10 @@ def AddGameUpcomingToDb(db_id,status):
     cursor = connection.cursor()
     cursor.execute(sql)
     connection.commit()
+    id = str(cursor.lastrowid)
     cursor.close()
-    return    
-    comingsoon
+    return id    
+    #comingsoon
 
 def GetRequestedGames(filter=''):
     db_path = os.path.join(os.path.abspath(""),"Gamez.db")
