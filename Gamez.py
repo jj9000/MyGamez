@@ -16,9 +16,9 @@ import cherrypy.process.plugins
 from cherrypy.process.plugins import Daemonizer,PIDFile
 from cherrypy import server
 from gamez.ConfigFunctions import CheckConfigForAllKeys
-from gamez.DBFunctions import ValidateDB,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,AddComingSoonGames
+from gamez.DBFunctions import ValidateDB,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,AddComingSoonGames,ClearDBLog
 from gamez.Logger import LogEvent
-from gamez.Helper import launchBrowser
+from gamez.Helper import launchBrowser,create_https_certificates
 import cherrypy.lib.auth_basic
 from gamez.FolderFunctions import *
 
@@ -45,6 +45,10 @@ class RunApp():
         theme_images_path = os.path.join(theme_path,'images')
         username = config.get('global','user_name').replace('"','')
         password = config.get('global','password').replace('"','')
+        https_support_enabled = config.get('SystemGenerated','https_support_enabled').replace('"','')
+        https_crt = app_path + "/gamez.crt"
+        https_key = app_path + "/gamez.key"
+       
         useAuth = False
         if(username <> "" or password <> ""):
             useAuth = True          	
@@ -60,7 +64,33 @@ class RunApp():
                 '/css/navigation_images':{'tools.staticdir.on':True,'tools.staticdir.dir':navigation_images_path},
                 '/css/datatables_images':{'tools.staticdir.on':True,'tools.staticdir.dir':datatables_images_path},
             }
-         
+        
+        # Https Support
+        if(https_support_enabled == "1"):
+
+             # First set variable
+             https_crt = app_path + "/gamez.crt"
+             https_key = app_path + "/gamez.key"
+            
+             try:
+                if not os.path.exists(https_crt) or not os.path.exists(https_key):
+                    create_https_certificates(https_crt, https_key)
+                    DebugLogEvent("Create a new HTTPS Certification") 
+                else:
+                    DebugLogEvent("HTTPS Certification exist")
+                
+                conf_https= {
+                           'engine.autoreload.on':    False,
+                           'log.screen':              False,
+                           'server.ssl_certificate':  https_crt,
+                           'server.ssl_private_key':  https_key
+                            }
+                cherrypy.config.update(conf_https)
+             except:
+                    LogEvent("!!!!!!!! Unable to activate HTTPS support !!!!!!!!!!")
+                    config.set('SystemGenerated','https_support_enabled',"0")
+
+               
         isSabEnabled = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
         if(isSabEnabled == "1"):
             LogEvent("Generating Post Process Script")
@@ -68,8 +98,6 @@ class RunApp():
         RunGameTask()
 
         LogEvent("Getting download interval from config file and invoking scheduler")
-        config = ConfigParser.RawConfigParser()
-        config.read('Gamez.ini')
         interval = config.get('Scheduler','download_interval').replace('"','')
         updateGameListInterval = config.get('Scheduler','game_list_update_interval').replace('"','')
         # Turn in Minutes
@@ -270,9 +298,13 @@ if __name__ == '__main__':
     config = ConfigParser.RawConfigParser()
     configFilePath = os.path.join(app_path,'Gamez.ini')
     config.read(configFilePath)
+    clearLog = config.get('SystemGenerated','clearlog_at_startup').replace('"','')
     sabnzbdHost = config.get('Sabnzbd','host').replace('"','')
     sabnzbdPort = config.get('Sabnzbd','port').replace('"','')
     sabnzbdApi = config.get('Sabnzbd','api_key').replace('"','')
+    if(clearLog == "1"):
+       ClearDBLog()
+       LogEvent("Log cleared")
     LogEvent("Attempting to get download completed directory from Sabnzbd")
     ComandoLine()
     sabCompleted = gamez.GameTasks.GameTasks().CheckSabDownloadPath(sabnzbdApi,sabnzbdHost,sabnzbdPort)

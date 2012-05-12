@@ -321,6 +321,8 @@ class WebRoot:
         ps3_jb_Checked = config.get('SystemGenerated','ps3_jb_enable').replace('"','')       
         blacklist_words_xbox360 = config.get('SystemGenerated','blacklist_words_xbox360').replace('"','')
         blacklist_words_wii = config.get('SystemGenerated','blacklist_words_wii').replace('"','')
+        clearlog_at_startup = config.get('SystemGenerated','clearlog_at_startup').replace('"','')
+        https_support_enabled = config.get('SystemGenerated','https_support_enabled').replace('"','')
 
         if(debugChecked == "1"):
            debugChecked = "CHECKED"
@@ -407,6 +409,15 @@ class WebRoot:
             ps3_jb_Checked = "CHECKED"
         else:
             ps3_jb_Checked = ""
+        if(clearlog_at_startup == "1"):
+            clearlog_at_startup = "CHECKED"
+        else:
+            clearlog_at_startup =""
+        if(https_support_enabled == "1"):
+            https_support_enabled = "CHECKED"
+        else:
+            https_support_enabled =""
+
 
         if(defaultSearch == "Wii"):
             defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
@@ -574,9 +585,24 @@ class WebRoot:
 							<br />
 							<select name="webinterface" id="webinterface" style="width:200px">""" + defaultWebinterface + """</select>
 						</td>
-						<div style="float:middle">
-							<input type="checkbox" name="debugEnabled" id="debugEnabled" value="debugEnabled" """ + debugChecked + """ />Enabled Debug
-						</div>
+					<tr><td colspan="4"></td></tr>
+						<td>
+							<div style="float:middle">
+							<input type="checkbox" name="https_support" id="https_support" value="https_support" """ + https_support_enabled + """ />&nbsp;<b>Enabled HTTPS Support</b>
+							</div>
+						</td>
+					<tr><td colspan="4"></td></tr>
+						<td>
+							<div style="float:middle">
+							<input type="checkbox" name="debugEnabled" id="debugEnabled" value="debugEnabled" """ + debugChecked + """ />&nbsp;<b>Enabled Debug</b>
+							</div>
+						</td>
+					<tr><td colspan="4"></td></tr>
+						<td>
+							<div style="float:middle">
+							<input type="checkbox" name="clearlog" id="clearlog" value="clearlog" """ + clearlog_at_startup + """ />&nbsp;<b>Enabled ClearLog a startup</b>
+							</div>
+						</td>
 					   <br />
 					</tr>
 				</table>
@@ -1345,7 +1371,7 @@ class WebRoot:
             raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
-    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',nzbsuEnabled='',nzbsuapi=''):
+    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',nzbsuEnabled='',nzbsuapi='',https_support='',clearlog=''):
         cherrypyHost = '"' + cherrypyHost + '"'
         nzbMatrixUsername = '"' + nzbMatrixUsername + '"'
         nzbMatrixApi = '"' + nzbMatrixApi + '"'
@@ -1464,10 +1490,19 @@ class WebRoot:
             ps3_tb_enable = "1"
         else:
             ps3_tb_enable = "0"
+        if(clearlog == 'clearlog'):
+            clearlog = "1"
+        else:
+            clearlog = "0"
         if(ps3_jb_enable == 'ps3_jb_enable'):
             ps3_jb_enable = "1"
         else:
             ps3_jb_enable = "0"
+        if(https_support == 'https_support'):
+            https_support = "1"
+        else:
+            https_support = "0"
+
 
         config = ConfigParser.RawConfigParser()
         configFilePath = os.path.join(WebRoot.appPath,'Gamez.ini')
@@ -1511,6 +1546,8 @@ class WebRoot:
         config.set('SystemGenerated','ps3_jb_enable',ps3_jb_enable)      
         config.set('SystemGenerated','blacklist_words_xbox360',blacklist_words_xbox360)
         config.set('SystemGenerated','blacklist_words_wii',blacklist_words_wii)
+        config.set('SystemGenerated','clearlog_at_startup',clearlog)
+        config.set('SystemGenerated','https_support_enabled',https_support)
         config.set('Newznab','host',newznabHost)
         config.set('Newznab','port',newznabPort)
         config.set('Newznab','wii_category_id',newznabWiiCat)

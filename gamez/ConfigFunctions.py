@@ -210,6 +210,15 @@ def CheckConfigForAllKeys(app_path):
     if(config.has_option('SystemGenerated','webinterface') == False):
         config.set('SystemGenerated','webinterface','"default"')
         changesMade = True
+ 
+    if(config.has_option('SystemGenerated','clearlog_at_startup') == False):
+        config.set('SystemGenerated','clearlog_at_startup','1')
+        changesMade = True
+
+    if(config.has_option('SystemGenerated','https_support_enabled') == False):
+        config.set('SystemGenerated','https_support_enabled','0')
+        changesMade = True
+
 
     if(config.has_option('Newznab','api_key') == False):
         config.set('Newznab','api_key','""')
