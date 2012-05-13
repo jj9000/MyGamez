@@ -9,19 +9,23 @@ def replace_all(text):
     return text
 
 # form couchpotato
-def launchBrowser(host, port):
+def launchBrowser(host, port,https):
+
 
     if host == '0.0.0.0':
         host = 'localhost'
 
-    url = 'http://%s:%d' % (host, int(port))
+    if(https == '1'):
+        url = 'https://%s:%d' % (host, int(port))
+    else:
+        url = 'http://%s:%d' % (host, int(port))
     try:
         webbrowser.open(url, 2, 1)
     except:
         try:
             webbrowser.open(url, 1, 1)
         except:
-            log.error('Could not launch a browser.')
+            LogEvent('Could not launch a browser.')
 
 def FindAddition(title):
     dic = {'PAL', 'USA', 'NSTC', 'JAP', 'Region Free', 'RF', 'FRENCH', 'ITALIAN', 'GERMAN', 'SPANISH', 'ASIA', 'JTAG', 'XGD3', 'WiiWare', 'WiiVC', 'Mixed'}
