@@ -87,7 +87,7 @@ class RunApp():
                             }
                 cherrypy.config.update(conf_https)
              except:
-                    LogEvent("!!!!!!!! Unable to activate HTTPS support !!!!!!!!!!")
+                    LogEvent("!!!!!!!! Unable to activate HTTPS support !!!!!!!!!! Perhaps you have forgotten to install openssl?")
                     config.set('SystemGenerated','https_support_enabled',"0")
 
                
