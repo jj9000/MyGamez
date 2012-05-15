@@ -4,7 +4,7 @@ import lib.prowlpy
 from Logger import LogEvent,DebugLogEvent
 import lib.gntp
 import lib.notifo as Notifo
-from gamez.xbmc.Xbmc import XbmcSend 
+from gamez.xbmc.Xbmc import * 
 
 def HandleNotifications(status,message,appPath):
     config = ConfigParser.RawConfigParser()
@@ -78,7 +78,8 @@ def SendNotificationToNotifo(status,message,notifoUsername,notifoApiKey):
     
 def SendNotificationToXbmc(message,appPath,xbmcHosts):
     try:
-        XbmcSend(str(message),appPath)
+        message = str(message)
+        xbmcnotify(message,appPath)
         DebugLogEvent("Sending Notification Message to " + xbmcHosts)
     except Exception,msg:
         LogEvent("XBMC Notification Error: " + str(msg))
