@@ -40,5 +40,5 @@ def xbmcnotify(message,appPath):
         DebugLogEvent("XBMC hosts " + str(hosts))
         for host in hosts:
               command = {'command': 'ExecBuiltIn', 'parameter': 'Notification(GAMEZ, %s, 5000,)' % message}
-              LogEvent(host)
+              DebugLogEvent("Sending to host" + host)
               xbmcsend(host, command, username, password, appPath)

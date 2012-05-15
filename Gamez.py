@@ -275,7 +275,6 @@ def ComandoLine():
     # from couchpotato
     host = config.get('global', 'server.socket_host').replace('"','')
     https = config.get('SystemGenerated','https_support_enabled').replace('"','')
-    print https
     try:
         if not options.nolaunch:
             print "------------------- launch Browser ( " + str(host) + ":" + str(port) + ") -------------------"
