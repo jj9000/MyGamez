@@ -100,7 +100,7 @@ class GameTasks():
             catToUse = "14"
         elif(system == "PS3"):
             catToUse = "43"
-        elif(system == "PS3"):
+        elif(system == "PC"):
             catToUse = "10"
         else:
             LogEvent("Unrecognized System")
