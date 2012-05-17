@@ -120,7 +120,8 @@ class GameTasks():
             fieldData = responseData[0].split(":")
             nzbID = fieldData[1]
             nzbID = nzbID.replace(";","")
-            nzbName = responseData[1].split(":")
+            fieldDataName = responseData[1].split(":")
+            nzbName = fieldDataName[1]
             nzbName = nzbName.replace(";","")
 
             if(nzbID <> "nothing_found" and nzbID <> "API_RATE_LIMIT_REACHED"):
