@@ -136,9 +136,9 @@ class GameTasks():
                     UpdateStatus(game_id,"Snatched")
                     return True
             elif(nzbID == "nothing_found"):
-                LogEvent("Nothing found on NZBMatrix.com)
+                LogEvent("Nothing found on NZBMatrix.com")
             elif(nzbID == "API_RATE_LIMIT_REACHED"):
-                LogEvent("NZBMatrix return: API RATE LIMIT REACHED"
+                LogEvent("NZBMatrix return: API RATE LIMIT REACHED")
             return False
         except:
             LogEvent("Error getting game [" + game_name + "] from NZB Matrix")
