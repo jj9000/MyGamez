@@ -1,17 +1,24 @@
-from DBFunctions import GetRequestedGamesAsArray,UpdateStatus
+import os
 import sys
+import re
 import urllib
 import urllib2
-import os
 import shutil
 import stat
+import json
+import ConfigParser
+
+from DBFunctions import GetRequestedGamesAsArray,UpdateStatus
 from Helper import replace_all,FindAddition
 from subprocess import call
 from Logger import LogEvent,DebugLogEvent
-import json
-import ConfigParser
+from Constants import VersionNumber
 import lib.feedparser as feedparser
-import re
+
+
+
+class CostumOpener(urllib.FancyURLopener):
+    version = 'Gamez/' + VersionNumber()
 
 class GameTasks():
 
@@ -93,7 +100,6 @@ class GameTasks():
 
     def FindGameOnNZBMatrix(self,game_name,game_id,username,api,sabnzbdApi,sabnzbdHost,sabnzbdPort,system,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,blacklistwords):
         catToUse = ""
-        DebugLogEvent("Here i am")
         if(system == "Wii"):
             catToUse = "44"
         elif(system == "Xbox360"):
@@ -108,37 +114,45 @@ class GameTasks():
         url = "http://api.nzbmatrix.com/v1.1/search.php?search=" + game_name + "&num=1&catid=" + catToUse + "&username=" + username + "&apikey=" + api
         DebugLogEvent("Search URL [ " + url + " ]")
         try:
-            opener = urllib.FancyURLopener({})
+            opener = CostumOpener()
             responseObject = opener.open(url)
             response = responseObject.read()
             responseObject.close()
-        except:
-            LogEvent("Unable to connect to NZBMatrix Server: " + url)
+        except Exception, e:
+            LogEvent("Unable to connect to NZBMatrix Server: %s \n Exeption: %s" % (url, e))
             return False
         try:
             responseData = response.split("\n")
             fieldData = responseData[0].split(":")
             nzbID = fieldData[1]
+            DebugLogEvent("NZB_ID:" + str(nzbID))
             nzbID = nzbID.replace(";","")
-            fieldDataName = responseData[1].split(":")
-            nzbName = fieldDataName[1]
-            nzbName = nzbName.replace(";","")
-
+            
             if(nzbID <> "nothing_found" and nzbID <> "API_RATE_LIMIT_REACHED"):
                 
-                gamenameaddition = FindAddition(nzbName)
-                DebugLogEvent("Additions for " + game_name + " are " + gamenameaddition)
-                game_name = game_name + gamenameaddition
+                try:
+                    fieldDataName = responseData[1].split(":")
+                    nzbName = fieldDataName[1]
+                    nzbName = nzbName.replace(";","")
+                    gamenameaddition = FindAddition(nzbName)
+                    DebugLogEvent("Additions for " + game_name + " are " + gamenameaddition)
+                    game_name = game_name + gamenameaddition
+                except:
+                    DebugLogEvent("Something went wrong with getting addition")
+
                 LogEvent("Game found on NZB Matrix")
                 nzbUrl = "http://api.nzbmatrix.com/v1.1/download.php?id=" + nzbID + "&username=" + username + "&apikey=" + api
                 result = GameTasks().DownloadNZB(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system)
                 if(result):
                     UpdateStatus(game_id,"Snatched")
                     return True
+
             elif(nzbID == "nothing_found"):
                 LogEvent("Nothing found on NZBMatrix.com")
             elif(nzbID == "API_RATE_LIMIT_REACHED"):
                 LogEvent("NZBMatrix return: API RATE LIMIT REACHED")
+            elif(nzbID == "invalid_login"):
+                LgeEvent("NZBMatrix return: Invalid login")
             return False
         except:
             LogEvent("Error getting game [" + game_name + "] from NZB Matrix")
