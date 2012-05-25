@@ -687,14 +687,15 @@ class WebRoot:
 		</div>
 		<div id="searchproviders-tab">
 			<p>
-				<table cellpadding="5" width="100%">
-					<tr width="100%">
+				<table cellpadding="5" width="60%">
+					<tr width="60%">
 						<td  style="border:solid 1px" width="45%" valign="top">
 							<label style="float:left"><b><u>NZB Matrix</u></b></label>
 								<div style="float:right">
 									<input type="checkbox" name="nzbmatrixEnabled" id="nzbmatrixEnabled" value="nzbmatrixEnabled" """ + nzbmatrixChecked + """ />Enabled
 								</div>
 							<br />
+							<div id=nzbmatrixoptions>
 							<table>
 								<tr>
 									<td>
@@ -712,14 +713,16 @@ class WebRoot:
 									</td>
 								</tr>
 							</table>
+							</div>
 						</td>
-						<td width="10px">&nbsp;</td>
-						<td style="border:solid 1px" valign="top" rowspan="3">
+						<tr><td>&nbsp;</td></tr>
+						<td  style="border:solid 1px" width="45%" valign="top">
 							<label style="float:left"><b><u>Newznab</u></b></label>
 								<div style="float:right">
 									<input type="checkbox" name="newznabEnabled" id="newznabEnabled" value="newznabEnabled" """ + newznabChecked + """ />Enabled
 								</div>
 							<br />
+							<div id=newznaboptions>
 							<table>
 								<tr>
 									<td>
@@ -767,7 +770,8 @@ class WebRoot:
 									</td>
 								</tr>
 															
-							</table>	
+							</table>
+							</div>	
 						</td>						
 					</tr>
 					<tr><td>&nbsp;</td></tr>
@@ -777,6 +781,7 @@ class WebRoot:
 									<input type="checkbox" name="nzbsuEnabled" id="nzbsuEnabled" value="nzbsuEnabled" """ + nzbsuChecked + """ />Enabled
 								</div>
 							<br />
+							<div id=nzbsuoptions>
 							<table>
 								<tr>
 									<td>
@@ -786,6 +791,7 @@ class WebRoot:
 									</td>
 								</tr>
 							</table>
+							</div>
 						</td>
 					<tr><td>&nbsp;</td></tr>
 					<tr>
@@ -798,7 +804,6 @@ class WebRoot:
 					</tr>
 					<tr><td>&nbsp;</td></tr>
 						<td  style="border:solid 1px" width="50%" valign="top">
-						     Note: This option is at the moment only for Newznab and nzb.su available
 							<br />
 							<label style="float:left"><b><u>Advance Search Options</u></b></label>
 							<br />
@@ -845,6 +850,7 @@ class WebRoot:
 									<input type="checkbox" name="growlEnabled" id="growlEnabled" value="growlEnabled" """ + growlChecked + """ />Enabled
 								</div>
 							<br />	
+							<div id=growloptions>
 							<table>
 								<tr>
 									<td>
@@ -864,14 +870,17 @@ class WebRoot:
 									</td>
 								</tr>
 							</table>
+							</div>
 						</td>
-						<td width="10px">&nbsp;</td>
-						<td style="border:solid 1px" valign="top">
+					<tr><td>&nbsp;</td></tr>
+					<tr width="100%">
+						<td  style="border:solid 1px" width="45%" valign="top">
 							<label style="float:left"><b><u>Prowl</u></b></label>
 								<div style="float:right">
 									<input type="checkbox" name="prowlEnabled" id="prowlEnabled" value="prowlEnabled" """ + prowlChecked + """ />Enabled
 								</div>
 							<br />
+							<div id=prowloptions>
 							<table>
 								<tr>
 									<td>
@@ -880,7 +889,8 @@ class WebRoot:
 										<input style="width:400px" type="text" name="prowlApi" id="prowlApi" value='""" + config.get('Notifications','prowl_api').replace('"','') +  """' />
 									</td>
 								</tr>							
-							</table>	
+							</table>
+							</div>	
 						</td>						
 					</tr>
 					<tr><td>&nbsp;</td></tr>
@@ -891,6 +901,7 @@ class WebRoot:
 									<input type="checkbox" name="notifoEnabled" id="notifoEnabled" value="notifoEnabled" """ + notifoChecked + """ />Enabled
 								</div>
 							<br />	
+							<div id=notifooptions>
 							<table>
 								<tr>
 									<td>
@@ -905,19 +916,20 @@ class WebRoot:
 									</td>
 								</tr>
 							</table>
+							</div>
 						</td>
 						<td width="10px">&nbsp;</td>						
 					</tr>
 					<tr><td>&nbsp;</td></tr>
 					<tr width="100%">
 						<td  style="border:solid 1px" width="45%" valign="top">
-							Note: At the Moment this feature is not implemented
 							<br />
 							<label style="float:left"><b><u>XBMC</u></b></label>
 								<div style="float:right">
 									<input type="checkbox" name="xbmcEnabled" id="xbmcEnabled" value="xbmcEnabled" """ + xbmcChecked + """ />Enabled
 								</div>
 							<br />	
+							<div id=xbmcoptions>
 							<table>
 								<tr>
 									<td>
@@ -936,10 +948,11 @@ class WebRoot:
 										<label><b>XBMC Host(s)</b></label>
 										<br />
 										<input style="width:600px" type="text" name="xbmcHosts" id="xbmcHosts" value='""" + config.get('Notifications','xbmc_hosts').replace('"','') +  """' />
-									       <br />Please sepearate the Hosts with a ';'
+									       <br />Please sepearate the Hosts with a ';'  e.g. 192.168.0.100:8080
 									</td>
 								</tr>
 							</table>
+							</div>
 						</td>
 						<td width="10px">&nbsp;</td>						
 					</tr>
@@ -1037,6 +1050,154 @@ class WebRoot:
 		</div>
 		<script>
 			$(function(){$("#tabs").tabs();});
+			$(document).ready(function()
+			{
+				if ($("#nzbmatrixEnabled").is(":checked"))
+				{
+					$("#nzbmatrixoptions").show();
+				}
+				else
+				{
+					$("#nzbmatrixoptions").hide();
+				}
+				$("#nzbmatrixEnabled").click(function(){
+				if ($("#nzbmatrixEnabled").is(":checked"))
+				{
+					$("#nzbmatrixoptions").show("fast");
+				}
+				else
+				{
+					$("#nzbmatrixoptions").hide("fast");
+				}
+				});
+			});
+			$(document).ready(function()
+			{
+				if ($("#newznabEnabled").is(":checked"))
+				{
+					$("#newznaboptions").show();
+				}
+				else
+				{
+					$("#newznaboptions").hide();
+				}
+				$("#newznabEnabled").click(function(){
+				if ($("#newznabEnabled").is(":checked"))
+				{
+					$("#newznaboptions").show("fast");
+				}
+				else
+				{
+					$("#newznaboptions").hide("fast");
+				}
+				});
+			});
+			$(document).ready(function()
+			{
+				if ($("#nzbsuEnabled").is(":checked"))
+				{
+					$("#nzbsuoptions").show();
+				}
+				else
+				{
+					$("#nzbsuoptions").hide();
+				}
+				$("#nzbsuEnabled").click(function(){
+				if ($("#nzbsuEnabled").is(":checked"))
+				{
+					$("#nzbsuoptions").show("fast");
+				}
+				else
+				{
+					$("#nzbsuoptions").hide("fast");
+				}
+				});
+			});
+			$(document).ready(function()
+			{
+				if ($("#growlEnabled").is(":checked"))
+				{
+					$("#growloptions").show();
+				}
+				else
+				{
+					$("#growloptions").hide();
+				}
+				$("#growlEnabled").click(function(){
+				if ($("#growlEnabled").is(":checked"))
+				{
+					$("#growloptions").show("fast");
+				}
+				else
+				{
+					$("#growloptions").hide("fast");
+				}
+				});
+			});
+			$(document).ready(function()
+			{
+				if ($("#prowlEnabled").is(":checked"))
+				{
+					$("#prowloptions").show();
+				}
+				else
+				{
+					$("#prowloptions").hide();
+				}
+				$("#prowlEnabled").click(function(){
+				if ($("#prowlEnabled").is(":checked"))
+				{
+					$("#prowloptions").show("fast");
+				}
+				else
+				{
+					$("#prowloptions").hide("fast");
+				}
+				});
+			});
+			$(document).ready(function()
+			{
+				if ($("#notifoEnabled").is(":checked"))
+				{
+					$("#notifooptions").show();
+				}
+				else
+				{
+					$("#notifooptions").hide();
+				}
+				$("#notifoEnabled").click(function(){
+				if ($("#notifoEnabled").is(":checked"))
+				{
+					$("#notifooptions").show("fast");
+				}
+				else
+				{
+					$("#notifooptions").hide("fast");
+				}
+				});
+			});
+			$(document).ready(function()
+			{
+				if ($("#xbmcEnabled").is(":checked"))
+				{
+					$("#xbmcoptions").show();
+				}
+				else
+				{
+					$("#xbmcoptions").hide();
+				}
+				$("#xbmcEnabled").click(function(){
+				if ($("#xbmcEnabled").is(":checked"))
+				{
+					$("#xbmcoptions").show("fast");
+				}
+				else
+				{
+					$("#xbmcoptions").hide("fast");
+				}
+				});
+			});
+
 		</script>
                 
 		<br /><br />
