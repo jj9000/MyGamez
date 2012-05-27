@@ -67,7 +67,7 @@ class WebRoot:
         html = html + """
             <div id="menu">
                 <ul class="menu">
-                    <a href="/"><img src="images/gamezlogo.png" height="30" alt="Gamez"></a>
+                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez"></a>
                      <li class="parent">
                         <a href="/">
                             Home
@@ -199,7 +199,7 @@ class WebRoot:
           <body id="dt_example">
             <div id="menu">
                 <ul class="menu">
-                    <a href="/"><img src="images/gamezlogo.png" height="30" alt="Gamez"></a>
+                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez"></a>
                     <li class="parent">
                         <a href="/">
                             Home
@@ -461,7 +461,7 @@ class WebRoot:
           <body id="dt_example">
             <div id="menu">
                 <ul class="menu">
-                    <a href="/"><img src="images/gamezlogo.png" height="30" alt="Gamez"></a>
+                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez"></a>
                     <li class="parent">
                         <a href="/">
                             Home
@@ -1263,7 +1263,7 @@ class WebRoot:
         html = html + """
             <div id="menu">
                 <ul class="menu">
-                    <a href="/"><img src="images/gamezlogo.png" height="30" alt="Gamez"></a>
+                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez"></a>
                     <li class="parent">
                         <a href="/">
                             Home
@@ -1390,7 +1390,7 @@ class WebRoot:
         html = html + """
             <div id="menu">
                 <ul class="menu">
-                    <a href="/"><img src="images/gamezlogo.png" height="30" alt="Gamez"></a>
+                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez"></a>
                     <li class="parent">
                         <a href="/">
                             Home
