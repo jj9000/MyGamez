@@ -37,7 +37,7 @@ class RunApp():
         css_webinterface = "css/" + config.get('SystemGenerated','webinterface').replace('"','')
         css_path = os.path.join(app_path,css_webinterface)
         
-        images_path = os.path.join(app_path,'images')
+        images_path = os.path.join(app_path,'css/images')
         navigation_images_path = os.path.join(css_path,'navigation_images')
         datatables_images_path = os.path.join(css_path,'datatables_images')
         js_path = os.path.join(app_path,'css/js')
@@ -63,7 +63,9 @@ class RunApp():
                 '/css/redmond/images':{'tools.staticdir.on':True,'tools.staticdir.dir':theme_images_path},
                 '/css/navigation_images':{'tools.staticdir.on':True,'tools.staticdir.dir':navigation_images_path},
                 '/css/datatables_images':{'tools.staticdir.on':True,'tools.staticdir.dir':datatables_images_path},
-            }
+                '/images':{'tools.staticdir.on':True,'tools.staticdir.dir':images_path},
+                '/favicon.ico':{'tools.staticfile.on':True,'tools.staticfile.filename':"images/favicon.ico"},
+               }
         
         # Https Support
         if(https_support_enabled == "1"):

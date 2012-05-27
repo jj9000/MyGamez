@@ -49,6 +49,7 @@ class WebRoot:
             <link rel="stylesheet" type="text/css" href="css/redmond/jquery-ui-1.8.16.custom.css" />
             <link rel="stylesheet" type="text/css" href="css/datatables.css" />
             <link rel="stylesheet" type="text/css" href="css/jquery.ui.override.css" />
+            <link rel="shortcut icon" href="images/favicon.ico">
             <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
             <script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
             <script type="text/javascript" src="js/menu.js"></script>
@@ -66,7 +67,8 @@ class WebRoot:
         html = html + """
             <div id="menu">
                 <ul class="menu">
-                    <li class="parent">
+                    <a href="/"><img src="images/gamezlogo.png" height="30" alt="Gamez"></a>
+                     <li class="parent">
                         <a href="/">
                             Home
                         </a>
@@ -188,6 +190,7 @@ class WebRoot:
             <link rel="stylesheet" type="text/css" href="css/redmond/jquery-ui-1.8.16.custom.css" />
             <link rel="stylesheet" type="text/css" href="css/datatables.css" />
             <link rel="stylesheet" type="text/css" href="css/jquery.ui.override.css" />
+            <link rel="shortcut icon" href="images/favicon.ico">
             <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
             <script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
             <script type="text/javascript" src="js/menu.js"></script>
@@ -196,6 +199,7 @@ class WebRoot:
           <body id="dt_example">
             <div id="menu">
                 <ul class="menu">
+                    <a href="/"><img src="images/gamezlogo.png" height="30" alt="Gamez"></a>
                     <li class="parent">
                         <a href="/">
                             Home
@@ -448,6 +452,7 @@ class WebRoot:
             <link rel="stylesheet" type="text/css" href="css/datatables.css" />
             <link rel="stylesheet" type="text/css" href="css/jquery.ui.override.css" />
             <link rel="stylesheet" type="text/css" href="css/settings.css" />
+            <link rel="shortcut icon" href="images/favicon.ico">
             <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
             <script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
             <script type="text/javascript" src="js/menu.js"></script>
@@ -456,6 +461,7 @@ class WebRoot:
           <body id="dt_example">
             <div id="menu">
                 <ul class="menu">
+                    <a href="/"><img src="images/gamezlogo.png" height="30" alt="Gamez"></a>
                     <li class="parent">
                         <a href="/">
                             Home
@@ -1247,6 +1253,7 @@ class WebRoot:
             <link rel="stylesheet" type="text/css" href="css/redmond/jquery-ui-1.8.16.custom.css" />
             <link rel="stylesheet" type="text/css" href="css/datatables.css" />
             <link rel="stylesheet" type="text/css" href="css/jquery.ui.override.css" />
+            <link rel="shortcut icon" href="images/favicon.ico">
             <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
             <script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
             <script type="text/javascript" src="js/menu.js"></script>
@@ -1256,6 +1263,7 @@ class WebRoot:
         html = html + """
             <div id="menu">
                 <ul class="menu">
+                    <a href="/"><img src="images/gamezlogo.png" height="30" alt="Gamez"></a>
                     <li class="parent">
                         <a href="/">
                             Home
@@ -1372,6 +1380,7 @@ class WebRoot:
             <link rel="stylesheet" type="text/css" href="css/redmond/jquery-ui-1.8.16.custom.css" />
             <link rel="stylesheet" type="text/css" href="css/datatables.css" />
             <link rel="stylesheet" type="text/css" href="css/jquery.ui.override.css" />
+            <link rel="shortcut icon" href="images/favicon.ico">
             <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
             <script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
             <script type="text/javascript" src="js/menu.js"></script>
@@ -1381,6 +1390,7 @@ class WebRoot:
         html = html + """
             <div id="menu">
                 <ul class="menu">
+                    <a href="/"><img src="images/gamezlogo.png" height="30" alt="Gamez"></a>
                     <li class="parent">
                         <a href="/">
                             Home
