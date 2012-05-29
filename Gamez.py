@@ -116,7 +116,9 @@ class RunApp():
             folderProcessingScheduler = cherrypy.process.plugins.Monitor(cherrypy.engine,RunFolderProcessingTask,float(900))
             folderProcessingScheduler.subscribe()
             LogEvent("Starting the Gamez web server")
-            cherrypy.quickstart(WebRoot(app_path),'/',config=conf)
+            cherrypy.tree.mount(WebRoot(app_path), config = conf)
+            cherrypy.engine.start()
+            cherrypy.engine.block()
         except KeyboardInterrupt:
             LogEvent("Shutting down Gamez")
             if(isToDaemonize == 1):    
