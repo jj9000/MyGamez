@@ -53,7 +53,10 @@ class WebRoot:
             <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
             <script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script>
             <script type="text/javascript" src="js/menu.js"></script>
-            <script type="text/javascript" language="javascript" src="/js/jquery.dataTables.min.js"></script>
+            <script type="text/javascript" language="javascript" src="/js/jquery.dataTables.min.js"></script>"""
+        if(status_message <> ''):
+            html = html + """<meta http-equiv="refresh" content="7, URL=/">"""
+        html = html + """
           </head>
           <body id="dt_example">"""
         if(status_message <> ''):
@@ -93,6 +96,11 @@ class WebRoot:
                         <a href="/comingsoon">
                             Upcoming Releases
                         </a>
+                    </li>
+                    <li class="parent">
+                        <a href="/shutdown"><img src="/css/datatables_images/shutdown.png" alt="OFF">
+                        </a>
+                        <ul><li><a href="/shutdown">Shutdown</a></li><li><a href="/reboot">Reboot</a></li></ul>
                     </li>
                 </ul>
                 <div style="text-align:right;margin-right:20px">
@@ -1801,6 +1809,18 @@ class WebRoot:
         AddXbox360GamesIfMissing()
         AddComingSoonGames()
         status = "Game list has been updated successfully"
+        raise cherrypy.InternalRedirect("/?status_message=" + status)
+
+    @cherrypy.expose
+    def shutdown(self):
+        cherrypy.engine.exit()
+        status = "Gamez will be shutting down!!! Bye"
+        raise cherrypy.InternalRedirect("/?status_message=" + status)
+
+    @cherrypy.expose
+    def reboot(self):
+        cherrypy.engine.restart()
+        status = "Gamez will be restart!!!"
         raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
