@@ -349,7 +349,13 @@ class GameTasks():
             responseObject = opener.open(url)
             response = responseObject.read()
             responseObject.close()
-            completedDir = response.split(":")[2].replace("'","").replace(" ","").replace("{","").replace("}","").replace("\n","")
+            #completedDir = response.split(":")[2].replace("'","").replace(" ","").replace("{","").replace("}","").replace("\n","")
+            if os.name == 'nt': 
+                completedDir = response.split(":")[2].replace(" '","")
+                completedDir = completedDir + ":" + response.split(":")[3].replace("'","").replace(" ","").replace("{","").replace("}","").replace("\n","")
+            else:
+                completedDir = response.split(":")[2].replace("'","").replace(" ","").replace("{","").replace("}","").replace("\n","")
+            DebugLogEvent("Sabnzb Complet_Dir: [" + completedDir + "]")
             return completedDir
     	except:
     	    LogEvent("Unable to get Sab Download Complete Directory")
@@ -366,7 +372,12 @@ class GameTasks():
             responseObject = opener.open(url)
             response = responseObject.read()
             responseObject.close()
-            scriptDir = response.split(":")[2].replace("'","").replace(" ","").replace("{","").replace("}","").replace("\n","")
+            if os.name == 'nt': 
+                scriptDir = response.split(":")[2].replace(" '","")
+                scriptDir = scriptDir + ":" + response.split(":")[3].replace("'","").replace(" ","").replace("{","").replace("}","").replace("\n","")
+            else:
+                scriptDir = response.split(":")[2].replace("'","").replace(" ","").replace("{","").replace("}","").replace("\n","")
+            DebugLogEvent("Script Path :[" + scriptDir + "]")
             destPath = os.path.join(scriptDir,"gamezPostProcess.py")
             try:
                 LogEvent("Copying post process script to Sabnzbd scripts folder")
