@@ -97,6 +97,10 @@ def AddGameToDbFromTheGamesDb(thegamesdbid,status):
         raw_system = 'PC'
     elif(xmlGameSystem == 'Sony Playstation 3'):
         raw_system = 'PS3'
+    elif(xmlGameSystem == 'Nintendo Wii'):
+        raw_system = 'Wii'
+    elif(xmlGameSystem == 'Microsoft Xbox 360'):
+        raw_system = 'Xbox360'
     else:
         LogEvent("ERROR: No System found" + xmlGameSystem)
         raw_system = 'NONE'
