@@ -297,7 +297,12 @@ def ComandoLine():
 
 
 if __name__ == '__main__':
-    app_path = sys.path[0]
+    # set Path
+    if hasattr(sys, 'frozen'):
+        app_path = os.path.dirname(sys.executable)
+    else:
+        app_path = os.path.abspath(__file__)
+
     CheckConfigForAllKeys(app_path)
     ValidateDB()
     config = ConfigParser.RawConfigParser()
