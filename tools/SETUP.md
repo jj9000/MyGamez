@@ -12,7 +12,7 @@ and the for creating the exe file
 
     python setup.py py2exe
 
-After that you will find a Gamez.exe and the css folder in the dict folder
+After that you will find a Gamez.exe and the css folder in the dist folder
 
 <hr />
 
