@@ -301,7 +301,7 @@ if __name__ == '__main__':
     if hasattr(sys, 'frozen'):
         app_path = os.path.dirname(sys.executable)
     else:
-        app_path = os.path.abspath(__file__)
+        app_path = sys.path[0]
 
     CheckConfigForAllKeys(app_path)
     ValidateDB()
