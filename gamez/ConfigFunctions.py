@@ -219,6 +219,9 @@ def CheckConfigForAllKeys(app_path):
         config.set('SystemGenerated','https_support_enabled','0')
         changesMade = True
 
+    if(config.has_option('SystemGenerated','retention') == False):
+        config.set('SystemGenerated','retention','1100')
+        changesMade = True
 
     if(config.has_option('Newznab','api_key') == False):
         config.set('Newznab','api_key','""')

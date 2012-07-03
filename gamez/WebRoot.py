@@ -335,6 +335,7 @@ class WebRoot:
         blacklist_words_wii = config.get('SystemGenerated','blacklist_words_wii').replace('"','')
         clearlog_at_startup = config.get('SystemGenerated','clearlog_at_startup').replace('"','')
         https_support_enabled = config.get('SystemGenerated','https_support_enabled').replace('"','')
+        retention = config.get('SystemGenerated','retention').replace('"','')
 
         if(debugChecked == "1"):
            debugChecked = "CHECKED"
@@ -824,6 +825,15 @@ class WebRoot:
 							<br />
 							<table>
 								<tr>
+									<td>
+										<label><b>Retention</b></label>
+										<br />
+										<input style="width:120px" type="text" name="retention" id="retention" value='""" + config.get('SystemGenerated','retention').replace('"','') +  """' />
+										<br />
+									</td>
+							 	</tr>
+								<tr><td>&nbsp;</td></tr>
+    								<tr>
 									<td>
 										<label><b>Blacklisted Words for XBOX360</b></label>
 										<br />
@@ -1550,7 +1560,7 @@ class WebRoot:
             raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
-    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',nzbsuEnabled='',nzbsuapi='',https_support='',clearlog=''):
+    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',nzbsuEnabled='',nzbsuapi='',https_support='',clearlog='',retention=''):
         cherrypyHost = '"' + cherrypyHost + '"'
         nzbMatrixUsername = '"' + nzbMatrixUsername + '"'
         nzbMatrixApi = '"' + nzbMatrixApi + '"'
@@ -1588,7 +1598,8 @@ class WebRoot:
         webinterface = '"' + webinterface + '"'
         blacklist_words_wii = '"' + blacklist_words_wii + '"'
         blacklist_words_xbox360 = '"' + blacklist_words_xbox360 + '"'
-        
+        retention = '"' + retention +'"'
+
         if(debugEnabled == 'debugEnabled'):
             debugEnabled = "1"
         else:
@@ -1727,6 +1738,7 @@ class WebRoot:
         config.set('SystemGenerated','blacklist_words_wii',blacklist_words_wii)
         config.set('SystemGenerated','clearlog_at_startup',clearlog)
         config.set('SystemGenerated','https_support_enabled',https_support)
+        config.set('SystemGenerated','retention',retention)
         config.set('Newznab','host',newznabHost)
         config.set('Newznab','port',newznabPort)
         config.set('Newznab','wii_category_id',newznabWiiCat)

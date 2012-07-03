@@ -19,6 +19,7 @@ Current Features:
 
 ***Dependencies***
 
-Gamez requires Python and CherryPY. The CherryPy module is included with Gamez. Python must be installed on the system on which Gamez will be ran.
+Gamez requires Python and CherryPY. The CherryPy module is included with Gamez. Python 2.7 or higher must be installed on the system on which Gamez will be ran.
+For https support you also need openssl for creating the certificate.
 
 <hr />
