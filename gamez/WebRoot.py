@@ -315,6 +315,7 @@ class WebRoot:
         growlChecked = config.get('SystemGenerated','growl_enabled').replace('"','')
         prowlChecked = config.get('SystemGenerated','prowl_enabled').replace('"','')
         notifoChecked = config.get('SystemGenerated','notifo_enabled').replace('"','')
+        notifymyandroidChecked = config.get('SystemGenerated','notifymyandroid_enabled').replace('"','')
         xbmcChecked = config.get('SystemGenerated','xbmc_enabled').replace('"','')
         nzbBlackholeChecked = config.get('SystemGenerated','blackhole_nzb_enabled').replace('"','')
         torrentBlackholeChecked = config.get('SystemGenerated','blackhole_torrent_enabled').replace('"','')
@@ -369,6 +370,10 @@ class WebRoot:
             notifoChecked = "CHECKED"
         else:
             notifoChecked = ""    
+        if(notifymyandroidChecked == "1"):
+            notifymyandroidChecked = "CHECKED"
+        else:
+            notifymyandroidChecked = ""
         if(xbmcChecked == "1"):
             xbmcChecked = "CHECKED"
         else:
@@ -947,7 +952,28 @@ class WebRoot:
 					<tr><td>&nbsp;</td></tr>
 					<tr width="100%">
 						<td  style="border:solid 1px" width="45%" valign="top">
-							<br />
+							<label style="float:left"><b><u>Notify My Android</u></b></label>
+								<div style="float:right">
+									<input type="checkbox" name="notifymyandroidEnabled" id="notifymyandroidEnabled" value="notifymyandroidEnabled" """ + notifymyandroidChecked + """ />Enabled
+								</div>
+							<br />	
+							<div id=notifymyandroidoptions>
+							<table>
+								<tr>
+									<td>
+										<label><b>NMA API Key</b></label>
+										<br />
+										<input style="width:400px" type="text" name="notifymyandroidApi" id="notifymyandroidApi" value='""" + config.get('Notifications','notifymyandroid_apikey').replace('"','') +  """' />
+									</td>
+								</tr>
+							</table>
+							</div>
+						</td>
+						<td width="10px">&nbsp;</td>						
+					</tr>
+					<tr><td>&nbsp;</td></tr>
+					<tr width="100%">
+						<td  style="border:solid 1px" width="45%" valign="top">
 							<label style="float:left"><b><u>XBMC</u></b></label>
 								<div style="float:right">
 									<input type="checkbox" name="xbmcEnabled" id="xbmcEnabled" value="xbmcEnabled" """ + xbmcChecked + """ />Enabled
@@ -1197,6 +1223,27 @@ class WebRoot:
 				else
 				{
 					$("#notifooptions").hide("fast");
+				}
+				});
+			});
+			$(document).ready(function()
+			{
+				if ($("#notifymyandroidEnabled").is(":checked"))
+				{
+					$("#notifymyandroidoptions").show();
+				}
+				else
+				{
+					$("#notifymyandroidoptions").hide();
+				}
+				$("#notifymyandroidEnabled").click(function(){
+				if ($("#notifymyandroidEnabled").is(":checked"))
+				{
+					$("#notifymyandroidoptions").show("fast");
+				}
+				else
+				{
+					$("#notifymyandroidoptions").hide("fast");
 				}
 				});
 			});
@@ -1560,7 +1607,7 @@ class WebRoot:
             raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
-    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',nzbsuEnabled='',nzbsuapi='',https_support='',clearlog='',retention=''):
+    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',notifymyandroidEnabled='',notifymyandroidApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', sabDownloadDirectory='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',nzbsuEnabled='',nzbsuapi='',https_support='',clearlog='',retention=''):
         cherrypyHost = '"' + cherrypyHost + '"'
         nzbMatrixUsername = '"' + nzbMatrixUsername + '"'
         nzbMatrixApi = '"' + nzbMatrixApi + '"'
@@ -1582,6 +1629,7 @@ class WebRoot:
         growlPassword = '"' + growlPassword + '"'
         notifoUsername = '"' + notifoUsername + '"'
         notifoApi = '"' + notifoApi + '"'
+        notifymyandroidApi = '"' + notifymyandroidApi + '"'
         xbmcUsername = '"' + xbmcUsername + '"'
         xbmcPassword = '"' + xbmcPassword + '"'
         xbmcHosts = '"' + xbmcHosts + '"'
@@ -1632,6 +1680,10 @@ class WebRoot:
             notifoEnabled = "1"
         else:
             notifoEnabled = "0"     
+        if(notifymyandroidEnabled == 'notifymyandroidEnabled'):
+            notifymyandroidEnabled = "1"
+        else:
+            notifymyandroidEnabled = "0"
         if(xbmcEnabled == 'xbmcEnabled'):
             xbmcEnabled = "1"
         else:
@@ -1719,6 +1771,7 @@ class WebRoot:
         config.set('SystemGenerated','growl_enabled',growlEnabled)
         config.set('SystemGenerated','prowl_enabled',prowlEnabled)
         config.set('SystemGenerated','notifo_enabled',notifoEnabled)
+        config.set('SystemGenerated','notifymyandroid_enabled',notifymyandroidEnabled)
         config.set('SystemGenerated','xbmc_enabled',xbmcEnabled)
         config.set('SystemGenerated','blackhole_nzb_enabled',nzbBlackholeEnabled)
         config.set('SystemGenerated','blackhole_torrent_enabled',torrentBlackholeEnabled)
@@ -1752,6 +1805,7 @@ class WebRoot:
         config.set('Notifications','growl_password',growlPassword)
         config.set('Notifications','notifo_username',notifoUsername)
         config.set('Notifications','notifo_apikey',notifoApi)
+        config.set('Notifications','notifymyandroid_apikey',notifymyandroidApi)
         config.set('Notifications','xbmc_username',xbmcUsername)
         config.set('Notifications','xbmc_password',xbmcPassword)
         config.set('Notifications','xbmc_hosts',xbmcHosts)

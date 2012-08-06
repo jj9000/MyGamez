@@ -138,6 +138,10 @@ def CheckConfigForAllKeys(app_path):
         config.set('SystemGenerated','notifo_enabled','0')
         changesMade = True   
         
+    if(config.has_option('SystemGenerated','notifymyandroid_enabled') == False):
+        config.set('SystemGenerated','notifymyandroid_enabled','0')
+        changesMade = True 
+
     if(config.has_option('SystemGenerated','xbmc_enabled') == False):
         config.set('SystemGenerated','xbmc_enabled','0')
         changesMade = True
@@ -273,6 +277,10 @@ def CheckConfigForAllKeys(app_path):
 
     if(config.has_option('Notifications','notifo_apikey') == False):
         config.set('Notifications','notifo_apikey','""')
+        changesMade = True
+
+    if(config.has_option('Notifications','notifymyandroid_apikey') == False):
+        config.set('Notifications','notifymyandroid_apikey','""')
         changesMade = True
 
     if(config.has_option('Notifications','xbmc_username') == False):
