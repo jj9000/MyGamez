@@ -70,7 +70,7 @@ class WebRoot:
         html = html + """
             <div id="menu">
                 <ul class="menu">
-                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez"></a>
+                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez" border="0"></a>
                      <li class="parent">
                         <a href="/">
                             Home
@@ -98,7 +98,7 @@ class WebRoot:
                         </a>
                     </li>
                     <li class="parent">
-                        <a href="/shutdown"><img src="/css/datatables_images/shutdown.png" alt="OFF">
+                        <a href="/shutdown"><img src="/css/datatables_images/shutdown.png" alt="OFF" border="0">
                         </a>
                         <ul><li><a href="/shutdown">Shutdown</a></li><li><a href="/reboot">Reboot</a></li></ul>
                     </li>
@@ -207,7 +207,7 @@ class WebRoot:
           <body id="dt_example">
             <div id="menu">
                 <ul class="menu">
-                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez"></a>
+                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez" border="0"></a>
                     <li class="parent">
                         <a href="/">
                             Home
@@ -475,7 +475,7 @@ class WebRoot:
           <body id="dt_example">
             <div id="menu">
                 <ul class="menu">
-                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez"></a>
+                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez" border="0"></a>
                     <li class="parent">
                         <a href="/">
                             Home
@@ -1330,7 +1330,7 @@ class WebRoot:
         html = html + """
             <div id="menu">
                 <ul class="menu">
-                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez"></a>
+                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez" border="0"></a>
                     <li class="parent">
                         <a href="/">
                             Home
@@ -1457,7 +1457,7 @@ class WebRoot:
         html = html + """
             <div id="menu">
                 <ul class="menu">
-                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez"></a>
+                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez" border="0"></a>
                     <li class="parent">
                         <a href="/">
                             Home
