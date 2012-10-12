@@ -6,6 +6,11 @@ from Logger import LogEvent, DebugLogEvent
 import urllib
 import json
 import Notifications
+import urllib
+import urllib2
+
+import lib.feedparser as feedparser
+from gamez.Helper import replace_all
 
 def GetGamesFromTerm(term):
     db_path = os.path.join(os.path.abspath(""),"Gamez.db")
@@ -310,7 +315,7 @@ def ValidateDB():
 	cursor.close()
 		
     if(comingSoonTableExists == False):
-	sql = "create table comingsoon(ID INTEGER NOT NULL PRIMARY KEY UNIQUE,GameTitle TEXT(255),ReleaseDate DATE,System TEXT(255))"
+	sql = "create table comingsoon(ID INTEGER NOT NULL PRIMARY KEY UNIQUE,GameTitle TEXT(255),ReleaseDate TEXT(255),System TEXT(255))"
 	connection = sqlite3.connect(db_path)
 	cursor = connection.cursor()
 	cursor.execute(sql)
@@ -446,41 +451,57 @@ def ClearComingSoonGames():
     return
     
 def AddComingSoonGames():
-        comingSoonWebServiceUrl = "http://www.gamezapp.org/webservice/comingsoon"
-        response = ''
-        try:
-            responseObject = urllib.FancyURLopener({}).open(comingSoonWebServiceUrl)
-            response = responseObject.read()
-            responseObject.close()
-            json_data = json.loads(response)
-        except:
-            LogEvent("Unable to connect to web service: " + comingSoonWebServiceUrl)
-            return
+        # Set systems
+        systems = [ 'wii', 'ps3', 'xbox360', 'pc' ]
         ClearComingSoonGames()
-        for data in json_data:
-            game_name = data['GameTitle']
-            release_date = data['ReleaseDate'] 
-            system = data['System']
-            db_path = os.path.join(os.path.abspath(""),"Gamez.db")
-            sql = "SELECT count(ID) from comingsoon where gametitle = '" + game_name.replace("'","''") + "' AND system='" + system + "'"
-            connection = sqlite3.connect(db_path)
-            cursor = connection.cursor()
-            cursor.execute(sql)
-            result = cursor.fetchall()    
-            recordCount = result[0][0] 
-            cursor.close()
-            if(str(recordCount) == "0"):
-                LogEvent("Adding " + system + " Game [" + game_name.replace("'","''") + "] to Coming Soon Game List")
-                sql = "INSERT INTO comingsoon (gametitle,releasedate,system) values('" + game_name.replace("'","''") + "','" + release_date + "','" + system + "')"
-                cursor = connection.cursor()
-                cursor.execute(sql)
-                connection.commit()
-                cursor.close()       
-        return    
-        
+        for system in systems:
+            if(system == 'wii'):
+               systembrace = " (Wii)"
+            if(system == 'ps3'):
+               systembrace = " (Playstation 3)"
+            if(system == 'xbox360'):
+               systembrace = " (Xbox 360)"
+            if(system == 'pc'):
+               systembrace = " (PC)"
+            url = "http://www.gamerevolution.com/rss/release_dates.xml?system=" + str(system)
+            DebugLogEvent("Search URL [ " + url + " ]")
+            try:
+                releasedata = urllib2.urlopen(url, timeout=20).read()
+            except Exception, e:
+                LogEvent("Unable to connect to Game Revolution: %s \n Exeption: %s" % (url, e))
+                return False
+            d = feedparser.parse(releasedata)
+            for item in d.entries:
+                   game_name = item.title
+                   if(game_name == 'Game Revolution - Release Dates`'):
+                       return False
+                   else:
+                       game_name = game_name.replace(systembrace,'')
+                       release = item.description 
+                       release_date = release.replace('Release date set for ','') 
+                       release_date = replace_all(release_date)
+                       DebugLogEvent(" Release date for " + str(game_name) + " is " + str(release_date)) 
+                       db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+                       sql = "SELECT count(ID) from comingsoon where gametitle = '" + game_name.replace("'","''") + "' AND system='" + system.upper() + "'"
+                       connection = sqlite3.connect(db_path)
+                       cursor = connection.cursor()
+                       cursor.execute(sql)
+                       result = cursor.fetchall()    
+                       recordCount = result[0][0] 
+                       cursor.close()
+                       if(str(recordCount) == "0"):
+                           DebugLogEvent("Adding " + system + " Game [" + game_name.replace("'","''") + "] to Coming Soon Game List")
+                           sql = "INSERT INTO comingsoon (GameTitle,ReleaseDate,System) values('" + game_name.replace("'","''") + "','" + release_date.replace(",","''") + "','" + system.upper() + "')"
+                           cursor = connection.cursor()
+                           cursor.execute(sql)
+                           connection.commit()
+                           cursor.close()       
+        return
+
+     
 def GetUpcomingGames():
     db_path = os.path.join(os.path.abspath(""),"Gamez.db")
-    sql = "SELECT gametitle,strftime('%m/%d/%Y',releasedate),system,id FROM comingsoon order by releasedate asc"
+    sql = "SELECT gametitle,releasedate,system,id FROM comingsoon order by releasedate asc"
     data = ''
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
