@@ -234,18 +234,19 @@ def RunFolderProcessingTask():
 def ComandoLine():    
     from optparse import OptionParser
  
-    p = OptionParser()
+    usage = "usage: %prog [-options] [arg]"
+    p = OptionParser(usage=usage)
     p.add_option('-d', '--daemonize', action = "store_true",
                  dest = 'daemonize', help = "Run the server as a daemon")
-    p.add_option('--debug', action = "store_true",
+    p.add_option('-D', '--debug', action = "store_true",
                  dest = 'debug', help = "Enable Debug Log")
-    p.add_option('--pidfile',
+    p.add_option('-p', '--pidfile',
                  dest = 'pidfile', default = None,
                  help = "Store the process id in the given file")
-    p.add_option('--port',
+    p.add_option('-P', '--port',
                  dest = 'port', default = None,
                  help = "Force webinterface to listen on this port")
-    p.add_option('--nolaunch', action = "store_true",
+    p.add_option('-n', '--nolaunch', action = "store_true",
                  dest = 'nolaunch', help="Don't start browser")
 
     options, args = p.parse_args()
