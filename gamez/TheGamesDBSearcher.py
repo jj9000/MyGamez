@@ -54,7 +54,7 @@ def GetDetailscover(TheGamesDBurl,system):
             xmlGamecover="_platformviewcache/platform/boxart/12-1.jpg"
         elif(system == "PC"):
             xmlGamecover="_platformviewcache/platform/boxart/1-1.jpg"
-        if(system == "Wii"):
+        elif(system == "Wii"):
             xmlGamecover="_platformviewcache/platform/boxart/9-1.jpg"
         elif(system == "Xbox360"):
             xmlGamecover="_platformviewcache/platform/boxart/15-1.jpg"
