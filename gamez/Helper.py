@@ -28,9 +28,9 @@ def launchBrowser(host, port,https):
             LogEvent('Could not launch a browser.')
 
 def FindAddition(title):
-    dic = {'PAL', 'USA', 'NSTC', 'JAP', 'Region Free', 'RF', 'FRENCH', 'ITALIAN', 'GERMAN', 'SPANISH', 'ASIA', 'JTAG', 'XGD3', 'WiiWare', 'WiiVC', 'Mixed'}
+    additionlist = ['PAL', 'USA', 'NSTC', 'JAP', 'Region Free', 'RF', 'FRENCH', 'ITALIAN', 'GERMAN', 'SPANISH', 'ASIA', 'JTAG', 'XGD3', 'WiiWare', 'WiiVC', 'Mixed']
     regionword = ""
-    for word in dic:
+    for word in additionlist:
           if word.upper() in title:
              regionword = regionword + " (" + word + ")" 
           if word.lower() in title:

@@ -10,10 +10,12 @@ import urllib
 import urllib2
 
 import lib.feedparser as feedparser
+import gamez
 from gamez.Helper import replace_all
 
+
 def GetGamesFromTerm(term):
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "SELECT GAME_NAME,SYSTEM FROM GAMES where game_name like '%" + term.replace("'","''") + "%' ORDER BY GAME_NAME ASC"
     data = ""
     connection = sqlite3.connect(db_path)
@@ -34,7 +36,7 @@ def GetGamesFromTerm(term):
     return data
 
 def GetGameDataFromTerm(term,system):
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "SELECT game_name,game_type,id,system,cover FROM games where game_name like '%" + term.replace("'","''") + "%' AND system like '%" + system + "%' order by game_name asc"
     data = ''
     connection = sqlite3.connect(db_path)
@@ -57,7 +59,7 @@ def GetGameDataFromTerm(term,system):
 
 def AddGameToDb(db_id,status):
     LogEvent("Adding game in 'Wanted' status")
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "select game_name,system,game_type,cover from games where ID = '" + db_id + "'"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
@@ -79,7 +81,7 @@ def AddGameToDb(db_id,status):
 
 def AddGameUpcomingToDb(db_id,status):
     LogEvent("Adding game in 'Wanted' status")
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "select GameTitle,system from comingsoon where ID = '" + db_id + "'"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
@@ -101,7 +103,7 @@ def AddGameUpcomingToDb(db_id,status):
     #comingsoon
 
 def GetRequestedGames(filter=''):
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     if(filter <> ''):
         sql = "SELECT id,game_name,game_type,status,system,cover,thegamesdb_id FROM requested_games Where status='" + filter + "' order by game_name asc"
     else:        
@@ -140,7 +142,7 @@ def GetRequestedGames(filter=''):
 
 def RemoveGameFromDb(db_id):
     LogEvent("Removing game")
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "delete from requested_games where ID='" + db_id + "'"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
@@ -150,7 +152,7 @@ def RemoveGameFromDb(db_id):
     return
 
 def GetRequestedGamesAsArray(manualSearchGame):
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     if(manualSearchGame <> ''):
         sql = "SELECT game_name,ID,system FROM requested_games WHERE id='" + manualSearchGame + "' order by game_name asc"
     else:
@@ -164,7 +166,7 @@ def GetRequestedGamesAsArray(manualSearchGame):
 
 def UpdateStatus(game_id,status):
     LogEvent("Update status of game to " + status)
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     game_name = ""
     system = ""
     sql = "select game_name,system from requested_games where ID='" + game_id + "'"
@@ -184,13 +186,12 @@ def UpdateStatus(game_id,status):
     connection.commit()
     cursor.close()
     message = "Gamez Notification: " + system + " Game: " + game_name + " has been " + status
-    appPath = os.path.abspath("")
     DebugLogEvent(message)
-    Notifications.HandleNotifications(status,message,appPath)
+    Notifications.HandleNotifications(status,message,gamez.DATADIR)
     return
 
 def ValidateDB():
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "select name from sqlite_master where type='table'"
     logTableExists = False
     oldWiiGamesTableExists = False
@@ -324,7 +325,7 @@ def ValidateDB():
         AddComingSoonGames()
 
 def AddEventToDB(message):
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     createdDate = time.strftime("%a %d %b %Y / %X",time.localtime() )
     sql = "INSERT INTO gamez_log (message,created_date) values('" + message.replace("'","''") + "','" + createdDate + "')"
     connection = sqlite3.connect(db_path)
@@ -335,7 +336,7 @@ def AddEventToDB(message):
     return
 
 def GetLog():
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "SELECT message,created_date FROM gamez_log order by created_date desc,id desc limit 1000"
     data = ''
     connection = sqlite3.connect(db_path)
@@ -354,7 +355,7 @@ def GetLog():
     return data
 
 def ClearDBLog():
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "delete from gamez_log"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
@@ -364,7 +365,7 @@ def ClearDBLog():
     return
 
 def ClearGames(system):
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "delete from games where system = '" + system + "'"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
@@ -389,7 +390,7 @@ def AddWiiGamesIfMissing():
             game_name = data['GameTitle']
             game_type = data['GameType'] 
             game_cover = data['GameCover']
-            db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+            db_path = os.path.join(gamez.DATADIR,"Gamez.db")
             sql = "SELECT count(ID) from games where game_name = '" + game_name.replace("'","''") + "' AND system='Wii'"
             connection = sqlite3.connect(db_path)
             cursor = connection.cursor()
@@ -423,7 +424,7 @@ def AddXbox360GamesIfMissing():
         game_name = data['GameTitle']
         game_type = data['GameType'] 
         game_cover = data['GameCover']
-        db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+        db_path = os.path.join(gamez.DATADIR,"Gamez.db")
         sql = "SELECT count(ID) from games where game_name = '" + game_name.replace("'","''") + "' AND system='Xbox360'"
         connection = sqlite3.connect(db_path)
         cursor = connection.cursor()
@@ -441,7 +442,7 @@ def AddXbox360GamesIfMissing():
     return
 
 def ClearComingSoonGames():
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "delete from comingsoon"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
@@ -497,10 +498,9 @@ def AddComingSoonGames():
                            connection.commit()
                            cursor.close()       
         return
-
-     
+        
 def GetUpcomingGames():
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "SELECT gametitle,releasedate,system,id FROM comingsoon order by releasedate asc"
     data = ''
     connection = sqlite3.connect(db_path)
@@ -525,7 +525,7 @@ def GetUpcomingGames():
 
 def GetRequestedGameName(db_id):
     game_name = "[" + db_id + "]"
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "select Game_name from requested_games where ID = '" + db_id + "'"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
@@ -537,7 +537,7 @@ def GetRequestedGameName(db_id):
 
 def GetRequestedGameSystem(db_id):
     system = ""
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "select System from requested_games where ID = '" + db_id + "'"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
@@ -548,7 +548,7 @@ def GetRequestedGameSystem(db_id):
     return system
 
 def GetRequestedGamesForFolderProcessing():
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "select Game_name,system from requested_games"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
@@ -558,7 +558,7 @@ def GetRequestedGamesForFolderProcessing():
     return result
 
 def CheckForSameGame(game_name):
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "select count(ID) from requested_games where Game_name = '" + game_name + "'"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
@@ -571,7 +571,7 @@ def CheckForSameGame(game_name):
         return True
 
 def UpdateStatusForFolderProcessing(game_name,system,status):
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "update requested_games set status='" + status + "' where game_name='" + game_name + "' and system='" + system + "'"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
@@ -581,7 +581,7 @@ def UpdateStatusForFolderProcessing(game_name,system,status):
     return
 
 def ApiGetGamesFromTerm(term,system):
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "SELECT GAME_NAME,SYSTEM,COVER FROM GAMES where game_name like '%" + term.replace("'","''") + "%' AND SYSTEM LIKE '%" + system + "%' ORDER BY GAME_NAME ASC"
     data = ""
     connection = sqlite3.connect(db_path)
@@ -603,7 +603,7 @@ def ApiGetGamesFromTerm(term,system):
     return data
     
 def ApiGetRequestedGames():
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "SELECT GAME_NAME,SYSTEM,COVER FROM REQUESTED_GAMES ORDER BY GAME_NAME ASC"
     data = ""
     connection = sqlite3.connect(db_path)

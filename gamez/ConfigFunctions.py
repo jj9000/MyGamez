@@ -3,12 +3,13 @@ import os
 import base64
 import hashlib
 import random
+import gamez
 
-def CheckConfigForAllKeys(app_path):
+def CheckConfigForAllKeys():
     changesMade = False
     config = ConfigParser.RawConfigParser()
-    configFilePath = os.path.join(app_path,'Gamez.ini')
-    config.read(configFilePath)
+    configfile = os.path.abspath(gamez.CONFIG_PATH)
+    config.read(configfile)
 
     if(config.has_section('global') == False):
         config.add_section('global')
@@ -336,5 +337,5 @@ def CheckConfigForAllKeys(app_path):
         changesMade = True
 
     if(changesMade):
-        with open(configFilePath,'wb') as configFile:
+        with open(configfile,'wb') as configFile:
             config.write(configFile)

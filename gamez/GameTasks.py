@@ -7,6 +7,7 @@ import shutil
 import stat
 import json
 import ConfigParser
+import gamez
 
 from DBFunctions import GetRequestedGamesAsArray,UpdateStatus
 from Helper import replace_all,FindAddition
@@ -24,9 +25,9 @@ class GameTasks():
 
     def FindGames(self, manualSearchGame,nzbmatrixusername, nzbmatrixapi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath,isNZBSU,nzbsuapi,retention):
         # First some variables
-        confFile = os.path.join(os.path.dirname(os.path.abspath("__FILE__")),'Gamez.ini')
         config = ConfigParser.RawConfigParser()
-        config.read(confFile)
+        configfile = os.path.abspath(gamez.CONFIG_PATH)
+        config.read(configfile)
         isPS3TBEnable = config.get('SystemGenerated','ps3_tb_enable').replace('"','')
         isPS3JBEnable = config.get('SystemGenerated','ps3_jb_enable').replace('"','')       
         BlacklistWordsXbox360 = config.get('SystemGenerated','blacklist_words_xbox360').replace('"','')
@@ -399,8 +400,8 @@ class GameTasks():
 
     def ForceSearch(self,dbid):
         config = ConfigParser.RawConfigParser()
-        confFile = os.path.join(os.path.dirname(os.path.abspath("__FILE__")),'Gamez.ini')
-        config.read(confFile)
+        configfile = os.path.abspath(gamez.CONFIG_PATH)
+        config.read(configfile)
         nzbMatrixUser = config.get('NZBMatrix','username').replace('"','')
         nzbMatrixApi = config.get('NZBMatrix','api_key').replace('"','')
         nzbsuapi = config.get('NZBSU','api_key').replace('"','')

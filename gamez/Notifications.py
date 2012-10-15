@@ -5,11 +5,12 @@ from Logger import LogEvent,DebugLogEvent
 import lib.gntp
 import lib.notifo as Notifo
 from gamez.xbmc.Xbmc import * 
+import gamez
 
 def HandleNotifications(status,message,appPath):
     config = ConfigParser.RawConfigParser()
-    configFilePath = os.path.join(appPath,'Gamez.ini')
-    config.read(configFilePath)
+    configfile = os.path.abspath(gamez.CONFIG_PATH)
+    config.read(configfile)
     prowlApi = config.get('Notifications','prowl_api').replace('"','')
     growlHost = config.get('Notifications','growl_host').replace('"','')
     growlPort = config.get('Notifications','growl_port').replace('"','')

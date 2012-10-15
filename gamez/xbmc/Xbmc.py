@@ -4,9 +4,10 @@ import base64
 import cherrypy
 import urllib
 import urllib2
+
 from gamez.Logger import *
 import ConfigParser
-
+import gamez
              
 def xbmcsend(host, command, username, password, appPath):
               
@@ -30,8 +31,8 @@ def xbmcsend(host, command, username, password, appPath):
 def xbmcnotify(message,appPath):
 
         config = ConfigParser.RawConfigParser()
-        configFilePath = os.path.join(appPath,'Gamez.ini')
-        config.read(configFilePath)
+        configfile = os.path.abspath(gamez.CONFIG_PATH)
+        config.read(configfile)
         username = config.get('Notifications','xbmc_username').replace('"','')
         password = config.get('Notifications','xbmc_password').replace('"','')
         hosts = config.get('Notifications','xbmc_hosts').replace('"','')

@@ -8,6 +8,7 @@ import urllib2
 import tarfile
 import shutil
 from Logger import LogEvent
+import gamez
 
 def CheckForNewVersion(app_path):
     LogEvent("Checking to see if a new version is available")
@@ -15,7 +16,8 @@ def CheckForNewVersion(app_path):
     currentVersion = VersionNumber()
     mostRecentVersion = GetLatestVersion()
     config = ConfigParser.RawConfigParser()
-    config.read(os.path.join(app_path,'Gamez.ini'))
+    configfile = os.path.abspath(gamez.CONFIG_PATH)
+    config.read(configfile)
     isToDeferUpgrade = config.get('SystemGenerated','is_to_ignore_update').replace('"','')
     ignoredVersion = config.get('SystemGenerated','ignored_version').replace('"','')
     if(LooseVersion(mostRecentVersion) > LooseVersion(currentVersion)):
@@ -50,13 +52,13 @@ def IgnoreVersion(app_path):
     LogEvent("Ignoring Version")
     versionToIgnore = GetLatestVersion()
     config = ConfigParser.RawConfigParser()
-    configFilePath = os.path.join(app_path,'Gamez.ini')
-    config.read(configFilePath)
+    configfile = os.path.abspath(gamez.CONFIG_PATH)
+    config.read(configfile)
     if(config.has_section('SystemGenerated') == False):
         config.add_section('SystemGenerated')
     config.set('SystemGenerated','is_to_ignore_update','1')
     config.set('SystemGenerated','ignored_version','"' + versionToIgnore + '"')
-    with open(configFilePath,'wb') as configFile:
+    with open(configfile,'wb') as configFile:
         config.write(configFile)
 
 def UpdateToLatestVersion(app_path):
@@ -94,13 +96,13 @@ def UpdateToLatestVersion(app_path):
             os.renames(src,dest)
     shutil.rmtree(updatePath) 
     config = ConfigParser.RawConfigParser()
-    configFilePath = os.path.join(app_path,'Gamez.ini')
-    config.read(configFilePath)
+    configfile = os.path.abspath(gamez.CONFIG_PATH)
+    config.read(configfile)
     if(config.has_section('SystemGenerated') == False):
         config.add_section('SystemGenerated')
     config.set('SystemGenerated','is_to_ignore_update','0')
     config.set('SystemGenerated','ignored_version','"versionToIgnore"')
-    with open(configFilePath,'wb') as configFile:
+    with open(configfile,'wb') as configFile:
         config.write(configFile)
     LogEvent("Upgrading complete")
     return "Successfully Upgraded to Version " + latestVersion

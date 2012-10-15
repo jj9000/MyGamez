@@ -14,6 +14,7 @@ from FolderFunctions import *
 from Constants import *
 from GameTasks import *
 from TheGamesDBSearcher import GetGameDataFromTheGamesDB, AddGameToDbFromTheGamesDb
+import gamez
 
 class WebRoot:
     appPath = ''
@@ -26,8 +27,8 @@ class WebRoot:
         if(os.name <> 'nt'):
             os.chdir(WebRoot.appPath)
         config = ConfigParser.RawConfigParser()
-        configFilePath = os.path.join(WebRoot.appPath,'Gamez.ini')
-        config.read(configFilePath)
+        configfile = os.path.abspath(gamez.CONFIG_PATH)
+        config.read(configfile)
         defaultSearch = config.get('SystemGenerated','default_search').replace('"','')
         if(defaultSearch == "Wii"):
             defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
@@ -175,8 +176,8 @@ class WebRoot:
         if(os.name <> 'nt'):
             os.chdir(WebRoot.appPath)
         config = ConfigParser.RawConfigParser()
-        configFilePath = os.path.join(WebRoot.appPath,'Gamez.ini')
-        config.read(configFilePath)
+        configfile = os.path.abspath(gamez.CONFIG_PATH)
+        config.read(configfile)
         defaultSearch = config.get('SystemGenerated','default_search').replace('"','')
         if(defaultSearch == "Wii"):
             defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
@@ -305,8 +306,8 @@ class WebRoot:
         if(os.name <> 'nt'):
             os.chdir(WebRoot.appPath)
         config = ConfigParser.RawConfigParser()
-        configFilePath = os.path.join(WebRoot.appPath,'Gamez.ini')
-        config.read(configFilePath)
+        configfile = os.path.abspath(gamez.CONFIG_PATH)
+        config.read(configfile)        
         debugChecked = config.get('global','debug_enabled').replace('"','')
         sabChecked = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
         nzbmatrixChecked = config.get('SystemGenerated','nzbmatrix_enabled').replace('"','')
@@ -742,7 +743,7 @@ class WebRoot:
 									<input type="checkbox" name="newznabEnabled" id="newznabEnabled" value="newznabEnabled" """ + newznabChecked + """ />Enabled
 								</div>
 							<br />
-							<div id=newznaboptions>
+					<div id=newznaboptions>
 							<table>
 								<tr>
 									<td>
@@ -790,8 +791,7 @@ class WebRoot:
 									</td>
 								</tr>
 															
-							</table>
-							</div>	
+							</table>	
 						</td>						
 					</tr>
 					<tr><td>&nbsp;</td></tr>
@@ -950,7 +950,7 @@ class WebRoot:
 						<td width="10px">&nbsp;</td>						
 					</tr>
 					<tr><td>&nbsp;</td></tr>
-					<tr width="100%">
+					<tr width="100%"> 
 						<td  style="border:solid 1px" width="45%" valign="top">
 							NOTE: This isn't implemented yet.
 							<br />
@@ -1297,8 +1297,8 @@ class WebRoot:
         if(os.name <> 'nt'):
             os.chdir(WebRoot.appPath)
         config = ConfigParser.RawConfigParser()
-        configFilePath = os.path.join(WebRoot.appPath,'Gamez.ini')
-        config.read(configFilePath)
+        configfile = os.path.abspath(gamez.CONFIG_PATH)
+        config.read(configfile)       
         defaultSearch = config.get('SystemGenerated','default_search').replace('"','')
         if(defaultSearch == "Wii"):
             defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
@@ -1330,7 +1330,7 @@ class WebRoot:
         html = html + """
             <div id="menu">
                 <ul class="menu">
-                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez" border="0"></a>
+                    <a href="/"><img src="images/gamezlogo.png" height="41" alt="Gamez" ></a>
                     <li class="parent">
                         <a href="/">
                             Home
@@ -1424,8 +1424,8 @@ class WebRoot:
         if(os.name <> 'nt'):
             os.chdir(WebRoot.appPath)
         config = ConfigParser.RawConfigParser()
-        configFilePath = os.path.join(WebRoot.appPath,'Gamez.ini')
-        config.read(configFilePath)
+        configfile = os.path.abspath(gamez.CONFIG_PATH)
+        config.read(configfile)        
         defaultSearch = config.get('SystemGenerated','default_search').replace('"','')
         if(defaultSearch == "Wii"):
             defaultSearch = "<option>---</option><option selected>Wii</option><option>Xbox360</option><option>PS3</option><option>PC</option>"
@@ -1749,8 +1749,8 @@ class WebRoot:
 
 
         config = ConfigParser.RawConfigParser()
-        configFilePath = os.path.join(WebRoot.appPath,'Gamez.ini')
-        config.read(configFilePath)
+        configfile = os.path.abspath(gamez.CONFIG_PATH)
+        config.read(configfile)
         config.set('global','server.socket_host',cherrypyHost)
         config.set('global','gamez_port',cherrypyPort)
         config.set('global','user_name',gamezUsername)
@@ -1820,7 +1820,7 @@ class WebRoot:
         config.set('Folders','wii_destination',wiiDestination)
         config.set('Folders','ps3_destination',PS3Destination)
         config.set('Folders','pc_destination',PCDestination)
-        with open(configFilePath,'wb') as configFile:
+        with open(configfile,'wb') as configFile:
             config.write(configFile)
         status = "Application Settings Updated Successfully. Gamez is restarting. If after 5 seconds, Gamez isn't working, update the Gamez.ini file and re-launch Gamez"
         raise cherrypy.InternalRedirect("/?status_message=" + status)
@@ -1833,8 +1833,8 @@ class WebRoot:
     @cherrypy.expose
     def api(self,api_key='',mode='',term='',system='',status='',db_id=''):
         config = ConfigParser.RawConfigParser()
-        configFilePath = os.path.join(WebRoot.appPath,'Gamez.ini')
-        config.read(configFilePath)
+        configfile = os.path.abspath(gamez.CONFIG_PATH)
+        config.read(configfile)
         systemApiKey = config.get('SystemGenerated','api_key').replace('"','')
         if(api_key == ''):
             return json.dumps({"Error" : "API Key Required"})

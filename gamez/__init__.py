@@ -1,0 +1,2 @@
+DATADIR = ""
+CONFIG_PATH = ""

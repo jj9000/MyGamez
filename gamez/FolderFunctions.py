@@ -3,13 +3,14 @@ import os
 from DBFunctions import *
 import shutil
 import ConfigParser
+import gamez
 
 def ProcessDownloaded(game_id,status,filePath):
     game_name = GetRequestedGameName(game_id)
     system = GetRequestedGameSystem(game_id)
-    confFile = os.path.join(os.path.dirname(os.path.abspath("__FILE__")),'Gamez.ini')
     config = ConfigParser.RawConfigParser()
-    config.read(confFile)
+    configfile = os.path.abspath(gamez.CONFIG_PATH)
+    config.read(configfile)
     destPath = ""
     if(system == "Wii"):
         if(config.get('SystemGenerated','process_download_folder_wii_enabled').replace('"','') == "0"):
@@ -58,9 +59,9 @@ def ProcessDownloaded(game_id,status,filePath):
     return
 
 def ScanFoldersToProcess():
-    confFile = os.path.join(os.path.dirname(os.path.abspath("__FILE__")),'Gamez.ini')
     config = ConfigParser.RawConfigParser()
-    config.read(confFile)
+    configfile = os.path.abspath(gamez.CONFIG_PATH)
+    config.read(configfile)
     processSabFolder = config.get('SystemGenerated','process_sabnzbd_download_folder_enabled').replace('"','')
     processNzbFolder = config.get('SystemGenerated','process_nzb_download_folder_enabled').replace('"','')
     processTorrentFolder = config.get('SystemGenerated','process_torrent_download_folder_enabled').replace('"','')
@@ -76,9 +77,9 @@ def ScanFoldersToProcess():
     return
 
 def ProcessFolder(folderPath):
-    confFile = os.path.join(os.path.dirname(os.path.abspath("__FILE__")),'Gamez.ini')
     config = ConfigParser.RawConfigParser()
-    config.read(confFile)
+    configfile = os.path.abspath(gamez.CONFIG_PATH)
+    config.read(configfile)
     for subdir,dirs,files in os.walk(folderPath):
         for file in files:
             moveFile = False

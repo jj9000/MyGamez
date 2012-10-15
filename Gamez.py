@@ -2,7 +2,6 @@
 
 import cherrypy
 import os
-from gamez.WebRoot import WebRoot
 import sys
 import socket
 import sched
@@ -15,24 +14,25 @@ import ConfigParser
 import cherrypy.process.plugins
 from cherrypy.process.plugins import Daemonizer,PIDFile
 from cherrypy import server
+from gamez.WebRoot import WebRoot
 from gamez.ConfigFunctions import CheckConfigForAllKeys
 from gamez.DBFunctions import ValidateDB,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,AddComingSoonGames,ClearDBLog
 from gamez.Logger import LogEvent
 from gamez.Helper import launchBrowser,create_https_certificates
 import cherrypy.lib.auth_basic
 from gamez.FolderFunctions import *
+import gamez
 
-app_path = os.path.dirname(os.path.abspath("__FILE__"))
-config_path = os.path.join(app_path,'Gamez.ini')
+app_path = os.path.dirname(os.path.abspath(__file__))
 
 class RunApp():
 
 
     def RunWebServer(self):
         LogEvent("Generating CherryPy configuration")
-        cherrypy.config.update(config_path)
+        cherrypy.config.update(gamez.CONFIG_PATH)
         config = ConfigParser.RawConfigParser()
-        config.read('Gamez.ini')
+        config.read(gamez.CONFIG_PATH)
         # Set Webinterface Path
         css_webinterface = "css/" + config.get('SystemGenerated','webinterface').replace('"','')
         css_path = os.path.join(app_path,css_webinterface)
@@ -92,7 +92,10 @@ class RunApp():
                     LogEvent("!!!!!!!! Unable to activate HTTPS support !!!!!!!!!! Perhaps you have forgotten to install openssl?")
                     config.set('SystemGenerated','https_support_enabled',"0")
 
-               
+        # Workoround for OSX. It seems have problem wit the autoreload engine
+        if sys.platform.startswith('darwin'):
+             cherrypy.config.update({'engine.autoreload.on':    False,})
+     
         isSabEnabled = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
         if(isSabEnabled == "1"):
             LogEvent("Generating Post Process Script")
@@ -233,7 +236,7 @@ def RunFolderProcessingTask():
 
 def ComandoLine():    
     from optparse import OptionParser
- 
+
     usage = "usage: %prog [-options] [arg]"
     p = OptionParser(usage=usage)
     p.add_option('-d', '--daemonize', action = "store_true",
@@ -248,9 +251,52 @@ def ComandoLine():
                  help = "Force webinterface to listen on this port")
     p.add_option('-n', '--nolaunch', action = "store_true",
                  dest = 'nolaunch', help="Don't start browser")
+    p.add_option('-b', '--datadir', default = None,
+                 dest = 'datadir', help="Set the directory for the database")
+    p.add_option('-c', '--config', default = None,
+                 dest = 'config', help="Path to configfile")
 
     options, args = p.parse_args()
 
+    #Set the Paths
+    if options.datadir:
+        datadir = options.datadir
+
+        if not os.path.isdir(datadir):
+            os.makedirs(datadir)
+
+    else:
+        datadir = app_path
+
+    datadir = os.path.abspath(datadir)
+    
+    if not os.access(datadir, os.W_OK):
+        raise SystemExit("Data dir must be writeable '" + datadir + "'")
+
+    if options.config:
+        config_path = options.config
+    else:
+        config_path = os.path.join(datadir, 'Gamez.ini')
+
+    config_dir = os.path.abspath(config_path)
+
+    if not os.access(os.path.dirname(config_dir), os.W_OK) and not os.access(config_dir, os.W_OK):
+        if not os.path.exists(os.path.dirname(config_dir)):
+            os.makedirs(os.path.dirname(config_dir))
+        else:
+            raise SystemExit("Directory for config file must be writeable")
+    
+    #Set global variables
+    gamez.CONFIG_PATH = config_path
+    gamez.DATADIR = datadir
+
+    #Some cheks and Settings
+    CheckConfigForAllKeys()
+    ValidateDB()
+    config = ConfigParser.RawConfigParser()
+    config.read(gamez.CONFIG_PATH)
+
+    # Let`s check some options
     # Daemonize
     if options.daemonize:
        print "------------------- Preparing to run in daemon mode -------------------"
@@ -299,32 +345,13 @@ def ComandoLine():
 
 
 if __name__ == '__main__':
-    # set Path
-    if hasattr(sys, 'frozen'):
-        app_path = os.path.dirname(sys.executable)
-    else:
-        app_path = sys.path[0]
-
-    CheckConfigForAllKeys(app_path)
-    ValidateDB()
+    ComandoLine()
     config = ConfigParser.RawConfigParser()
-    configFilePath = os.path.join(app_path,'Gamez.ini')
-    config.read(configFilePath)
+    configfile = os.path.abspath(gamez.CONFIG_PATH)
+    config.read(configfile)
     clearLog = config.get('SystemGenerated','clearlog_at_startup').replace('"','')
-    sabnzbdHost = config.get('Sabnzbd','host').replace('"','')
-    sabnzbdPort = config.get('Sabnzbd','port').replace('"','')
-    sabnzbdApi = config.get('Sabnzbd','api_key').replace('"','')
     if(clearLog == "1"):
        ClearDBLog()
        LogEvent("Log cleared")
-    LogEvent("Attempting to get download completed directory from Sabnzbd")
-    ComandoLine()
-    sabCompleted = gamez.GameTasks.GameTasks().CheckSabDownloadPath(sabnzbdApi,sabnzbdHost,sabnzbdPort)
-    if(sabCompleted <> ""):
-    	LogEvent("Setting Value")
-    	config.set('Folders','sabnzbd_completed','"' + sabCompleted + '"')
-    	LogEvent("Trying to save")
-    	with open(configFilePath,'wb') as configFile:
-            config.write(configFile)    
   
     RunApp().RunWebServer()

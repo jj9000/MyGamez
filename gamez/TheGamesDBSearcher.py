@@ -7,6 +7,7 @@ import urllib2
 import json
 import DBFunctions
 from xml.dom.minidom import *
+import gamez
 
 def GetGameDataFromTheGamesDB(term,system):
     tagnbr = 0
@@ -106,7 +107,7 @@ def AddGameToDbFromTheGamesDb(thegamesdbid,status):
         raw_system = 'NONE'
     game_cover = "http://thegamesdb.net/banners/" + GetDetailscover(TheGamesDBxml,raw_system)
     game_genre = GetDetailsgenre(TheGamesDBxml)
-    db_path = os.path.join(os.path.abspath(""),"Gamez.db")
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     connection = sqlite3.connect(db_path)
     LogEvent("Adding " + raw_system + " Game [ " + xmlGameTitle.replace("'","''") + " ] to Game List. Cover :" + game_cover.replace("'","''"))
     try:
