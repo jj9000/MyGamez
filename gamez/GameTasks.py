@@ -365,7 +365,7 @@ class GameTasks():
     	
     def CheckIfPostProcessExistsInSab(self,sabnzbdApi,sabnzbdHost,sabnzbdPort):
         
-        path = os.path.abspath("postprocess")
+        path = os.path.join(gamez.PROGDIR, "postprocess")
         srcPath = os.path.join(path,"gamezPostProcess.py")
         url = "http://" + sabnzbdHost + ":" + sabnzbdPort + "/sabnzbd/api?mode=get_config&apikey=" + sabnzbdApi + "&section=misc&keyword=script_dir"
         try:

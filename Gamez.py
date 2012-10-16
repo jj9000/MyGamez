@@ -24,6 +24,7 @@ from gamez.FolderFunctions import *
 import gamez
 
 app_path = os.path.dirname(os.path.abspath(__file__))
+gamez.PROGDIR = app_path
 
 class RunApp():
 

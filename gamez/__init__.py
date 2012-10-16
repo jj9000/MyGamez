@@ -1,2 +1,3 @@
 DATADIR = ""
 CONFIG_PATH = ""
+PROGDIR = ""
