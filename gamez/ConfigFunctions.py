@@ -52,7 +52,7 @@ def CheckConfigForAllKeys():
         changesMade = True
     
     if(config.has_option('global','server.socket_host') == False):
-        config.set('global','server.socket_host','"127.0.0.1"')
+        config.set('global','server.socket_host','"0.0.0.0"')
         changesMade = True
 
     if(config.has_option('global','gamez_port') == False):
