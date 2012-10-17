@@ -28,7 +28,20 @@ def GetGameDataFromTheGamesDB(term,system):
         data = data + rowdata
         tagnbr = tagnbr + 1
     return data
-      
+
+
+def GetDetails(TheGamesDB_id,tagname,tagnbr):
+    try:
+        TheGamesDBxml = GetXmlFromTheGamesDB('None','None',TheGamesDB_id)
+        xmlTagdetail = TheGamesDBxml.getElementsByTagName(tagname)[tagnbr].toxml()
+        xmlGamedetailclean = xmlTagdetail.replace('<' + str(tagname) + '>','').replace('</' + str(tagname) + '>','')
+        DebugLogEvent("Found tag for " + str(tagname) + " : " + xmlGamedetailclean)
+        return str(xmlGamedetailclean)
+    except:
+        xmlGamedetailclean = " "
+        return xmlGamedetailclean
+
+
 def GetDetailsgenre(TheGamesDBurl):
     try:
         xmlTaggenre = TheGamesDBurl.getElementsByTagName('genre')[0].toxml()
@@ -48,7 +61,10 @@ def GetDetailscover(TheGamesDBurl,system):
             xmlrawTagcover = TheGamesDBurl.getElementsByTagName('boxart')[0]
         xmlTagcover = xmlrawTagcover.childNodes[0]
         DebugLogEvent("Found a Cover: " + xmlTagcover.nodeValue)
-        return str(xmlTagcover.nodeValue)
+        if('None' in str(xmlTagcover.nodeValue)):
+            return False
+        else:   
+            return str(xmlTagcover.nodeValue)
     except:
         if(system == "PS3"):
             xmlGamecover="_platformviewcache/platform/boxart/12-1.jpg"

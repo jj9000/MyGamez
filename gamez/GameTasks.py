@@ -342,27 +342,7 @@ class GameTasks():
     	    LogEvent("Unable to download torrent to blackhole: " + url)
             return False
     	return True
-    	
-    def CheckSabDownloadPath(self,sabnzbdApi,sabnzbdHost,sabnzbdPort):
-    	url = "http://" + sabnzbdHost + ":" + sabnzbdPort + "/sabnzbd/api?mode=get_config&apikey=" + sabnzbdApi + "&section=misc&keyword=complete_dir"
-    	try:
-    	    opener = urllib.FancyURLopener({})
-            responseObject = opener.open(url)
-            response = responseObject.read()
-            responseObject.close()
-            #completedDir = response.split(":")[2].replace("'","").replace(" ","").replace("{","").replace("}","").replace("\n","")
-            if os.name == 'nt': 
-                completedDir = response.split(":")[2].replace(" '","")
-                completedDir = completedDir + ":" + response.split(":")[3].replace("'","").replace(" ","").replace("{","").replace("}","").replace("\n","")
-            else:
-                completedDir = response.split(":")[2].replace("'","").replace(" ","").replace("{","").replace("}","").replace("\n","")
-            DebugLogEvent("Sabnzb Complet_Dir: [" + completedDir + "]")
-            return completedDir
-    	except:
-    	    LogEvent("Unable to get Sab Download Complete Directory")
-    	    return ""
-    	return
-    	
+    	    	
     def CheckIfPostProcessExistsInSab(self,sabnzbdApi,sabnzbdHost,sabnzbdPort):
         
         path = os.path.join(gamez.PROGDIR, "postprocess")

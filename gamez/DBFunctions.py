@@ -8,10 +8,13 @@ import json
 import Notifications
 import urllib
 import urllib2
+import threading
 
 import lib.feedparser as feedparser
 import gamez
+
 from gamez.Helper import replace_all
+from gamez.Postproccess import PostProcess
 
 
 def GetGamesFromTerm(term):
@@ -187,6 +190,9 @@ def UpdateStatus(game_id,status):
     cursor.close()
     message = "Gamez Notification: " + system + " Game: " + game_name + " has been " + status
     DebugLogEvent(message)
+    if(status == "Downloaded"):
+        nfothread =threading.Timer(0,PostProcess,[game_id])
+        nfothread.start()
     Notifications.HandleNotifications(status,message,gamez.DATADIR)
     return
 
@@ -546,6 +552,18 @@ def GetRequestedGameSystem(db_id):
     system = str(result[0])
     cursor.close()
     return system
+
+def GetRequestedTheGamesDBid(db_id):
+    system = ""
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
+    sql = "select thegamesdb_id from requested_games where ID = '" + db_id + "'"
+    connection = sqlite3.connect(db_path)
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()[0]
+    TheGamesdb_id = str(result[0])
+    cursor.close()
+    return TheGamesdb_id
 
 def GetRequestedGamesForFolderProcessing():
     db_path = os.path.join(gamez.DATADIR,"Gamez.db")

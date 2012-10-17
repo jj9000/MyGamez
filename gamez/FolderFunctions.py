@@ -65,7 +65,7 @@ def ScanFoldersToProcess():
     processSabFolder = config.get('SystemGenerated','process_sabnzbd_download_folder_enabled').replace('"','')
     processNzbFolder = config.get('SystemGenerated','process_nzb_download_folder_enabled').replace('"','')
     processTorrentFolder = config.get('SystemGenerated','process_torrent_download_folder_enabled').replace('"','')
-    sabFolder = config.get('Folders','sabnzbd_completed').replace('"','').replace("\\\\","\\")
+    sabFolder = config.get('Sabnzbd','folder').replace('"','').replace("\\\\","\\")
     nzbFolder = config.get('Folders','nzb_completed').replace('"','').replace("\\\\","\\")
     torrentFolder = config.get('Folders','torrent_completed').replace('"','').replace("\\\\","\\")
     if(processSabFolder == "1"):
