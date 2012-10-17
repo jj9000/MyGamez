@@ -1,5 +1,6 @@
 import os
 import sys
+import shutil
 import urllib
 import urllib2
 import ConfigParser
@@ -26,13 +27,13 @@ def PostProcess(dbid):
 
      term = ""
      tagnbr = int("0")
-
      config = ConfigParser.RawConfigParser()
      configfile = os.path.abspath(gamez.CONFIG_PATH)
      config.read(configfile)
      sabnzbd_complet = config.get('Sabnzbd','folder').replace('"','')
      sabnzbd_folder = os.path.abspath(sabnzbd_complet)
 
+          
      system = DBFunctions.GetRequestedGameSystem(dbid)
      TheGamesDB_id = DBFunctions.GetRequestedTheGamesDBid(dbid)
    
@@ -58,6 +59,7 @@ def PostProcess(dbid):
               DebugLogEvent("Titel: " + str(game_title) + " System: " + game_system + " Description: " + game_description + " Publischer: " + game_publisher + " Developer: " + game_developer + " Genre: "+ game_genre + " Release: " + game_release)
               WriteMeta(gamefoldername, game_title, game_system, game_description, game_publisher, game_developer, game_genre, game_release)
               SaveArt(gamefoldername, TheGamesDB_id)
+              RenameAndMoveFolder(gamefoldername, game_title,game_system) 
          except:
               LogEvent("ERROR: !!!!!!NFO creating faild!!!!!!")
      else:
@@ -107,6 +109,41 @@ def SaveArt(gamefoldername, TheGamesDB_id):
       fanartfile = os.path.join(os.path.abspath(gamefoldername),'fanart.jpg')
       bannerfile = os.path.join(os.path.abspath(gamefoldername),'banner.jpg')
       logofile = os.path.join(os.path.abspath(gamefoldername),'logo.png')
-      
 
+
+# This will rename and remove the folder
+# Notice! This is at the moment experimental
+      
+def RenameAndMoveFolder(srcFoldername, destFoldernam, game_system):
+
+     config = ConfigParser.RawConfigParser()
+     configfile = os.path.abspath(gamez.CONFIG_PATH)
+     config.read(configfile)
+
+     if(game_system == "Sony Playstation 3"):
+             destfolder = config.get('Folders','ps3_destination').replace('"','')
+             system = "ps3"
+     if(game_system == "PC"):
+             destfolder = config.get('Folders','pc_destination').replace('"','')
+             system = "pc"
+     if(game_system == "Nintendo Wii"):
+             destfolder = config.get('Folders','wii_destination').replace('"','')
+             system = "wii"
+     if(game_system == "Microsoft Xbox 360"):
+             destfolder = config.get('Folders','xbox360_destination').replace('"','')
+             system = "xbox360"
+ 
+     systempostprocessenable = "process_download_folder_" + system + "_enable"
+     if(systempostprocessenable):
+             destpath = os.path.join(destfolder,destFoldernam)
+             DebugLogEvent("Move from [" + str(srcFoldername) + "] to [" + str(destpath) + "]")
+             if not os.access(os.path.dirname(destpath), os.W_OK) and not os.access(destpath, os.W_OK):
+                  if not os.path.exists(os.path.dirname(destpath)):
+                       os.makedirs(os.path.dirname(destpath))
+                       os.renames(srcFoldername,destpath)
+                       LogEvent("Renaming and moveing succses")
+                  else:
+                       LogEvent("ERROR: Directory [" + destpath + "]must be writeable!!!!!")
+
+     
 
