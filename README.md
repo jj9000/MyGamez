@@ -23,3 +23,17 @@ Gamez requires Python and CherryPY. The CherryPy module is included with Gamez. 
 For https support you also need openssl for creating the certificate.
 
 <hr />
+
+***Options***
+
+Gamez has some console options:
+     
+      *  -d,         --daemonize         Run the server as a daemon
+      *  -D,         --debug             Enable Debug Log
+      *  -p PIDFILE, --pidfile=PIDFILE   Store the process id in the given file
+      *  -P PORT,    --port=PORT         Force webinterface to listen on this port
+      *  -n,         --nolaunch          Don't start browser
+      *  -b DATADIR, --datadir=DATADIR   Set the directory for the database
+      *  -c CONFIG,  --config=CONFIG     Path to configfile
+
+<hr />
