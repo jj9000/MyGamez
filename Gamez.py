@@ -23,7 +23,12 @@ import cherrypy.lib.auth_basic
 from gamez.FolderFunctions import *
 import gamez
 
-app_path = os.path.dirname(os.path.abspath(__file__))
+# Fix for correct path
+if hasattr(sys, 'frozen'):
+    app_path = os.path.dirname(os.path.abspath(sys.executable))
+else:
+    app_path = os.path.dirname(os.path.abspath(__file__))
+
 gamez.PROGDIR = app_path
 
 class RunApp():
@@ -94,7 +99,7 @@ class RunApp():
                     config.set('SystemGenerated','https_support_enabled',"0")
 
         # Workoround for OSX. It seems have problem wit the autoreload engine
-        if sys.platform.startswith('darwin'):
+        if sys.platform.startswith('darwin') or sys.platform.startswith('win'):
              cherrypy.config.update({'engine.autoreload.on':    False,})
      
         isSabEnabled = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
