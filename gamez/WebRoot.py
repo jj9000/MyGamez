@@ -1,21 +1,22 @@
 import cherrypy
 import json
 import os
-from DBFunctions import GetGamesFromTerm, GetGameDataFromTerm, AddGameToDb, GetRequestedGames, RemoveGameFromDb, UpdateStatus, GetLog, ClearDBLog,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,ApiGetGamesFromTerm,AddComingSoonGames,GetUpcomingGames,AddGameUpcomingToDb,ApiGetRequestedGames,ApiUpdateRequestedStatus
-from UpgradeFunctions import CheckForNewVersion,IgnoreVersion,UpdateToLatestVersion
-from FolderFunctions import ProcessFolder
 import ConfigParser
-from time import sleep
 import urllib
-from xml.dom import minidom
 import base64
 import hashlib
 import random
-from FolderFunctions import *
+
+from time import sleep
+from xml.dom import minidom
+
+import gamez
 from Constants import *
 from GameTasks import *
+from DBFunctions import GetGamesFromTerm, GetGameDataFromTerm, AddGameToDb, GetRequestedGames, RemoveGameFromDb, UpdateStatus, GetLog, ClearDBLog,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,ApiGetGamesFromTerm,AddComingSoonGames,GetUpcomingGames,AddGameUpcomingToDb,ApiGetRequestedGames,ApiUpdateRequestedStatus
+from UpgradeFunctions import CheckForNewVersion,IgnoreVersion,UpdateToLatestVersion
 from TheGamesDBSearcher import GetGameDataFromTheGamesDB, AddGameToDbFromTheGamesDb
-import gamez
+
 
 class WebRoot:
     appPath = ''
@@ -1560,8 +1561,6 @@ class WebRoot:
             os.chdir(WebRoot.appPath)
         if(status <> ''):
             UpdateStatus(game_id,status)
-        if(status == 'Downloaded'):
-            ProcessDownloaded(game_id,status,filePath)
         raise cherrypy.InternalRedirect('/')
 
     @cherrypy.expose
