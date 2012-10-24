@@ -56,7 +56,6 @@ def PostProcess(dbid):
                          DebugLogEvent("Gamefoldername: " + str(gamefoldername))
               
               
-              DebugLogEvent("Titel: " + str(game_title) + " System: " + game_system + " Description: " + game_description + " Publischer: " + game_publisher + " Developer: " + game_developer + " Genre: "+ game_genre + " Release: " + game_release)
               WriteMeta(gamefoldername, game_title, game_system, game_description, game_publisher, game_developer, game_genre, game_release)
               SaveArt(gamefoldername, TheGamesDB_id)
               RenameAndMoveFolder(gamefoldername, game_title,game_system) 
@@ -91,8 +90,6 @@ def WriteMeta(gamefoldername,game_title='',game_system='',game_description='',ga
         file.write('     <developer>' + str(game_developer) + '<developer>')
         file.write("\n")
         file.write('     <genre>' + str(game_genre) + '</genre>')
-        file.write("\n")
-        file.write('     <release>' + str(game_release) + '</release>')
         file.write("\n")
         file.write('</game>')
         file.close
@@ -136,14 +133,12 @@ def RenameAndMoveFolder(srcFoldername, destFoldernam, game_system):
      systempostprocessenable = "process_download_folder_" + system + "_enable"
      if(systempostprocessenable):
              destpath = os.path.join(destfolder,destFoldernam)
-             DebugLogEvent("Move from [" + str(srcFoldername) + "] to [" + str(destpath) + "]")
-             if not os.access(os.path.dirname(destpath), os.W_OK) and not os.access(destpath, os.W_OK):
-                  if not os.path.exists(os.path.dirname(destpath)):
-                       os.makedirs(os.path.dirname(destpath))
-                       os.renames(srcFoldername,destpath)
-                       LogEvent("Renaming and moveing succses")
-                  else:
-                       LogEvent("ERROR: Directory [" + destpath + "]must be writeable!!!!!")
+             try:
+                  DebugLogEvent("Move from [" + str(srcFoldername) + "] to [" + str(destpath) + "]")
+                  os.renames(srcFoldername,destpath)
+                  LogEvent("Renaming and moving succses")
+             except:
+                  LogEvent("ERROR: Directory [" + destpath + "]must be writeable!!!!!")
 
      
 

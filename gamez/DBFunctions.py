@@ -9,6 +9,7 @@ import Notifications
 import urllib
 import urllib2
 import threading
+import ConfigParser
 
 import lib.feedparser as feedparser
 import gamez
@@ -168,6 +169,11 @@ def GetRequestedGamesAsArray(manualSearchGame):
     return result
 
 def UpdateStatus(game_id,status):
+    
+    config = ConfigParser.RawConfigParser()
+    configfile = os.path.abspath(gamez.CONFIG_PATH)
+    config.read(configfile)
+    
     LogEvent("Update status of game to " + status)
     db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     game_name = ""
@@ -190,9 +196,13 @@ def UpdateStatus(game_id,status):
     cursor.close()
     message = "Gamez Notification: " + system + " Game: " + game_name + " has been " + status
     DebugLogEvent(message)
-    if(status == "Downloaded"):
-        nfothread =threading.Timer(0,PostProcess,[game_id])
-        nfothread.start()
+    postprocess_system = 'process_download_folder_' + system.lower() + '_enabled'
+    if((config.get('SystemGenerated',postprocess_system).replace('"','') == "1")):
+       if(status == "Downloaded"):
+          nfothread =threading.Timer(0,PostProcess,[game_id])
+          nfothread.start()
+    else:
+       LogEvent("Skipp postprocessing for " + system + " games because it is not enabled.") 
     Notifications.HandleNotifications(status,message,gamez.DATADIR)
     return
 
@@ -567,7 +577,7 @@ def GetRequestedTheGamesDBid(db_id):
 
 def GetRequestedGamesForFolderProcessing():
     db_path = os.path.join(gamez.DATADIR,"Gamez.db")
-    sql = "select Game_name,system from requested_games"
+    sql = "select Game_name,system,id from requested_games"
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
     cursor.execute(sql)

@@ -97,10 +97,10 @@ class RunApp():
         if sys.platform.startswith('darwin'):
              cherrypy.config.update({'engine.autoreload.on':    False,})
      
-        isSabEnabled = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
-        if(isSabEnabled == "1"):
-            LogEvent("Generating Post Process Script")
-            GenerateSabPostProcessScript()
+        #isSabEnabled = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
+        #if(isSabEnabled == "1"):
+        #    LogEvent("Generating Post Process Script")
+        #    GenerateSabPostProcessScript()
         RunGameTask()
 
         LogEvent("Getting download interval from config file and invoking scheduler")
@@ -213,11 +213,13 @@ def RunGameTask():
 
 def RunGameListUpdaterTask():
     try:
-        LogEvent("Updating Game Lists")
-        AddWiiGamesIfMissing()
-        LogEvent("Wii Game List Updated")
-        AddXbox360GamesIfMissing()
-        LogEvent("XBOX 360 Game List Updated")
+        #Notice! I have disabled this because the homepage is down
+        #
+        #LogEvent("Updating Game Lists")
+        #AddWiiGamesIfMissing()
+        #LogEvent("Wii Game List Updated")
+        #AddXbox360GamesIfMissing()
+        #LogEvent("XBOX 360 Game List Updated")
         AddComingSoonGames
         LogEvent("Coming Soon Game List Updated")
     except:
@@ -228,7 +230,7 @@ def RunGameListUpdaterTask():
 
 def RunFolderProcessingTask():
     try:
-        ScanFoldersToProcess()
+        ProcessFolder()
     except:
         errorMessage = "Error occurred while processing folders"
         for message in sys.exc_info():

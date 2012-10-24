@@ -7,6 +7,8 @@ import shutil
 import stat
 import json
 import ConfigParser
+from xml.dom.minidom import *
+
 import gamez
 
 from DBFunctions import GetRequestedGamesAsArray,UpdateStatus
@@ -275,7 +277,7 @@ class GameTasks():
         try:
             result = False
             if(isSabEnabled == "1"):
-                result = GameTasks().AddNZBToSab(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory)
+                result = GameTasks().AddNZBToSab(nzbUrl,game_name,system,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory)
             if(isNzbBlackholeEnabled == "1"):
             	result = GameTasks().AddNZBToBlackhole(nzbUrl,nzbBlackholePath,game_name,system)
             return result
@@ -283,9 +285,9 @@ class GameTasks():
             LogEvent("Unable to download NZB: " + url)
             return False
 
-    def AddNZBToSab(self,nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory):
+    def AddNZBToSab(self,nzbUrl,game_name,system,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory):
         nzbUrl = urllib.quote(nzbUrl)
-        url = "http://" + sabnzbdHost + ":" +  sabnzbdPort + "/sabnzbd/api?mode=addurl&pp=3&apikey=" + sabnzbdApi + "&script=gamezPostProcess.py&name=" + nzbUrl + "&nzbname=[" + game_id + "] - "+ game_name
+        url = "http://" + sabnzbdHost + ":" +  sabnzbdPort + "/sabnzbd/api?mode=addurl&pp=3&apikey=" + sabnzbdApi + "&name=" + nzbUrl + "&nzbname=" + game_name + " ("+ system + ")"
         if(sabnzbdCategory <> ''):
             url = url + "&cat=" + sabnzbdCategory
         DebugLogEvent("Send to sabnzdb: " + url) 
@@ -377,6 +379,48 @@ class GameTasks():
             LogEvent("Unable to connect to Sanzbd: " + url)
             return
         return
+    
+    def CheckStatusInSab(self,game_name):
+        
+        config = ConfigParser.RawConfigParser()
+        configfile = os.path.abspath(gamez.CONFIG_PATH)
+        config.read(configfile)
+        
+        sabnzbdHost = config.get('Sabnzbd','host').replace('"','')
+        sabnzbdPort = config.get('Sabnzbd','port').replace('"','')
+        sabnzbdApi = config.get('Sabnzbd','api_key').replace('"','')        
+        tagnbr = 0
+        status = False
+        url = "http://" + sabnzbdHost + ":" + sabnzbdPort + "/sabnzbd/api?mode=history&apikey=" + sabnzbdApi + "&output=xml"
+        
+        DebugLogEvent("Checking for status of downloaded file in Sabnzbd")
+        try:
+            historyfile = urllib2.urlopen(url)
+            sabnzbdhistorydata = historyfile.read()
+            historyfile.close()
+            history = parseString(sabnzbdhistorydata) 
+            
+            TagElements = history.getElementsByTagName("slot")
+            for i in TagElements:
+          
+               historynameraw = history.getElementsByTagName('name')[tagnbr].toxml()
+               historyname = historynameraw.replace('<name>','').replace('</name>','')
+               if historyname == game_name:
+                  historystatusraw = history.getElementsByTagName('status')[tagnbr].toxml()
+                  historystatus = historystatusraw.replace('<status>','').replace('</status>','')
+                  DebugLogEvent("Status for " + historyname + " is " + historystatus)
+                  if(historystatus == 'Completed'):
+                      status = True
+                      break
+                  else:
+                      break
+               else:
+                 tagnbr += 1
+                 continue
+        except:
+            DebugLogEvent("ERROR: Can not parse data from SABnzbd")
+         
+        return status
 
     def ForceSearch(self,dbid):
         config = ConfigParser.RawConfigParser()

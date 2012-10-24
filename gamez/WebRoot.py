@@ -3,6 +3,7 @@ import json
 import os
 from DBFunctions import GetGamesFromTerm, GetGameDataFromTerm, AddGameToDb, GetRequestedGames, RemoveGameFromDb, UpdateStatus, GetLog, ClearDBLog,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,ApiGetGamesFromTerm,AddComingSoonGames,GetUpcomingGames,AddGameUpcomingToDb,ApiGetRequestedGames,ApiUpdateRequestedStatus
 from UpgradeFunctions import CheckForNewVersion,IgnoreVersion,UpdateToLatestVersion
+from FolderFunctions import ProcessFolder
 import ConfigParser
 from time import sleep
 import urllib
@@ -1904,3 +1905,9 @@ class WebRoot:
             os.chdir(WebRoot.appPath)
         GameTasks().ForceSearch(dbid)  
         raise cherrypy.InternalRedirect('/')
+
+    @cherrypy.expose
+    def forcepost(self):
+        ProcessFolder()
+        raise cherrypy.InternalRedirect('/')
+
