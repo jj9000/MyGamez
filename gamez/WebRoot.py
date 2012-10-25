@@ -6,6 +6,7 @@ import urllib
 import base64
 import hashlib
 import random
+import threading
 
 from time import sleep
 from xml.dom import minidom
@@ -16,7 +17,7 @@ from GameTasks import *
 from DBFunctions import GetGamesFromTerm, GetGameDataFromTerm, AddGameToDb, GetRequestedGames, RemoveGameFromDb, UpdateStatus, GetLog, ClearDBLog,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,ApiGetGamesFromTerm,AddComingSoonGames,GetUpcomingGames,AddGameUpcomingToDb,ApiGetRequestedGames,ApiUpdateRequestedStatus
 from UpgradeFunctions import CheckForNewVersion,IgnoreVersion,UpdateToLatestVersion
 from TheGamesDBSearcher import GetGameDataFromTheGamesDB, AddGameToDbFromTheGamesDb
-
+from FolderFunctions import ProcessFolder
 
 class WebRoot:
     appPath = ''
@@ -1907,6 +1908,7 @@ class WebRoot:
 
     @cherrypy.expose
     def forcepost(self):
-        ProcessFolder()
+        forcepostprocessthread = threading.Timer(0,ProcessFolder,[])
+        forcepostprocessthread.start()
         raise cherrypy.InternalRedirect('/')
 
