@@ -42,13 +42,17 @@ def GetDetailsgenre(TheGamesDBurl):
 
 def GetDetailscover(TheGamesDBurl,system):
     try:
-        try:
-            xmlrawTagcover = TheGamesDBurl.getElementsByTagName('boxart')[1] 
-        except:
-            xmlrawTagcover = TheGamesDBurl.getElementsByTagName('boxart')[0]
-        xmlTagcover = xmlrawTagcover.childNodes[0]
-        DebugLogEvent("Found a Cover: " + xmlTagcover.nodeValue)
-        return str(xmlTagcover.nodeValue)
+        for x in range(0,5):
+              xmlrawTagcover = TheGamesDBurl.getElementsByTagName('boxart')[x]  
+              controlString = xmlrawTagcover.childNodes[0].nodeValue
+              if "front" in controlString:
+                  break
+
+        DebugLogEvent("Found a Cover: " + controlString)
+        if('None' in str(controlString)):
+            return False
+        else:   
+            return str(controlString)
     except:
         if(system == "PS3"):
             xmlGamecover="_platformviewcache/platform/boxart/12-1.jpg"
