@@ -53,7 +53,7 @@ class GameTasks():
                      blacklistwords = BlacklistWordsXbox360
                      DebugLogEvent("Blacklisted Words for XBOX360 [ " + str(blacklistwords) + " ]")
                 if(system == "Wii" and BlacklistWordsWii <> ''):
-                     blacklistwords = BlacklistWordWii
+                     blacklistwords = BlacklistWordsWii
                      DebugLogEvent("Blacklisted Words for Wii [ " + blacklistwords + " ]")
                 if(system == "PS3"):
                      if(isPS3TBEnable == "1"):
