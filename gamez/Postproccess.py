@@ -21,7 +21,7 @@ from gamez.TheGamesDBSearcher import GetXmlFromTheGamesDB,GetDetails
 
 
 
-def PostProcess(dbid):
+def PostProcess(dbid,game_name):
 
      # First define some varaibles
 
@@ -32,37 +32,41 @@ def PostProcess(dbid):
      config.read(configfile)
      sabnzbd_complet = config.get('Sabnzbd','folder').replace('"','')
      sabnzbd_folder = os.path.abspath(sabnzbd_complet)
-
+     game_title = game_name
           
      system = DBFunctions.GetRequestedGameSystem(dbid)
      TheGamesDB_id = DBFunctions.GetRequestedTheGamesDBid(dbid)
-   
-     if(TheGamesDB_id != "None"):
-         try:  
-              game_title = GetDetails(TheGamesDB_id, 'GameTitle', tagnbr)
-              game_system = GetDetails(TheGamesDB_id, 'Platform' , tagnbr)
-              game_description = GetDetails(TheGamesDB_id, 'Overview', tagnbr)
-              game_publisher = GetDetails(TheGamesDB_id, 'Publisher', tagnbr)
-              game_developer = GetDetails(TheGamesDB_id, 'Developer', tagnbr)
-              game_genre = GetDetails(TheGamesDB_id, 'genre', tagnbr)
-              game_release = GetDetails(TheGamesDB_id, 'ReleaseDate', tagnbr)
+ 
+     # Search for Gamefolder
 
-              # Search for Gamefolder
-    
-              gamelist = os.listdir(sabnzbd_folder)
-              for game in gamelist:
-                   if game.find(game_title) != -1:
-                         gamefoldername = os.path.join(os.path.abspath(sabnzbd_folder),game)
-                         DebugLogEvent("Gamefoldername: " + str(gamefoldername))
+     gamelist = os.listdir(sabnzbd_folder)
+     for game in gamelist:
+        if game.find(game_title) != -1:
+           gamefoldername = os.path.join(os.path.abspath(sabnzbd_folder),game)
+           DebugLogEvent("Gamefoldername: " + str(gamefoldername))
+           if(TheGamesDB_id != "None"):
+               try:  
               
-              
-              WriteMeta(gamefoldername, game_title, game_system, game_description, game_publisher, game_developer, game_genre, game_release)
-              SaveArt(gamefoldername, TheGamesDB_id)
-              RenameAndMoveFolder(gamefoldername, game_title,game_system) 
-         except:
-              LogEvent("ERROR: !!!!!!NFO creating faild!!!!!!")
-     else:
-          LogEvent("INFO : Can not create NFO file. There is no ID from TheGamesdb.net")    
+                   game_system = GetDetails(TheGamesDB_id, 'Platform' , tagnbr)
+                   game_description = GetDetails(TheGamesDB_id, 'Overview', tagnbr)
+                   game_publisher = GetDetails(TheGamesDB_id, 'Publisher', tagnbr)
+                   game_developer = GetDetails(TheGamesDB_id, 'Developer', tagnbr)
+                   game_genre = GetDetails(TheGamesDB_id, 'genre', tagnbr)
+                   game_release = GetDetails(TheGamesDB_id, 'ReleaseDate', tagnbr)
+
+                   WriteMeta(gamefoldername, game_title, game_system, game_description, game_publisher, game_developer, game_genre, game_release)
+                   SaveArt(gamefoldername, TheGamesDB_id)
+               except:
+                  LogEvent("ERROR: !!!!!! Downloading information and arts from TheGamesDB.net faild !!!!!!")    
+           else:
+              LogEvent("INFO : Can not create NFO file. There is no ID from TheGamesdb.net")  
+           try:   
+              RenameAndMoveFolder(gamefoldername, game_title,system) 
+              return
+           except:
+              LogEvent("ERROR: Something went wrong with moving and renaming!!!!!")
+              return
+         
 
     
 
@@ -117,16 +121,16 @@ def RenameAndMoveFolder(srcFoldername, destFoldernam, game_system):
      configfile = os.path.abspath(gamez.CONFIG_PATH)
      config.read(configfile)
 
-     if(game_system == "Sony Playstation 3"):
+     if(game_system == "PS3"):
              destfolder = config.get('Folders','ps3_destination').replace('"','')
              system = "ps3"
      if(game_system == "PC"):
              destfolder = config.get('Folders','pc_destination').replace('"','')
              system = "pc"
-     if(game_system == "Nintendo Wii"):
+     if(game_system == "Wii"):
              destfolder = config.get('Folders','wii_destination').replace('"','')
              system = "wii"
-     if(game_system == "Microsoft Xbox 360"):
+     if(game_system == "Xbox360"):
              destfolder = config.get('Folders','xbox360_destination').replace('"','')
              system = "xbox360"
  

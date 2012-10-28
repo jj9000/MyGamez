@@ -23,7 +23,10 @@ def ProcessFolder():
     if(sabnzbd_enabled == '1'):
          if(folderPathSAB <> ''):
              folderPath = folderPathSAB
-             ScanFolders(folderPath, check)
+             if(os.path.isdir(folderPath)):
+                 ScanFolders(folderPath, check)
+             else:
+                 LogEvent('Please check your "Completed Folder" setting. It seems this path do not exist')
          else:
              LogEvent('"Completed Folder" for SABnzbd is not set. Please update your settings')
 
@@ -32,7 +35,10 @@ def ProcessFolder():
          if(folderPathTorrent <> ''):
              folderPath = folderPathTorrent
              check = True
-             ScanFolders(folderPath, check)
+             if(os.path.isdir(folderPath)):
+                 ScanFolders(folderPath, check)
+             else:
+                 LogEvent('Please check your "Completed Folder" setting. It seems this path do not exist')
          else:
              LogEvent('"Completed Folder" for Torrent is not set. Please update your settings')
 
@@ -52,8 +58,12 @@ def ScanFolders(folderPath,check):
                       if(GameTasks().CheckStatusInSab(foldername)):
                            DebugLogEvent("Dirname [" + str(dir) +"]")
                            UpdateStatus(str(game_id),'Downloaded')
+                           continue
                       if(check): 
                            DebugLogEvent("Dirname [" + str(dir) +"]")
                            UpdateStatus(str(game_id),'Downloaded')
+                           continue
+                 else:
+                      continue
     else:
       LogEvent('"Postprocess" is not set. Please update your settings')   

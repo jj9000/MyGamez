@@ -199,7 +199,7 @@ def UpdateStatus(game_id,status):
     postprocess_system = 'process_download_folder_' + system.lower() + '_enabled'
     if((config.get('SystemGenerated',postprocess_system).replace('"','') == "1")):
        if(status == "Downloaded"):
-          nfothread =threading.Timer(0,PostProcess,[game_id])
+          nfothread =threading.Timer(0,PostProcess,[game_id,game_name])
           nfothread.start()
     else:
        LogEvent("Skipp postprocessing for " + system + " games because it is not enabled.") 
