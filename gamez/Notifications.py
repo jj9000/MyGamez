@@ -4,6 +4,7 @@ import lib.prowlpy
 from Logger import LogEvent,DebugLogEvent
 import lib.gntp
 import lib.notifo as Notifo
+import pynma
 from gamez.xbmc.Xbmc import * 
 import gamez
 
@@ -17,9 +18,11 @@ def HandleNotifications(status,message,appPath):
     growlPassword = config.get('Notifications','growl_password').replace('"','')
     notifoUsername = config.get('Notifications','notifo_username').replace('"','')
     notifoApi = config.get('Notifications','notifo_apikey').replace('"','')
+    nmaApi = config.get('Notifications', 'notifymyandroid_apikey').replace('"','')
     prowlEnabled = config.get('SystemGenerated','prowl_enabled').replace('"','')
     growlEnabled = config.get('SystemGenerated','growl_enabled').replace('"','')
     notifoEnabled = config.get('SystemGenerated','notifo_enabled').replace('"','')
+	nmaEnabled = config.get('SystemGenerated', 'notifymyandroid_enabled').replace('"','')
     xbmcEnabled = config.get('SystemGenerated','xbmc_enabled').replace('"','')
     xbmcHosts = config.get('Notifications','xbmc_hosts').replace('"','')
 
@@ -40,6 +43,13 @@ def HandleNotifications(status,message,appPath):
     	    SendNotificationToNotifo(status,message,notifoUsername,notifoApi)
     	else:
     	    LogEvent("Notifo Settings Incomplete")
+	
+	if(nmaEnabled == "1"):
+		if(nmaApi <> ""):
+			SendNotificationToNMA(status, message, nmaApi)
+		else:
+			LogEvent("NMA Settings Incomplete")
+	
     if(xbmcEnabled == "1"):
     	if(xbmcHosts <> ""):
     	    SendNotificationToXbmc(message,appPath,xbmcHosts)
@@ -85,3 +95,12 @@ def SendNotificationToXbmc(message,appPath,xbmcHosts):
     except Exception,msg:
         LogEvent("XBMC Notification Error: " + str(msg))
         return
+		
+def SendNotificatoinToNMA(status, message, nmaApi):
+	nma = pynma.PyNMA(nmaApi)
+	try:
+		nma.push("Gamez", status, message)
+		LogEvent("NMA Notification Sent")
+	except Exception,msg:
+		LogEvent("NMA Notification Error: " + str(msg))
+		return
