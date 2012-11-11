@@ -952,8 +952,6 @@ class WebRoot:
 					<tr><td>&nbsp;</td></tr>
 					<tr width="100%"> 
 						<td  style="border:solid 1px" width="45%" valign="top">
-							NOTE: This isn't implemented yet.
-							<br />
 							<label style="float:left"><b><u>Notify My Android</u></b></label>
 								<div style="float:right">
 									<input type="checkbox" name="notifymyandroidEnabled" id="notifymyandroidEnabled" value="notifymyandroidEnabled" """ + notifymyandroidChecked + """ />Enabled
