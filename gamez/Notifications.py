@@ -4,7 +4,7 @@ import lib.prowlpy
 from Logger import LogEvent,DebugLogEvent
 import lib.gntp
 import lib.notifo as Notifo
-import pynma
+import lib.pynma
 from gamez.xbmc.Xbmc import * 
 import gamez
 
