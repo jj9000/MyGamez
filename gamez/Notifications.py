@@ -97,7 +97,7 @@ def SendNotificationToXbmc(message,appPath,xbmcHosts):
         return
         
 def SendNotificationToNMA(status, message, nmaApi):
-    nma = pynma.PyNMA(nmaApi)
+    nma = PyNMA(nmaApi)
     try:
         nma.push("Gamez", status, message)
         LogEvent("NMA Notification Sent")
