@@ -16,7 +16,7 @@ from Constants import *
 from GameTasks import *
 from DBFunctions import GetGamesFromTerm, GetGameDataFromTerm, AddGameToDb, GetRequestedGames, RemoveGameFromDb, UpdateStatus, GetLog, ClearDBLog,AddWiiGamesIfMissing,AddXbox360GamesIfMissing,ApiGetGamesFromTerm,AddComingSoonGames,GetUpcomingGames,AddGameUpcomingToDb,ApiGetRequestedGames,ApiUpdateRequestedStatus
 from UpgradeFunctions import CheckForNewVersion,IgnoreVersion,UpdateToLatestVersion
-from TheGamesDBSearcher import GetGameDataFromTheGamesDB, AddGameToDbFromTheGamesDb
+from TheGamesDBSearcher import GetGameDataFromTheGamesDB, AddGameToDbFromTheGamesDb, UpdateGame
 from FolderFunctions import ProcessFolder
 
 class WebRoot:
@@ -1912,3 +1912,7 @@ class WebRoot:
         forcepostprocessthread.start()
         raise cherrypy.InternalRedirect('/')
 
+    @cherrypy.expose
+    def refreshinfo(self,thegamesdbid):
+        UpdateGame(thegamesdbid)
+        raise cherrypy.InternalRedirect('/')
