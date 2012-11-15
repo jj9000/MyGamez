@@ -10,7 +10,7 @@ import ConfigParser
 import gamez
 
 from DBFunctions import GetRequestedGamesAsArray,UpdateStatus
-from Helper import replace_all,FindAddition
+from Helper import replace_all,FindAddition,ControlHost
 from subprocess import call
 from Logger import LogEvent,DebugLogEvent
 from Constants import VersionNumber
@@ -175,10 +175,11 @@ class GameTasks():
             LogEvent("Unrecognized System")
             return False
         game_name = replace_all(game_name)
+        newznabHost = ControlHost(newznabHost)
         if(newznabPort == '80' or newznabPort == ''):
-            url = "http://" + newznabHost + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + game_name.replace(" ","+") + "&o=json"
+            url = newznabHost + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + game_name.replace(" ","+") + "&o=json"
         else:
-            url = "http://" + newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + game_name.replace(" ","+") + "&o=json"
+            url = newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + game_name.replace(" ","+") + "&o=json"
         try:
             opener = urllib.FancyURLopener({})
             responseObject = opener.open(url)
@@ -194,11 +195,11 @@ class GameTasks():
             jsonObject = json.loads(response)
             for item in jsonObject:
                 nzbTitle = item["name"]
-                nzbID = item["guid"]
+                nzbID = item["guid"]                
                 if(newznabPort == '80' or newznabPort == ''):
-                   nzbUrl = "http://" + newznabHost + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID
+                   nzbUrl = newznabHost + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID
                 else:
-                   nzbUrl = "http://" + newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID  
+                   nzbUrl = newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID  
                 for blacklistword in blacklistwords:
                     if(blacklistword == ''):
                         DebugLogEvent("No blacklisted word(s) are given")
@@ -285,7 +286,8 @@ class GameTasks():
 
     def AddNZBToSab(self,nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory):
         nzbUrl = urllib.quote(nzbUrl)
-        url = "http://" + sabnzbdHost + ":" +  sabnzbdPort + "/sabnzbd/api?mode=addurl&pp=3&apikey=" + sabnzbdApi + "&script=gamezPostProcess.py&name=" + nzbUrl + "&nzbname=[" + game_id + "] - "+ game_name
+        sabnzbdHost = ControlHost(sabnzbdHost)
+        url = sabnzbdHost + ":" +  sabnzbdPort + "/sabnzbd/api?mode=addurl&pp=3&apikey=" + sabnzbdApi + "&script=gamezPostProcess.py&name=" + nzbUrl + "&nzbname=[" + game_id + "] - "+ game_name
         if(sabnzbdCategory <> ''):
             url = url + "&cat=" + sabnzbdCategory
         DebugLogEvent("Send to sabnzdb: " + url) 
@@ -344,7 +346,8 @@ class GameTasks():
     	return True
     	
     def CheckSabDownloadPath(self,sabnzbdApi,sabnzbdHost,sabnzbdPort):
-    	url = "http://" + sabnzbdHost + ":" + sabnzbdPort + "/sabnzbd/api?mode=get_config&apikey=" + sabnzbdApi + "&section=misc&keyword=complete_dir"
+    	sabnzbdHost = ControlHost(sabnzbdHost)
+    	url = sabnzbdHost + ":" + sabnzbdPort + "/sabnzbd/api?mode=get_config&apikey=" + sabnzbdApi + "&section=misc&keyword=complete_dir"
     	try:
     	    opener = urllib.FancyURLopener({})
             responseObject = opener.open(url)
@@ -367,7 +370,8 @@ class GameTasks():
         
         path = os.path.join(gamez.PROGDIR, "postprocess")
         srcPath = os.path.join(path,"gamezPostProcess.py")
-        url = "http://" + sabnzbdHost + ":" + sabnzbdPort + "/sabnzbd/api?mode=get_config&apikey=" + sabnzbdApi + "&section=misc&keyword=script_dir"
+        sabnzbdHost = ControlHost(sabnzbdHost)
+        url = sabnzbdHost + ":" + sabnzbdPort + "/sabnzbd/api?mode=get_config&apikey=" + sabnzbdApi + "&section=misc&keyword=script_dir"
         try:
             opener = urllib.FancyURLopener({})
             responseObject = opener.open(url)
