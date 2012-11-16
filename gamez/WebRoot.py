@@ -266,9 +266,9 @@ class WebRoot:
             </div>
             <div style="visibility:hidden"><a href="http://apycom.com/">jQuery Menu by Apycom</a></div>
             <div id="container">"""
-        db_result = GetGameDataFromTerm(term,system)
+        db_result = GetGameDataFromTheGamesDB(term,system)
         if(db_result == ''):
-           db_result = GetGameDataFromTheGamesDB(term,system)
+           db_result = GetGameDataFromTerm(term,system)
         if(db_result == ''):   
             html  = html + """No Results Found. Try Searching Again"""
         else:
