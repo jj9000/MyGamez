@@ -293,7 +293,7 @@ def ValidateDB():
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS GAMES (ID INTEGER PRIMARY KEY,GAME_NAME TEXT,SYSTEM TEXT,GAME_TYPE TEXT,COVER TEXT)")
-    cursor.execute("CREATE TABLE IF NOT EXISTS requested_games (ID INTEGER PRIMARY KEY,GAME_NAME TEXT,SYSTEM TEXT,GAME_TYPE TEXT,STATUS TEXT,COVER TEXT,THEGAMESDB_ID TEXT)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS requested_games (ID INTEGER PRIMARY KEY,GAME_NAME TEXT,SYSTEM TEXT,GAME_TYPE TEXT,STATUS TEXT,COVER TEXT,THEGAMESDB_ID TEXT,ADDITION_WORDS TEXT)")
     
     try:
         cursor.execute("SELECT cover from games")
@@ -309,6 +309,11 @@ def ValidateDB():
         cursor.execute("SELECT thegamesdb_id from requested_games")
     except sqlite3.OperationalError:
         cursor.execute("ALTER TABLE requested_games ADD COLUMN thegamesdb_id TEXT")
+
+    try:
+        cursor.execute("SELECT addition_words from requested_games")
+    except sqlite3.OperationalError:
+        cursor.execute("ALTER TABLE requested_games ADD COLUMN addition_words TEXT")
 
     connection.commit()
     cursor.close()
@@ -608,6 +613,38 @@ def UpdateStatusForFolderProcessing(game_name,system,status):
     cursor.close()
     return
 
+
+# This function looks for addition word in nzbname and save it to datatabase
+# If nzbname is '' it will return the addition list from database from id 
+
+def AdditionWords(nzbname, db_id): 
+    db_path = os.path.join(gamez.DATADIR,"Gamez.db")
+    if(nzbname == ''):
+         sql = "SELECT addition_words WHERE ID = '" + db_id + "'"
+         connection = sqlite3.connect(db_path)
+         cursor = connection.cursor()
+         cursor.execute(sql)
+         result = cursor.fetchall()[0]
+         additions = str(result[0])
+         cursor.close()
+         return additions
+    else:
+         additionlist = ['PAL', 'USA', 'NSTC', 'JAP', 'Region Free', 'RF', 'FRENCH', 'ITALIAN', 'GERMAN', 'SPANISH', 'ASIA', 'JTAG', 'XGD3', 'WiiWare', 'WiiVC', 'Mixed']
+         regionword = ""
+         for word in additionlist:
+             if word.upper() in nzbname:
+                regionword = regionword + " (" + word + ")"
+             if word.lower() in nzbname:
+                regionword = regionword + " (" + word + ")"         
+         DebugLogEvent("Additions for Game with ID " + db_id + " are " + regionword)
+         sql = "UPDATE requested_games SET addition_words='" + regionword +"' WHERE id = '" + db_id + "'"
+         connection = sqlite3.connect(db_path)
+         cursor = connection.cursor()
+         cursor.execute(sql)
+         connection.commit()
+         cursor.close()
+         return
+         
 def ApiGetGamesFromTerm(term,system):
     db_path = os.path.join(gamez.DATADIR,"Gamez.db")
     sql = "SELECT GAME_NAME,SYSTEM,COVER FROM GAMES where game_name like '%" + term.replace("'","''") + "%' AND SYSTEM LIKE '%" + system + "%' ORDER BY GAME_NAME ASC"

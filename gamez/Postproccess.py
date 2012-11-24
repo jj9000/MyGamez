@@ -42,7 +42,9 @@ def PostProcess(dbid,game_name):
      gamelist = os.listdir(sabnzbd_folder)
      for game in gamelist:
         if game.find(game_title) != -1:
-           gamefoldername = os.path.join(os.path.abspath(sabnzbd_folder),game)
+           additions = AdditionWords('',db_id)
+           game_directory_name = game + additions
+           gamefoldername = os.path.join(os.path.abspath(sabnzbd_folder),game_directory_name)
            DebugLogEvent("Gamefoldername: " + str(gamefoldername))
            if(TheGamesDB_id != "None"):
                try:  

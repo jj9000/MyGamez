@@ -11,7 +11,7 @@ from xml.dom.minidom import *
 
 import gamez
 
-from DBFunctions import GetRequestedGamesAsArray,UpdateStatus
+from DBFunctions import GetRequestedGamesAsArray,UpdateStatus,AdditionWords
 from Helper import replace_all,FindAddition
 from subprocess import call
 from Logger import LogEvent,DebugLogEvent
@@ -114,7 +114,8 @@ class GameTasks():
         else:
             LogEvent("Unrecognized System")
             return False
-        url = "http://api.nzbmatrix.com/v1.1/search.php?search=" + game_name + "&num=1&maxage=" + retention + "&catid=" + catToUse + "&username=" + username + "&apikey=" + api
+        searchname = replace_all(game_name)
+        url = "http://api.nzbmatrix.com/v1.1/search.php?search=" + searchname + "&num=1&maxage=" + retention + "&catid=" + catToUse + "&username=" + username + "&apikey=" + api
         DebugLogEvent("Search URL [ " + url + " ]")
         try:
             opener = CostumOpener()
@@ -137,9 +138,7 @@ class GameTasks():
                     fieldDataName = responseData[1].split(":")
                     nzbName = fieldDataName[1]
                     nzbName = nzbName.replace(";","")
-                    gamenameaddition = FindAddition(nzbName)
-                    DebugLogEvent("Additions for " + game_name + " are " + gamenameaddition)
-                    game_name = game_name + gamenameaddition
+                    AdditionWords(nzbName,game_id)
                 except:
                     DebugLogEvent("Something went wrong with getting addition")
 
@@ -176,11 +175,11 @@ class GameTasks():
         else:
             LogEvent("Unrecognized System")
             return False
-        game_name = replace_all(game_name)
+        searchname = replace_all(game_name)
         if(newznabPort == '80' or newznabPort == ''):
-            url = "http://" + newznabHost + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + game_name.replace(" ","+") + "&o=json"
+            url = "http://" + newznabHost + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + searchname.replace(" ","+") + "&o=json"
         else:
-            url = "http://" + newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + game_name.replace(" ","+") + "&o=json"
+            url = "http://" + newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + searchname.replace(" ","+") + "&o=json"
         try:
             opener = urllib.FancyURLopener({})
             responseObject = opener.open(url)
@@ -207,9 +206,8 @@ class GameTasks():
                     else:
                         DebugLogEvent(" The Word is " + str(blacklistword))
                     if not str(blacklistword) in nzbTitle or blacklistword == '':
-                        gamenameaddition = FindAddition(nzbTitle)
-                        DebugLogEvent("Additions for " + game_name + " are " + gamenameaddition)
-                        game_name = game_name + gamenameaddition
+                        DebugLogEvent("HERE WE ARE")
+                        AdditionWords(nzbTitle,game_id)
                         LogEvent("Game found on Newznab")
                         result = GameTasks().DownloadNZB(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system)
                         if(result):
@@ -236,8 +234,8 @@ class GameTasks():
         else:
             LogEvent("Unrecognized System")
             return False
-        game_name = replace_all(game_name)
-        url = "http://nzb.su/api?apikey=" + api + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + game_name.replace(" ","+")
+        searchname = replace_all(game_name)
+        url = "http://nzb.su/api?apikey=" + api + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + searchname.replace(" ","+")
         DebugLogEvent("Serach URL [" + url + "]") 
         try:
             data = urllib2.urlopen(url, timeout=20).read()
@@ -255,9 +253,7 @@ class GameTasks():
                     else:
                         DebugLogEvent(" The Word is " + str(blacklistword))
                     if not str(blacklistword) in nzbTitle or blacklistword == '':
-                          gamenameaddition = FindAddition(nzbTitle)
-                          DebugLogEvent("Additions for " + game_name + " are " + gamenameaddition)
-                          game_name = game_name + gamenameaddition
+                          AdditionWords(nzbTitle,game_id)
                           LogEvent("Game found on http://nzb.su")
                           nzbUrl = item.link
                           DebugLogEvent("Link URL [ " + nzbUrl + " ]")
