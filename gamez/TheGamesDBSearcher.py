@@ -107,7 +107,7 @@ def GetXmlFromTheGamesDB(term,system,TheGamesDB_id):
 def AddGameToDbFromTheGamesDb(thegamesdbid,status):
     TheGamesDBxml = GetXmlFromTheGamesDB('none','none',thegamesdbid)
     xmlTagTitle = TheGamesDBxml.getElementsByTagName('GameTitle')[0].toxml()
-    xmlGameTitle=xmlTagTitle.replace('<GameTitle>','').replace('</GameTitle>','')
+    xmlGameTitle=xmlTagTitle.replace('<GameTitle>','').replace('</GameTitle>','').replace(":"," -")
     DebugLogEvent("Found Game: " + xmlGameTitle)
     xmlTagSystem = TheGamesDBxml.getElementsByTagName('Platform')[0].toxml()
     xmlGameSystem=xmlTagSystem.replace('<Platform>','').replace('</Platform>','')
