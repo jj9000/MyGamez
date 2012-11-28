@@ -41,7 +41,7 @@ class GameTasks():
         newznabWiiCat = newznabWiiCat.replace('"','')  
         games = GetRequestedGamesAsArray(manualSearchGame)
         for game in games:
-            try:
+            #try:
                 game_name = str(game[0])
                 game_id = str(game[1])
                 system = str(game[2])
@@ -95,8 +95,8 @@ class GameTasks():
                 		if(isDownloaded == False):
                 		    LogEvent("Checking for game [" + game_name + "] on KickAss Torrents")
                 		    isDownloaded = GameTasks().FindGameOnKAT(game_id,game_name,system,torrentBlackholePath,blacklistwords)
-            except:
-                continue
+            #except:
+            #    continue
         return
 
     def FindGameOnNZBMatrix(self,game_name,game_id,username,api,sabnzbdApi,sabnzbdHost,sabnzbdPort,system,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,blacklistwords,retention):
@@ -189,12 +189,15 @@ class GameTasks():
         except:
             LogEvent("Unable to connect to Newznab Server: " + url)
             return False
-        try:
-            if(response == "[]"):
+        #try:
+        if(response == "[]"):
                 return False            
-            jsonObject = json.loads(response)
-            for item in jsonObject:
-                nzbTitle = item["name"]
+        jsonObject = json.loads(response)
+        for item in jsonObject:
+                try:
+                     nzbTitle = item["name"]
+                except:
+                     nzbTitle = item["title"]
                 nzbID = item["guid"]                
                 if(newznabPort == '80' or newznabPort == ''):
                    nzbUrl = newznabHost + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID
@@ -218,9 +221,9 @@ class GameTasks():
                     else:
                         LogEvent('Nothing found without blacklistet Word(s) "' + str(blacklistword) + '"')
                         return False
-        except:
-            LogEvent("Error getting game [" + game_name + "] from Newznab")
-            return False
+        #except:
+        #    LogEvent("Error getting game [" + game_name + "] from Newznab")
+        #    return False
             
     def FindGameOnNZBSU(self,game_name,game_id,api,sabnzbdApi,sabnzbdHost,sabnzbdPort,system,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,blacklistwords,retention):
         catToUse = ''
