@@ -220,13 +220,11 @@ class GameTasks():
                         LogEvent('Nothing found without blacklistet Word(s) "' + str(blacklistword) + '"')
                         return False
         except:
-             for key, value in jsonObject['channel']['item'].items():
-                  if key == 'title':
-                       NzbTitle = value
-                  if key == 'link':
-                       NzbLink = vlaue 
-                  nzbUrl = link.replace('API_KEY', newznabApi)
-                  for blacklistword in blacklistwords:
+             items = jsonObject["channel"]["item"]
+             for item in items:
+               nzbTitle = item["title"]
+               nzbUrl = item["link"]
+               for blacklistword in blacklistwords:
                     if(blacklistword == ''):
                         DebugLogEvent("No blacklisted word(s) are given")
                     else:
