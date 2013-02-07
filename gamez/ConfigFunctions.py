@@ -95,6 +95,10 @@ def CheckConfigForAllKeys():
         config.set('Sabnzbd','category','')
         changesMade = True
 
+    if(config.has_option('Sabnzbd','folder') == False):
+        config.set('Sabnzbd','folder','')
+        changesMade = True
+
     if(config.has_option('Scheduler','download_interval') == False):
         config.set('Scheduler','download_interval','60')
         changesMade = True
@@ -311,10 +315,6 @@ def CheckConfigForAllKeys():
     if(config.has_option('Folders','nzb_completed') == False):
         config.set('Folders','nzb_completed','""')
         changesMade = True	
-
-    if(config.has_option('Folders','sabnzbd_completed') == False):
-        config.set('Folders','sabnzbd_completed','""')
-        changesMade = True
 
     if(config.has_option('Folders','wii_destination') == False):
         config.set('Folders','wii_destination','""')

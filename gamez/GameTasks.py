@@ -7,10 +7,12 @@ import shutil
 import stat
 import json
 import ConfigParser
+from xml.dom.minidom import *
+
 import gamez
 
-from DBFunctions import GetRequestedGamesAsArray,UpdateStatus
-from Helper import replace_all,FindAddition,ControlHost
+from DBFunctions import GetRequestedGamesAsArray,UpdateStatus,AdditionWords
+from Helper import replace_all,FindAddition
 from subprocess import call
 from Logger import LogEvent,DebugLogEvent
 from Constants import VersionNumber
@@ -112,7 +114,8 @@ class GameTasks():
         else:
             LogEvent("Unrecognized System")
             return False
-        url = "http://api.nzbmatrix.com/v1.1/search.php?search=" + game_name + "&num=1&maxage=" + retention + "&catid=" + catToUse + "&username=" + username + "&apikey=" + api
+        searchname = replace_all(game_name)
+        url = "http://api.nzbmatrix.com/v1.1/search.php?search=" + searchname + "&num=1&maxage=" + retention + "&catid=" + catToUse + "&username=" + username + "&apikey=" + api
         DebugLogEvent("Search URL [ " + url + " ]")
         try:
             opener = CostumOpener()
@@ -135,9 +138,7 @@ class GameTasks():
                     fieldDataName = responseData[1].split(":")
                     nzbName = fieldDataName[1]
                     nzbName = nzbName.replace(";","")
-                    gamenameaddition = FindAddition(nzbName)
-                    DebugLogEvent("Additions for " + game_name + " are " + gamenameaddition)
-                    game_name = game_name + gamenameaddition
+                    AdditionWords(nzbName,game_id)
                 except:
                     DebugLogEvent("Something went wrong with getting addition")
 
@@ -176,10 +177,11 @@ class GameTasks():
             return False
         game_name = replace_all(game_name)
         newznabHost = ControlHost(newznabHost)
+        searchname = replace_all(game_name)
         if(newznabPort == '80' or newznabPort == ''):
-            url = newznabHost + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + game_name.replace(" ","+") + "&o=json"
+            url = newznabHost + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + searchname.replace(" ","+") + "&o=json"
         else:
-            url = newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + game_name.replace(" ","+") + "&o=json"
+            url = newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + searchname.replace(" ","+") + "&o=json"
         try:
             opener = urllib.FancyURLopener({})
             responseObject = opener.open(url)
@@ -206,9 +208,8 @@ class GameTasks():
                     else:
                         DebugLogEvent(" The Word is " + str(blacklistword))
                     if not str(blacklistword) in nzbTitle or blacklistword == '':
-                        gamenameaddition = FindAddition(nzbTitle)
-                        DebugLogEvent("Additions for " + game_name + " are " + gamenameaddition)
-                        game_name = game_name + gamenameaddition
+                        DebugLogEvent("HERE WE ARE")
+                        AdditionWords(nzbTitle,game_id)
                         LogEvent("Game found on Newznab")
                         result = GameTasks().DownloadNZB(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system)
                         if(result):
@@ -235,8 +236,8 @@ class GameTasks():
         else:
             LogEvent("Unrecognized System")
             return False
-        game_name = replace_all(game_name)
-        url = "http://nzb.su/api?apikey=" + api + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + game_name.replace(" ","+")
+        searchname = replace_all(game_name)
+        url = "http://nzb.su/api?apikey=" + api + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + searchname.replace(" ","+")
         DebugLogEvent("Serach URL [" + url + "]") 
         try:
             data = urllib2.urlopen(url, timeout=20).read()
@@ -254,9 +255,7 @@ class GameTasks():
                     else:
                         DebugLogEvent(" The Word is " + str(blacklistword))
                     if not str(blacklistword) in nzbTitle or blacklistword == '':
-                          gamenameaddition = FindAddition(nzbTitle)
-                          DebugLogEvent("Additions for " + game_name + " are " + gamenameaddition)
-                          game_name = game_name + gamenameaddition
+                          AdditionWords(nzbTitle,game_id)
                           LogEvent("Game found on http://nzb.su")
                           nzbUrl = item.link
                           DebugLogEvent("Link URL [ " + nzbUrl + " ]")
@@ -276,7 +275,7 @@ class GameTasks():
         try:
             result = False
             if(isSabEnabled == "1"):
-                result = GameTasks().AddNZBToSab(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory)
+                result = GameTasks().AddNZBToSab(nzbUrl,game_name,system,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory)
             if(isNzbBlackholeEnabled == "1"):
             	result = GameTasks().AddNZBToBlackhole(nzbUrl,nzbBlackholePath,game_name,system)
             return result
@@ -284,10 +283,10 @@ class GameTasks():
             LogEvent("Unable to download NZB: " + url)
             return False
 
-    def AddNZBToSab(self,nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory):
+    def AddNZBToSab(self,nzbUrl,game_name,system,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory):
         nzbUrl = urllib.quote(nzbUrl)
         sabnzbdHost = ControlHost(sabnzbdHost)
-        url = sabnzbdHost + ":" +  sabnzbdPort + "/sabnzbd/api?mode=addurl&pp=3&apikey=" + sabnzbdApi + "&script=gamezPostProcess.py&name=" + nzbUrl + "&nzbname=[" + game_id + "] - "+ game_name
+        url = sabnzbdHost + ":" +  sabnzbdPort + "/sabnzbd/api?mode=addurl&pp=3&apikey=" + sabnzbdApi + "&name=" + nzbUrl + "&nzbname=" + game_name + " ("+ system + ")"
         if(sabnzbdCategory <> ''):
             url = url + "&cat=" + sabnzbdCategory
         DebugLogEvent("Send to sabnzdb: " + url) 
@@ -344,28 +343,7 @@ class GameTasks():
     	    LogEvent("Unable to download torrent to blackhole: " + url)
             return False
     	return True
-    	
-    def CheckSabDownloadPath(self,sabnzbdApi,sabnzbdHost,sabnzbdPort):
-    	sabnzbdHost = ControlHost(sabnzbdHost)
-    	url = sabnzbdHost + ":" + sabnzbdPort + "/sabnzbd/api?mode=get_config&apikey=" + sabnzbdApi + "&section=misc&keyword=complete_dir"
-    	try:
-    	    opener = urllib.FancyURLopener({})
-            responseObject = opener.open(url)
-            response = responseObject.read()
-            responseObject.close()
-            #completedDir = response.split(":")[2].replace("'","").replace(" ","").replace("{","").replace("}","").replace("\n","")
-            if os.name == 'nt': 
-                completedDir = response.split(":")[2].replace(" '","")
-                completedDir = completedDir + ":" + response.split(":")[3].replace("'","").replace(" ","").replace("{","").replace("}","").replace("\n","")
-            else:
-                completedDir = response.split(":")[2].replace("'","").replace(" ","").replace("{","").replace("}","").replace("\n","")
-            DebugLogEvent("Sabnzb Complet_Dir: [" + completedDir + "]")
-            return completedDir
-    	except:
-    	    LogEvent("Unable to get Sab Download Complete Directory")
-    	    return ""
-    	return
-    	
+
     def CheckIfPostProcessExistsInSab(self,sabnzbdApi,sabnzbdHost,sabnzbdPort):
         
         path = os.path.join(gamez.PROGDIR, "postprocess")
@@ -401,6 +379,48 @@ class GameTasks():
             LogEvent("Unable to connect to Sanzbd: " + url)
             return
         return
+    
+    def CheckStatusInSab(self,game_name):
+        
+        config = ConfigParser.RawConfigParser()
+        configfile = os.path.abspath(gamez.CONFIG_PATH)
+        config.read(configfile)
+        
+        sabnzbdHost = config.get('Sabnzbd','host').replace('"','')
+        sabnzbdPort = config.get('Sabnzbd','port').replace('"','')
+        sabnzbdApi = config.get('Sabnzbd','api_key').replace('"','')        
+        tagnbr = 0
+        status = False
+        url = "http://" + sabnzbdHost + ":" + sabnzbdPort + "/sabnzbd/api?mode=history&apikey=" + sabnzbdApi + "&output=xml"
+        
+        DebugLogEvent("Checking for status of downloaded file in Sabnzbd")
+        try:
+            historyfile = urllib2.urlopen(url)
+            sabnzbdhistorydata = historyfile.read()
+            historyfile.close()
+            history = parseString(sabnzbdhistorydata) 
+            
+            TagElements = history.getElementsByTagName("slot")
+            for i in TagElements:
+          
+               historynameraw = history.getElementsByTagName('name')[tagnbr].toxml()
+               historyname = historynameraw.replace('<name>','').replace('</name>','')
+               if historyname == game_name:
+                  historystatusraw = history.getElementsByTagName('status')[tagnbr].toxml()
+                  historystatus = historystatusraw.replace('<status>','').replace('</status>','')
+                  DebugLogEvent("Status for " + historyname + " is " + historystatus)
+                  if(historystatus == 'Completed'):
+                      status = True
+                      break
+                  else:
+                      break
+               else:
+                 tagnbr += 1
+                 continue
+        except:
+            DebugLogEvent("ERROR: Can not parse data from SABnzbd")
+         
+        return status
 
     def ForceSearch(self,dbid):
         config = ConfigParser.RawConfigParser()

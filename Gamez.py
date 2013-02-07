@@ -102,10 +102,6 @@ class RunApp():
         if sys.platform.startswith('darwin') or sys.platform.startswith('win'):
              cherrypy.config.update({'engine.autoreload.on':    False,})
      
-        isSabEnabled = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
-        if(isSabEnabled == "1"):
-            LogEvent("Generating Post Process Script")
-            GenerateSabPostProcessScript()
         RunGameTask()
 
         LogEvent("Getting download interval from config file and invoking scheduler")
@@ -133,52 +129,6 @@ class RunApp():
             if(isToDaemonize == 1):    
                 daemon.unsubscribe()
             sys.exit()
-        
-def GenerateSabPostProcessScript():
-    sys_name = socket.gethostname()
-    gamezWebHost = socket.gethostbyname(sys_name)
-    gamezApi = config.get('SystemGenerated','api_key').replace('"','')
-    gamezWebport = config.get('global','gamez_port').replace('"','')
-    realWebport = str(cherrypy.config.get('server.socket_port', gamezWebport))
-    gamezBaseUrl = "http://" + gamezWebHost + ":" + realWebport + "/"
-    postProcessPath = os.path.join(app_path,'postprocess')
-    postProcessScript = os.path.join(postProcessPath,'gamezPostProcess.py')
-    file = open(postProcessScript,'w')
-    file.write('#!/usr/bin/env python')
-    file.write("\n")
-    file.write('import sys')
-    file.write("\n")
-    file.write('import urllib')
-    file.write("\n")
-    file.write("filePath = str(sys.argv[1])")
-    file.write("\n")
-    file.write('fields = str(sys.argv[3]).split("-")')
-    file.write("\n")
-    file.write('gamezID = fields[0].replace("[","").replace("]","").replace(" ","")')
-    file.write("\n")
-    file.write("status = str(sys.argv[7])")
-    file.write("\n")
-    file.write("downloadStatus = 'Wanted'")
-    file.write("\n")
-    file.write("if(status == '0'):")
-    file.write("\n")
-    file.write("    downloadStatus = 'Downloaded'")
-    file.write("\n")
-    file.write('url = "' + gamezBaseUrl + 'api?api_key=' + gamezApi + '&mode=UPDATEREQUESTEDSTATUS&db_id=" + gamezID + "&status=" + downloadStatus')
-    file.write("\n")
-    file.write('responseObject = urllib.FancyURLopener({}).open(url)')
-    file.write("\n")
-    file.write('answer = responseObject.read()')
-    file.write("\n")
-    file.write('responseObject.close()')
-    file.write("\n")
-    file.write("print(answer)")
-    file.write("\n")
-    file.write("exit(0)")
-    file.close
-    LogEvent("Setting permissions on post process script")
-    cmd = "chmod +x '" + postProcessScript + "'"
-    os.system(cmd)
 
 def RunGameTask():
     try:
@@ -218,11 +168,13 @@ def RunGameTask():
 
 def RunGameListUpdaterTask():
     try:
-        LogEvent("Updating Game Lists")
-        AddWiiGamesIfMissing()
-        LogEvent("Wii Game List Updated")
-        AddXbox360GamesIfMissing()
-        LogEvent("XBOX 360 Game List Updated")
+        #Notice! I have disabled this because the homepage is down
+        #
+        #LogEvent("Updating Game Lists")
+        #AddWiiGamesIfMissing()
+        #LogEvent("Wii Game List Updated")
+        #AddXbox360GamesIfMissing()
+        #LogEvent("XBOX 360 Game List Updated")
         AddComingSoonGames
         LogEvent("Coming Soon Game List Updated")
     except:
@@ -233,7 +185,7 @@ def RunGameListUpdaterTask():
 
 def RunFolderProcessingTask():
     try:
-        ScanFoldersToProcess()
+        ProcessFolder()
     except:
         errorMessage = "Error occurred while processing folders"
         for message in sys.exc_info():
