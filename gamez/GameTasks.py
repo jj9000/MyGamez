@@ -193,11 +193,9 @@ class GameTasks():
         if(response == "[]"):
                 return False            
         jsonObject = json.loads(response)
-        for item in jsonObject:
-                try:
-                     nzbTitle = item["name"]
-                except:
-                     nzbTitle = item["title"]
+        try:
+            for item in jsonObject:
+                nzbTitle = item["name"]
                 nzbID = item["guid"]                
                 if(newznabPort == '80' or newznabPort == ''):
                    nzbUrl = newznabHost + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID
@@ -221,6 +219,32 @@ class GameTasks():
                     else:
                         LogEvent('Nothing found without blacklistet Word(s) "' + str(blacklistword) + '"')
                         return False
+        except:
+             for key, value in jsonObject['channel']['item'].items():
+                  if key == 'title':
+                       NzbTitle = value
+                  if key == 'link':
+                       NzbLink = vlaue 
+                  nzbUrl = link.replace('API_KEY', newznabApi)
+                  for blacklistword in blacklistwords:
+                    if(blacklistword == ''):
+                        DebugLogEvent("No blacklisted word(s) are given")
+                    else:
+                        DebugLogEvent(" The Word is " + str(blacklistword))
+                    if not str(blacklistword) in nzbTitle or blacklistword == '':
+                        gamenameaddition = FindAddition(nzbTitle)
+                        DebugLogEvent("Additions for " + game_name + " are " + gamenameaddition)
+                        game_name = game_name + gamenameaddition
+                        LogEvent("Game found on Newznab")
+                        result = GameTasks().DownloadNZB(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system)
+                        if(result):
+                            UpdateStatus(game_id,"Snatched")
+                            return True
+                        return False
+                    else:
+                        LogEvent('Nothing found without blacklistet Word(s) "' + str(blacklistword) + '"')
+                        return False
+
         #except:
         #    LogEvent("Error getting game [" + game_name + "] from Newznab")
         #    return False
