@@ -20,9 +20,6 @@ import lib.feedparser as feedparser
 
 
 
-class CostumOpener(urllib.FancyURLopener):
-    version = 'Gamez/' + VersionNumber()
-
 class GameTasks():
 
     def FindGames(self, manualSearchGame,nzbmatrixusername, nzbmatrixapi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath,isNZBSU,nzbsuapi,retention):
@@ -176,7 +173,6 @@ class GameTasks():
             LogEvent("Unrecognized System")
             return False
         game_name = replace_all(game_name)
-        newznabHost = ControlHost(newznabHost)
         searchname = replace_all(game_name)
         if(newznabPort == '80' or newznabPort == ''):
             url = newznabHost + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + searchname.replace(" ","+") + "&o=json"
@@ -285,7 +281,6 @@ class GameTasks():
 
     def AddNZBToSab(self,nzbUrl,game_name,system,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory):
         nzbUrl = urllib.quote(nzbUrl)
-        sabnzbdHost = ControlHost(sabnzbdHost)
         url = sabnzbdHost + ":" +  sabnzbdPort + "/sabnzbd/api?mode=addurl&pp=3&apikey=" + sabnzbdApi + "&name=" + nzbUrl + "&nzbname=" + game_name + " ("+ system + ")"
         if(sabnzbdCategory <> ''):
             url = url + "&cat=" + sabnzbdCategory
@@ -348,7 +343,6 @@ class GameTasks():
         
         path = os.path.join(gamez.PROGDIR, "postprocess")
         srcPath = os.path.join(path,"gamezPostProcess.py")
-        sabnzbdHost = ControlHost(sabnzbdHost)
         url = sabnzbdHost + ":" + sabnzbdPort + "/sabnzbd/api?mode=get_config&apikey=" + sabnzbdApi + "&section=misc&keyword=script_dir"
         try:
             opener = urllib.FancyURLopener({})
