@@ -224,8 +224,8 @@ class GameTasks():
                   if key == 'title':
                        NzbTitle = value
                   if key == 'link':
-                       NzbLink = vlaue 
-                  nzbUrl = link.replace('API_KEY', newznabApi)
+                       nzbUrl = value 
+
                   for blacklistword in blacklistwords:
                     if(blacklistword == ''):
                         DebugLogEvent("No blacklisted word(s) are given")
