@@ -313,7 +313,7 @@ class WebRoot:
         config.read(configfile)        
         debugChecked = config.get('global','debug_enabled').replace('"','')
         sabChecked = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
-        nzbmatrixChecked = config.get('SystemGenerated','nzbmatrix_enabled').replace('"','')
+        nzbsrusChecked = config.get('SystemGenerated','nzbsrus_enabled').replace('"','')
         newznabChecked = config.get('SystemGenerated','newznab_enabled').replace('"','')
         nzbsuChecked = config.get('SystemGenerated','nzbsu_enabled').replace('"','')
         growlChecked = config.get('SystemGenerated','growl_enabled').replace('"','')
@@ -350,10 +350,10 @@ class WebRoot:
             sabChecked = "CHECKED"
         else:
             sabChecked = ""
-        if(nzbmatrixChecked == "1"):
-            nzbmatrixChecked = "CHECKED"
+        if(nzbsrusChecked == "1"):
+            nzbsrusChecked = "CHECKED"
         else:
-            nzbmatrixChecked = ""
+            nzbsrusChecked = ""
         if(newznabChecked == "1"):
             newznabChecked = "CHECKED"
         else:
@@ -728,26 +728,26 @@ class WebRoot:
 				<table cellpadding="5" width="60%">
 					<tr width="60%">
 						<td  style="border:solid 1px" width="45%" valign="top">
-							<label style="float:left"><b><u>NZB Matrix</u></b></label>
+							<label style="float:left"><b><u>NZBSRus</u></b></label>
 								<div style="float:right">
-									<input type="checkbox" name="nzbmatrixEnabled" id="nzbmatrixEnabled" value="nzbmatrixEnabled" """ + nzbmatrixChecked + """ />Enabled
+									<input type="checkbox" name="nzbsrusEnabled" id="nzbsrusEnabled" value="nzbsrusEnabled" """ + nzbsrusChecked + """ />Enabled
 								</div>
 							<br />
-							<div id=nzbmatrixoptions>
+							<div id=nzbsrusoptions>
 							<table>
 								<tr>
 									<td>
-										<label><b>NZB Matrix API Key</b></label>
+										<label><b>NZBRus API Key</b></label>
 										<br />
-										<input style="width:400px" type="text" name="nzbMatrixApi" id="nzbMatrixApi" value='""" + config.get('NZBMatrix','api_key').replace('"','') +  """' />
+										<input style="width:400px" type="text" name="nzbsrusApi" id="nzbsrusApi" value='""" + config.get('nzbsrus','api_key').replace('"','') +  """' />
 									</td>
 								</tr>
 								<tr><td>&nbsp;</td></tr>
 								<tr>
 									<td>
-										<label><b>NZB Matrix Username</b></label>
+										<label><b>NZBRus UserID</b></label>
 										<br />
-										<input style="width:225px" type="text" name="nzbMatrixUsername" id="nzbMatrixUsername" value='""" + config.get('NZBMatrix','username').replace('"','') +  """' />
+										<input style="width:225px" type="text" name="nzbsrusUsername" id="nzbsrusUsername" value='""" + config.get('nzbsrus','username').replace('"','') +  """' />
 									</td>
 								</tr>
 							</table>
@@ -1112,22 +1112,22 @@ class WebRoot:
 			$(function(){$("#tabs").tabs();});
 			$(document).ready(function()
 			{
-				if ($("#nzbmatrixEnabled").is(":checked"))
+				if ($("#nzbsrusEnabled").is(":checked"))
 				{
-					$("#nzbmatrixoptions").show();
+					$("#nzbsrusoptions").show();
 				}
 				else
 				{
-					$("#nzbmatrixoptions").hide();
+					$("#nzbsrusoptions").hide();
 				}
-				$("#nzbmatrixEnabled").click(function(){
-				if ($("#nzbmatrixEnabled").is(":checked"))
+				$("#nzbsrusEnabled").click(function(){
+				if ($("#nzbsrusEnabled").is(":checked"))
 				{
-					$("#nzbmatrixoptions").show("fast");
+					$("#nzbsrusoptions").show("fast");
 				}
 				else
 				{
-					$("#nzbmatrixoptions").hide("fast");
+					$("#nzbsrusoptions").hide("fast");
 				}
 				});
 			});
@@ -1615,10 +1615,10 @@ class WebRoot:
             raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
-    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',sabFolder='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',notifymyandroidEnabled='',notifymyandroidApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',nzbsuEnabled='',nzbsuapi='',https_support='',clearlog='',retention=''):
+    def savesettings(self,cherrypyHost='', nzbsrusUsername='', downloadInterval=3600, sabPort='', nzbsrusApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',sabFolder='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbsrusEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',notifymyandroidEnabled='',notifymyandroidApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',nzbsuEnabled='',nzbsuapi='',https_support='',clearlog='',retention=''):
         cherrypyHost = '"' + cherrypyHost + '"'
-        nzbMatrixUsername = '"' + nzbMatrixUsername + '"'
-        nzbMatrixApi = '"' + nzbMatrixApi + '"'
+        nzbsrusUsername = '"' + nzbsrusUsername + '"'
+        nzbsrusApi = '"' + nzbsrusApi + '"'
         nzbsuapi = '"' + nzbsuapi + '"'
         sabApi = '"' + sabApi + '"'
         sabHost = '"' + sabHost + '"'
@@ -1664,10 +1664,10 @@ class WebRoot:
             sabnzbdEnabled = "1"
         else:
             sabnzbdEnabled = "0"
-        if(nzbmatrixEnabled == 'nzbmatrixEnabled'):
-            nzbmatrixEnabled = "1"
+        if(nzbsrusEnabled == 'nzbsrusEnabled'):
+            nzbsrusEnabled = "1"
         else:
-            nzbmatrixEnabled = "0"
+            nzbsrusEnabled = "0"
         if(nzbsuEnabled == 'nzbsuEnabled'):
             nzbsuEnabled = "1"
         else:
@@ -1762,8 +1762,8 @@ class WebRoot:
         config.set('global','user_name',gamezUsername)
         config.set('global','password',gamezPassword)
         config.set('global','debug_enabled',debugEnabled)
-        config.set('NZBMatrix','username',nzbMatrixUsername)
-        config.set('NZBMatrix','api_key',nzbMatrixApi)
+        config.set('nzbsrus','username',nzbsrusUsername)
+        config.set('nzbsrus','api_key',nzbsrusApi)
         config.set('NZBSU','api_key',nzbsuapi)
         config.set('Sabnzbd','host',sabHost)
         config.set('Sabnzbd','port',sabPort)
@@ -1774,7 +1774,7 @@ class WebRoot:
         config.set('Scheduler','game_list_update_interval',gameListUpdateInterval)
         config.set('SystemGenerated','api_key',gamezApiKey)
         config.set('SystemGenerated','sabnzbd_enabled',sabnzbdEnabled)
-        config.set('SystemGenerated','nzbmatrix_enabled',nzbmatrixEnabled)
+        config.set('SystemGenerated','nzbsrus_enabled',nzbsrusEnabled)
         config.set('SystemGenerated','nzbsu_enabled',nzbsuEnabled)
         config.set('SystemGenerated','newznab_enabled',newznabEnabled)  
         config.set('SystemGenerated','growl_enabled',growlEnabled)
