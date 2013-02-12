@@ -222,7 +222,7 @@ class GameTasks():
         except:
              for key, value in jsonObject['channel']['item'].items():
                   if key == 'title':
-                       NzbTitle = value
+                       nzbTitle = value
                   if key == 'link':
                        nzbUrl = value 
 
