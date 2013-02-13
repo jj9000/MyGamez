@@ -175,26 +175,31 @@ class GameTasks():
             return False
         game_name = replace_all(game_name)
         searchname = replace_all(game_name)
+
+        if not newznabHost.startswith('http'):
+            newznabHost = "http://" + newznabHost
+            LogEvent("!!!! Notice: Please update your Newznab settings and add http(s) to the adress  !!!!")
+
         if(newznabPort == '80' or newznabPort == ''):
-            url = newznabHost + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + searchname.replace(" ","+") + "&o=json"
+            url = newznabHost + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + searchname.replace(" ","+") + "&o=xml"
         else:
-            url = newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + searchname.replace(" ","+") + "&o=json"
+            url = newznabHost + ":" + newznabPort + "/api?apikey=" + newznabApi + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + searchname.replace(" ","+") + "&o=xml"
         try:
             opener = urllib.FancyURLopener({})
-            responseObject = opener.open(url)
-            response = responseObject.read()
-            responseObject.close()
+            self.responseObject = opener.open(url)
+            self.data = self.responseObject.read()
+            self.responseObject.close()
             DebugLogEvent("Search for " + url)
         except:
             LogEvent("Unable to connect to Newznab Server: " + url)
             return False
         try:
-            if(response == "[]"):
-                return False            
-            jsonObject = json.loads(response)
-            for item in jsonObject:
-                nzbTitle = item["name"]
-                nzbID = item["guid"]                
+            self.d = feedparser.parse(self.data)
+            for item in self.d.entries:
+
+                nzbTitle = item['title']
+                nzbID = item['newznab_attr']['value']
+                
                 if(newznabPort == '80' or newznabPort == ''):
                    nzbUrl = newznabHost + "/api?apikey=" + newznabApi + "&t=get&id=" + nzbID
                 else:
@@ -281,7 +286,13 @@ class GameTasks():
             return False
 
     def AddNZBToSab(self,nzbUrl,game_name,system,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory):
+
+        if not sabnzbdHost.startswith('http'):
+            sabnzbdHost = "http://" + sabnzbdHost
+            LogEvent("!!!! Notice: Please update your sabnzbd settings and add http(s) to the adress !!!!")   
+
         nzbUrl = urllib.quote(nzbUrl)
+        
         url = sabnzbdHost + ":" +  sabnzbdPort + "/sabnzbd/api?mode=addurl&pp=3&apikey=" + sabnzbdApi + "&name=" + nzbUrl + "&nzbname=" + game_name + " ("+ system + ")"
         if(sabnzbdCategory <> ''):
             url = url + "&cat=" + sabnzbdCategory
