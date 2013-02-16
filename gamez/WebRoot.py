@@ -1867,7 +1867,7 @@ class WebRoot:
                 try:
                     return ApiUpdateRequestedStatus(db_id,status)
                 except:
-                    response = {"Error" : " Status was not updatet"}
+                    response = {"Error" : " Status was not updated"}
             elif(mode == 'SEARCHUPCOMING'):
             	response = {"Error" : mode + " Mode Not Implemented"}     
             elif(mode == 'ADDUPCOMINGTOREQUESTED'):

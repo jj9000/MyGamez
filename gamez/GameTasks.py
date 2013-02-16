@@ -239,18 +239,23 @@ class GameTasks():
             LogEvent("Unrecognized System")
             return False
         searchname = replace_all(game_name)
-        url = "http://nzb.su/api?apikey=" + api + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + searchname.replace(" ","+")
+        url = "http://nzb.su/api?apikey=" + api + "&t=search&maxage=" + retention + "&cat=" + catToUse + "&q=" + searchname.replace(" ","+") + "&o=xml"
         DebugLogEvent("Serach URL [" + url + "]") 
         try:
-            data = urllib2.urlopen(url, timeout=20).read()
+            opener = urllib.FancyURLopener({})
+            self.responseObject = opener.open(url)
+            self.data = self.responseObject.read()
+            self.responseObject.close()
+            DebugLogEvent("Search for " + url)
         except:
-            LogEvent("Unable to connect to Newznab Server: " + url)
+            LogEvent("Unable to connect to Server: " + url)
             return False
         try:           
-            d = feedparser.parse(data)
-            for item in d.entries:
-                LogEvent("Game found on http://nzb.su")
-                nzbTitle = item.title
+            for item in self.d.entries:
+
+                nzbTitle = item['title']
+                nzbID = item['newznab_attr']['value']
+
                 for blacklistword in blacklistwords:
                     if(blacklistword == ''):
                         DebugLogEvent("No blacklisted word(s) are given")
@@ -259,19 +264,20 @@ class GameTasks():
                     if not str(blacklistword) in nzbTitle or blacklistword == '':
                           AdditionWords(nzbTitle,game_id)
                           LogEvent("Game found on http://nzb.su")
-                          nzbUrl = item.link
+                          nzbUrl = "http://nzb.su/api?apikey=" + api + "&t=get&id=" + nzbID 
                           DebugLogEvent("Link URL [ " + nzbUrl + " ]")
                           result = GameTasks().DownloadNZB(nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system)
                           if(result):
                               UpdateStatus(game_id,"Snatched")
                               return True
                           return False
-                else:
+                    else:
                         LogEvent('Nothing found without blacklistet Word(s) "' + str(blacklistword) + '"')
                         return False
         except:
             LogEvent("Error getting game [" + game_name + "] from http://nzb.su")
             return False
+
 
     def DownloadNZB(self,nzbUrl,game_name,sabnzbdApi,sabnzbdHost,sabnzbdPort,game_id,sabnzbdCategory,isSabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,system):
         try:
