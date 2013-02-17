@@ -251,6 +251,7 @@ class GameTasks():
             LogEvent("Unable to connect to Server: " + url)
             return False
         try:           
+            self.d = feedparser.parse(self.data)
             for item in self.d.entries:
 
                 nzbTitle = item['title']
