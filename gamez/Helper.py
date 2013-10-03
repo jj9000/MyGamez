@@ -37,19 +37,6 @@ def FindAddition(title):
              regionword = regionword + " (" + word + ")" 
     return regionword
 
-# looks if adress contain https
-
-def ControlHost(host):
-    
-    if 'https' in host:
-        checkedhost = host
-    elif 'http' in host:
-        checkedhost = host
-    else:
-        checkedhost = "http://" + host
-    
-    return checkedhost
-
 # Code from Sickbeard
 def create_https_certificates(ssl_cert, ssl_key):
     """

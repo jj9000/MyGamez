@@ -269,7 +269,7 @@ class WebRoot:
             </div>
             <div style="visibility:hidden"><a href="http://apycom.com/">jQuery Menu by Apycom</a></div>
             <div id="container">"""
-        db_result = GetGameDataFromTheGamesDB(term,system)
+        db_result = GetGameDataFromTerm(term,system)
         if(db_result == ''):
             db_result = GetGameDataFromTheGamesDB(term,system)
         if(db_result == ''):   
@@ -313,7 +313,7 @@ class WebRoot:
         config.read(configfile)        
         debugChecked = config.get('global','debug_enabled').replace('"','')
         sabChecked = config.get('SystemGenerated','sabnzbd_enabled').replace('"','')
-        nzbsrusChecked = config.get('SystemGenerated','nzbsrus_enabled').replace('"','')
+        nzbmatrixChecked = config.get('SystemGenerated','nzbmatrix_enabled').replace('"','')
         newznabChecked = config.get('SystemGenerated','newznab_enabled').replace('"','')
         nzbsuChecked = config.get('SystemGenerated','nzbsu_enabled').replace('"','')
         growlChecked = config.get('SystemGenerated','growl_enabled').replace('"','')
@@ -350,10 +350,10 @@ class WebRoot:
             sabChecked = "CHECKED"
         else:
             sabChecked = ""
-        if(nzbsrusChecked == "1"):
-            nzbsrusChecked = "CHECKED"
+        if(nzbmatrixChecked == "1"):
+            nzbmatrixChecked = "CHECKED"
         else:
-            nzbsrusChecked = ""
+            nzbmatrixChecked = ""
         if(newznabChecked == "1"):
             newznabChecked = "CHECKED"
         else:
@@ -728,26 +728,26 @@ class WebRoot:
 				<table cellpadding="5" width="60%">
 					<tr width="60%">
 						<td  style="border:solid 1px" width="45%" valign="top">
-							<label style="float:left"><b><u>NZBSRus</u></b></label>
+							<label style="float:left"><b><u>NZB Matrix</u></b></label>
 								<div style="float:right">
-									<input type="checkbox" name="nzbsrusEnabled" id="nzbsrusEnabled" value="nzbsrusEnabled" """ + nzbsrusChecked + """ />Enabled
+									<input type="checkbox" name="nzbmatrixEnabled" id="nzbmatrixEnabled" value="nzbmatrixEnabled" """ + nzbmatrixChecked + """ />Enabled
 								</div>
 							<br />
-							<div id=nzbsrusoptions>
+							<div id=nzbmatrixoptions>
 							<table>
 								<tr>
 									<td>
-										<label><b>NZBRus API Key</b></label>
+										<label><b>NZB Matrix API Key</b></label>
 										<br />
-										<input style="width:400px" type="text" name="nzbsrusApi" id="nzbsrusApi" value='""" + config.get('nzbsrus','api_key').replace('"','') +  """' />
+										<input style="width:400px" type="text" name="nzbMatrixApi" id="nzbMatrixApi" value='""" + config.get('NZBMatrix','api_key').replace('"','') +  """' />
 									</td>
 								</tr>
 								<tr><td>&nbsp;</td></tr>
 								<tr>
 									<td>
-										<label><b>NZBRus UserID</b></label>
+										<label><b>NZB Matrix Username</b></label>
 										<br />
-										<input style="width:225px" type="text" name="nzbsrusUsername" id="nzbsrusUsername" value='""" + config.get('nzbsrus','username').replace('"','') +  """' />
+										<input style="width:225px" type="text" name="nzbMatrixUsername" id="nzbMatrixUsername" value='""" + config.get('NZBMatrix','username').replace('"','') +  """' />
 									</td>
 								</tr>
 							</table>
@@ -969,6 +969,8 @@ class WebRoot:
 					<tr><td>&nbsp;</td></tr>
 					<tr width="100%"> 
 						<td  style="border:solid 1px" width="45%" valign="top">
+							NOTE: This isn't implemented yet.
+							<br />
 							<label style="float:left"><b><u>Notify My Android</u></b></label>
 								<div style="float:right">
 									<input type="checkbox" name="notifymyandroidEnabled" id="notifymyandroidEnabled" value="notifymyandroidEnabled" """ + notifymyandroidChecked + """ />Enabled
@@ -1112,22 +1114,22 @@ class WebRoot:
 			$(function(){$("#tabs").tabs();});
 			$(document).ready(function()
 			{
-				if ($("#nzbsrusEnabled").is(":checked"))
+				if ($("#nzbmatrixEnabled").is(":checked"))
 				{
-					$("#nzbsrusoptions").show();
+					$("#nzbmatrixoptions").show();
 				}
 				else
 				{
-					$("#nzbsrusoptions").hide();
+					$("#nzbmatrixoptions").hide();
 				}
-				$("#nzbsrusEnabled").click(function(){
-				if ($("#nzbsrusEnabled").is(":checked"))
+				$("#nzbmatrixEnabled").click(function(){
+				if ($("#nzbmatrixEnabled").is(":checked"))
 				{
-					$("#nzbsrusoptions").show("fast");
+					$("#nzbmatrixoptions").show("fast");
 				}
 				else
 				{
-					$("#nzbsrusoptions").hide("fast");
+					$("#nzbmatrixoptions").hide("fast");
 				}
 				});
 			});
@@ -1615,10 +1617,10 @@ class WebRoot:
             raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
-    def savesettings(self,cherrypyHost='', nzbsrusUsername='', downloadInterval=3600, sabPort='', nzbsrusApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',sabFolder='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbsrusEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',notifymyandroidEnabled='',notifymyandroidApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',nzbsuEnabled='',nzbsuapi='',https_support='',clearlog='',retention=''):
+    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',sabFolder='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',notifymyandroidEnabled='',notifymyandroidApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',nzbsuEnabled='',nzbsuapi='',https_support='',clearlog='',retention=''):
         cherrypyHost = '"' + cherrypyHost + '"'
-        nzbsrusUsername = '"' + nzbsrusUsername + '"'
-        nzbsrusApi = '"' + nzbsrusApi + '"'
+        nzbMatrixUsername = '"' + nzbMatrixUsername + '"'
+        nzbMatrixApi = '"' + nzbMatrixApi + '"'
         nzbsuapi = '"' + nzbsuapi + '"'
         sabApi = '"' + sabApi + '"'
         sabHost = '"' + sabHost + '"'
@@ -1664,10 +1666,10 @@ class WebRoot:
             sabnzbdEnabled = "1"
         else:
             sabnzbdEnabled = "0"
-        if(nzbsrusEnabled == 'nzbsrusEnabled'):
-            nzbsrusEnabled = "1"
+        if(nzbmatrixEnabled == 'nzbmatrixEnabled'):
+            nzbmatrixEnabled = "1"
         else:
-            nzbsrusEnabled = "0"
+            nzbmatrixEnabled = "0"
         if(nzbsuEnabled == 'nzbsuEnabled'):
             nzbsuEnabled = "1"
         else:
@@ -1762,8 +1764,8 @@ class WebRoot:
         config.set('global','user_name',gamezUsername)
         config.set('global','password',gamezPassword)
         config.set('global','debug_enabled',debugEnabled)
-        config.set('nzbsrus','username',nzbsrusUsername)
-        config.set('nzbsrus','api_key',nzbsrusApi)
+        config.set('NZBMatrix','username',nzbMatrixUsername)
+        config.set('NZBMatrix','api_key',nzbMatrixApi)
         config.set('NZBSU','api_key',nzbsuapi)
         config.set('Sabnzbd','host',sabHost)
         config.set('Sabnzbd','port',sabPort)
@@ -1774,7 +1776,7 @@ class WebRoot:
         config.set('Scheduler','game_list_update_interval',gameListUpdateInterval)
         config.set('SystemGenerated','api_key',gamezApiKey)
         config.set('SystemGenerated','sabnzbd_enabled',sabnzbdEnabled)
-        config.set('SystemGenerated','nzbsrus_enabled',nzbsrusEnabled)
+        config.set('SystemGenerated','nzbmatrix_enabled',nzbmatrixEnabled)
         config.set('SystemGenerated','nzbsu_enabled',nzbsuEnabled)
         config.set('SystemGenerated','newznab_enabled',newznabEnabled)  
         config.set('SystemGenerated','growl_enabled',growlEnabled)
@@ -1867,7 +1869,7 @@ class WebRoot:
                 try:
                     return ApiUpdateRequestedStatus(db_id,status)
                 except:
-                    response = {"Error" : " Status was not updated"}
+                    response = {"Error" : " Status was not updatet"}
             elif(mode == 'SEARCHUPCOMING'):
             	response = {"Error" : mode + " Mode Not Implemented"}     
             elif(mode == 'ADDUPCOMINGTOREQUESTED'):

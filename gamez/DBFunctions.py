@@ -502,8 +502,8 @@ def AddComingSoonGames():
                        release = item.description 
                        release_date = release.replace('Release date set for ','') 
                        release_date = replace_all(release_date)
-                       DebugLogEvent(" Release date for " + str(game_name) + " is " + str(release_date)) 
-                       db_path = os.path.join(gamez.DATADIR,"Gamez.db")
+                       DebugLogEvent(" Release date for " + str(game_name).encode(encoding='UTF-8',errors='strict') + " is " + str(release_date).encode(encoding='UTF-8',errors='strict')) 
+                       db_path = os.path.join(os.path.abspath(""),"Gamez.db")
                        sql = "SELECT count(ID) from comingsoon where gametitle = '" + game_name.replace("'","''") + "' AND system='" + system.upper() + "'"
                        connection = sqlite3.connect(db_path)
                        cursor = connection.cursor()
