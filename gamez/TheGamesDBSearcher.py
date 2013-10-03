@@ -80,6 +80,8 @@ def GetDetailscover(TheGamesDBurl,system):
         return str(xmlGamecover)
 
 def GetXmlFromTheGamesDB(term,system,TheGamesDB_id):
+    opener = urllib2.build_opener()
+    opener.addheaders = [('User-agent', 'Mozilla/5.0')]
     #gamefile = None
     #gamedata = None
     if(system == 'PS3'):
@@ -92,10 +94,10 @@ def GetXmlFromTheGamesDB(term,system,TheGamesDB_id):
        Platform = "Microsoft+Xbox+360"
     try:
        if(TheGamesDB_id != "fake"):
-           gamefile = urllib2.urlopen('http://thegamesdb.net/api/GetGame.php?id=' + TheGamesDB_id)
+           gamefile = opener.open('http://thegamesdb.net/api/GetGame.php?id=' + TheGamesDB_id)
            DebugLogEvent('Search for [ "' + term + '" ] http://thegamesdb.net/api/GetGame.php?id=' + TheGamesDB_id)
        else:
-           gamefile = urllib2.urlopen('http://thegamesdb.net/api/GetGame.php?name=' + term.replace(' ','+') + '&platform=' + Platform)
+           gamefile = opener.open('http://thegamesdb.net/api/GetGame.php?name=' + term.replace(' ','+') + '&platform=' + Platform)
            DebugLogEvent( 'Search for [ "' + term + '" ] http://thegamesdb.net/api/GetGame.php?name=' + term.replace(' ','+') + '&platform=' + Platform)
        gamedata = gamefile.read()
        gamefile.close()
