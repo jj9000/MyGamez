@@ -315,7 +315,7 @@ class GameTasks():
     	return True
     	
     def FindGameOnKAT(self,game_id,game_name,system,torrentBlackholePath,blacklistwords):
-    	url = "http://www.kickasstorrents.com/json.php?q=" + game_name
+    	url = "http://www.kickass.to/json.php?q=" + game_name
     	try:
 	    opener = urllib.FancyURLopener({})
 	    responseObject = opener.open(url)
