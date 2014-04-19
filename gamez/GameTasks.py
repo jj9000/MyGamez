@@ -3,6 +3,7 @@ import sys
 import re
 import urllib
 import urllib2
+import requests
 import shutil
 import stat
 import json
@@ -34,6 +35,7 @@ class GameTasks():
         isPS3JBEnable = config.get('SystemGenerated','ps3_jb_enable').replace('"','')       
         BlacklistWordsXbox360 = config.get('SystemGenerated','blacklist_words_xbox360').replace('"','')
         BlacklistWordsWii = config.get('SystemGenerated','blacklist_words_wii').replace('"','')
+        BlacklistWordsPS3 = config.get('SystemGenerated','blacklist_words_ps3').replace('"','')
         blacklistwords = ''
         if(isSabEnabled == "1"):       
             GameTasks().CheckIfPostProcessExistsInSab(sabnzbdApi,sabnzbdHost,sabnzbdPort)
@@ -56,13 +58,14 @@ class GameTasks():
                      blacklistwords = BlacklistWordsWii
                      DebugLogEvent("Blacklisted Words for Wii [ " + blacklistwords + " ]")
                 if(system == "PS3"):
+                     blacklistwords = BlacklistWordsPS3
                      if(isPS3TBEnable == "1"):
                         blacklistwords = "TB"
                         DebugLogEvent("[PS3] execlude True Blue") 
                      if(isPS3JBEnable == "1"):
                         blacklistwords = "JB"
                         DebugLogEvent("[PS3] execlude Jail Break")
-                blacklistwords = re.split(';|,',blacklistwords)
+                blacklistwords = re.split(';|,',blacklistwords.replace(" ", ""))
                      		  
                 if(isNzbMatrixEnabled == "1"):
                     DebugLogEvent("Matrix Enable")
@@ -317,36 +320,47 @@ class GameTasks():
     def FindGameOnKAT(self,game_id,game_name,system,torrentBlackholePath,blacklistwords):
     	url = "http://www.kickass.to/json.php?q=" + game_name
     	try:
-	    opener = urllib.FancyURLopener({})
-	    responseObject = opener.open(url)
-	    response = responseObject.read()
+            opener = urllib.FancyURLopener({})
+            responseObject = opener.open(url)
+            response = responseObject.read()
             responseObject.close()
             jsonObject = json.loads(response)
             listObject = jsonObject['list']
-            for record in listObject:
-            	title = record['title']
+            for record in sorted(listObject, key=lambda a: a['seeds'], reverse=True):
+                title = record['title']
                 torrentLink = record['torrentLink']
                 category = record['category']
-                print category
                 if(category == "Games"):
-                    result = GameTasks().DownloadTorrent(torrentLink,title,torrentBlackholePath)
-                    if(result == True):
-                        UpdateStatus(game_id,"Snatched")
-                        return result
+                    if system.lower() in title.lower():
+                        BlackListedWordsexist=GameTasks().CheckBlackListedWords(system,title,blacklistwords)
+                        if(BlackListedWordsexist is False):
+                            result = GameTasks().DownloadTorrent(torrentLink,title,torrentBlackholePath)
+                            if(result == True):
+                                UpdateStatus(game_id,"Snatched")
+                                return result
         except:
             LogEvent("Unable to connect to KickAss Torrents")  
-    	    return
+            return
     	
     def DownloadTorrent(self,torrentUrl,title,torrentBlackholePath):
     	try:
     	    dest = torrentBlackholePath + title + ".torrent"
-    	    urllib.urlretrieve(torrentUrl,dest)
+    	    r = requests.get(torrentUrl)
+            with open(dest, "wb") as code:
+                code.write(r.content)
     	    LogEvent("Torrent Added To Blackhole")
     	except:
     	    LogEvent("Unable to download torrent to blackhole: " + url)
             return False
     	return True
-    	    	
+
+    def CheckBlackListedWords(self,system,title,blacklistwords):
+        if(blacklistwords<>""):
+            for badword in (blacklistwords):
+                if(badword.lower() in title.lower()):
+                    return True
+            return False
+
     def CheckIfPostProcessExistsInSab(self,sabnzbdApi,sabnzbdHost,sabnzbdPort):
         
         path = os.path.join(gamez.PROGDIR, "postprocess")

@@ -206,10 +206,14 @@ def CheckConfigForAllKeys():
     if(config.has_option('SystemGenerated','blacklist_words_xbox360') == False):
         config.set('SystemGenerated','blacklist_words_xbox360','""')
         changesMade = True
-     
+
     if(config.has_option('SystemGenerated','blacklist_words_wii') == False):
         config.set('SystemGenerated','blacklist_words_wii','""')
-        changesMade = True 
+        changesMade = True
+
+    if(config.has_option('SystemGenerated','blacklist_words_ps3') == False):
+        config.set('SystemGenerated','blacklist_words_ps3','""')
+        changesMade = True    
 
     if(config.has_option('SystemGenerated','api_key') == False):
         apiKey = base64.b64encode(hashlib.sha256( str(random.getrandbits(256)) ).digest(), random.choice(['rA','aZ','gQ','hH','hG','aR','DD'])).rstrip('==')
