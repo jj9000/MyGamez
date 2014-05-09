@@ -338,6 +338,7 @@ class WebRoot:
         ps3_jb_Checked = config.get('SystemGenerated','ps3_jb_enable').replace('"','')       
         blacklist_words_xbox360 = config.get('SystemGenerated','blacklist_words_xbox360').replace('"','')
         blacklist_words_wii = config.get('SystemGenerated','blacklist_words_wii').replace('"','')
+        blacklist_words_ps3 = config.get('SystemGenerated','blacklist_words_ps3').replace('"','')
         clearlog_at_startup = config.get('SystemGenerated','clearlog_at_startup').replace('"','')
         https_support_enabled = config.get('SystemGenerated','https_support_enabled').replace('"','')
         retention = config.get('SystemGenerated','retention').replace('"','')
@@ -877,6 +878,10 @@ class WebRoot:
 								<label style="float:left"><b><u>Advance search for PS3 Games</u></b></label>
 								<br />
 								<br />
+                                <label><b>Blacklisted Word for PS3</b></label>
+                                </br>
+                                <input style="width:400px" type="text" name="blacklist_words_ps3" id="blacklist_words_ps3" value='""" + config.get('SystemGenerated','blacklist_words_ps3').replace('"','') +  """' /> 
+                                </br>
 								<input type="checkbox" name="ps3_tb_enable" id="ps3_tb_enable" value="ps3_tb_enable" """ + ps3_tb_Checked + """ />&nbsp;<b>Disable search for Games with True Blue support</b>
 								<input  align="right" type="checkbox" name="ps3_jb_enable" id="ps3_jb_enable" value="ps3_jb_enable" """ + ps3_jb_Checked + """ />&nbsp;<b>Disable search for Games with Jail Break support</b>
 							</td>
@@ -1617,7 +1622,7 @@ class WebRoot:
             raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
-    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',sabFolder='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',notifymyandroidEnabled='',notifymyandroidApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',nzbsuEnabled='',nzbsuapi='',https_support='',clearlog='',retention=''):
+    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',sabFolder='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',notifymyandroidEnabled='',notifymyandroidApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',blacklist_words_ps3='',nzbsuEnabled='',nzbsuapi='',https_support='',clearlog='',retention=''):
         cherrypyHost = '"' + cherrypyHost + '"'
         nzbMatrixUsername = '"' + nzbMatrixUsername + '"'
         nzbMatrixApi = '"' + nzbMatrixApi + '"'
@@ -1655,6 +1660,7 @@ class WebRoot:
         defaultSearch = '"' + defaultSearch + '"'
         webinterface = '"' + webinterface + '"'
         blacklist_words_wii = '"' + blacklist_words_wii + '"'
+        blacklist_words_ps3 = '"' + blacklist_words_ps3 + '"'
         blacklist_words_xbox360 = '"' + blacklist_words_xbox360 + '"'
         retention = '"' + retention +'"'
 
@@ -1800,6 +1806,7 @@ class WebRoot:
         config.set('SystemGenerated','ps3_jb_enable',ps3_jb_enable)      
         config.set('SystemGenerated','blacklist_words_xbox360',blacklist_words_xbox360)
         config.set('SystemGenerated','blacklist_words_wii',blacklist_words_wii)
+        config.set('SystemGenerated','blacklist_words_ps3',blacklist_words_ps3)
         config.set('SystemGenerated','clearlog_at_startup',clearlog)
         config.set('SystemGenerated','https_support_enabled',https_support)
         config.set('SystemGenerated','retention',retention)
