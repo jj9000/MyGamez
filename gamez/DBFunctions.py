@@ -356,9 +356,9 @@ def AddEventToDB(message):
     cursor.close()
     return
 
-def GetLog():
+def GetLog(html=True):
     db_path = os.path.join(gamez.DATADIR,"Gamez.db")
-    sql = "SELECT message,created_date FROM gamez_log order by created_date desc,id desc limit 1000"
+    sql = "SELECT message,created_date FROM gamez_log order by created_date desc,id desc limit 10000"
     data = ''
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
@@ -368,8 +368,12 @@ def GetLog():
         try:
             message = str(record[0])
             created_date = str(record[1])
-            rowdata = "<tr><td>" + message + "</td><td>" + created_date + "</td></tr>"
-            data = data + rowdata
+            if html:
+                rowdata = "<tr><td>" + message + "</td><td>" + created_date + "</td></tr>"
+                data = data + rowdata
+            else:
+                rowdata = created_date + "\t" + message
+                data = data + rowdata
         except:
             continue
     cursor.close()

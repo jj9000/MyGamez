@@ -324,6 +324,7 @@ class WebRoot:
         nzbBlackholeChecked = config.get('SystemGenerated','blackhole_nzb_enabled').replace('"','')
         torrentBlackholeChecked = config.get('SystemGenerated','blackhole_torrent_enabled').replace('"','')
         katChecked = config.get('SystemGenerated','torrent_kat_enabled').replace('"','')
+        tpbChecked = config.get('SystemGenerated','torrent_tpb_enabled').replace('"','')
         
         sabDownloadProcessChecked = config.get('SystemGenerated','process_sabnzbd_download_folder_enabled').replace('"','')
         nzbDownloadProcessChecked = config.get('SystemGenerated','process_nzb_download_folder_enabled').replace('"','')
@@ -395,6 +396,10 @@ class WebRoot:
             katChecked = "CHECKED"
         else:
             katChecked = ""          
+        if(tpbChecked == "1"):
+            tpbChecked = "CHECKED"
+        else:
+            tpbChecked = ""          
 
         if(sabDownloadProcessChecked == "1"):
             sabDownloadProcessChecked = "CHECKED"
@@ -837,13 +842,23 @@ class WebRoot:
 							<label style="float:left"><b><u>BitTorrent</u></b></label>
 							<br />
 							<br />
-							<input type="checkbox" name="katEnabled" id="katEnabled" value="katEnabled" """ + katChecked + """ />&nbsp;<b>KickAss Torrents</b>
+                                                        <table>
+                                                                <tr>
+                                                                        <td>
+							                        <input type="checkbox" name="katEnabled" id="katEnabled" value="katEnabled" """ + katChecked + """ />&nbsp;<b>KickAss Torrents</b>
+                                                                        </td>
+                                                                </tr>
+								<tr><td>&nbsp;</td></tr>
+                                                                <tr>
+                                                                        <td>
+							                        <input type="checkbox" name="tpbEnabled" id="tpbEnabled" value="tpbEnabled" """ + tpbChecked + """ />&nbsp;<b>ThePirateBay.se</b>
+                                                                        </td>
+                                                                </tr>
 						</td>
 					</tr>
 					<tr><td>&nbsp;</td></tr>
 						<td  style="border:solid 1px" width="50%" valign="top">
-							<br />
-							<label style="float:left"><b><u>Advance Search Options</u></b></label>
+							<label style="float:left"><b><u>Advanced Search Options</u></b></label>
 							<br />
 							<br />
 							<table>
@@ -1422,7 +1437,7 @@ class WebRoot:
               </table>
               <div style="float:right;"><button name="clearLogBtn" id="clearLogBtn" class="clear-log-button" onclick="location.href='/clearlog'">Clear Log</button></div>
               <script>$(document).ready(function() {
-	            oTable = $('#searchresults').dataTable({"bJQueryUI": true,"bSort":false,"bLengthChange":false,"iDisplayLength":25});});
+	            oTable = $('#searchresults').dataTable({"bJQueryUI": true,"bSort":false,"bLengthChange":false,"iDisplayLength":1000});});
               </script>
              """
         html = html + """
@@ -1622,7 +1637,7 @@ class WebRoot:
             raise cherrypy.InternalRedirect("/?status_message=" + status)
 
     @cherrypy.expose
-    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',sabFolder='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',notifymyandroidEnabled='',notifymyandroidApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',blacklist_words_ps3='',nzbsuEnabled='',nzbsuapi='',https_support='',clearlog='',retention=''):
+    def savesettings(self,cherrypyHost='', nzbMatrixUsername='', downloadInterval=3600, sabPort='', nzbMatrixApi='', nzbsu='', sabApi='', cherrypyPort='', sabHost='',gamezApiKey='',newznabHost='',newznabPort='',newznabApi='',newznabWiiCat='',newznabXbox360Cat='',newznabPS3Cat='',newznabPCCat='',prowlApi='',debugEnabled='',gamezUsername='',gamezPassword='',gameListUpdateInterval='',sabCategory='',sabFolder='',growlHost='',growlPort='',growlPassword='',sabnzbdEnabled='',nzbmatrixEnabled='',nzbsuEnable='',newznabEnabled='',growlEnabled='',prowlEnabled='',notifoEnabled='',notifoUsername='',notifoApi='',notifymyandroidEnabled='',notifymyandroidApi='',xbmcEnabled='',xbmcUsername='',xbmcPassword='',xbmcHosts='',nzbBlackholeEnabled='',nzbBlackholePath='',torrentBlackholeEnabled='',torrentBlackholePath='',katEnabled='',tpbEnabled='',defaultSearch='',wiiDestination='', xbox360Destination='', PS3Destination='', PCDestination='', nzbBlackholeDownloadDirectory='', torrentBlackholeDownloadDirectory='', processTorrentsDirectoryEnabled='', processXbox360Enabled='', processWiiEnabled='', processPS3Enabled='', processPCEnabled='', processNzbsDirectoryEnabled='', processSabDirectoryEnabled='',webinterface='',ps3_jb_enable='',ps3_tb_enable='',blacklist_words_xbox360='',blacklist_words_wii='',blacklist_words_ps3='',nzbsuEnabled='',nzbsuapi='',https_support='',clearlog='',retention=''):
         cherrypyHost = '"' + cherrypyHost + '"'
         nzbMatrixUsername = '"' + nzbMatrixUsername + '"'
         nzbMatrixApi = '"' + nzbMatrixApi + '"'
@@ -1716,6 +1731,10 @@ class WebRoot:
             katEnabled = "1"
         else:
             katEnabled = "0"  
+        if(tpbEnabled == 'tpbEnabled'):
+            tpbEnabled = "1"
+        else:
+            tpbEnabled = "0" 
         if(processTorrentsDirectoryEnabled == 'processTorrentsDirectoryEnabled'):
             processTorrentsDirectoryEnabled = "1"
         else:
@@ -1793,6 +1812,7 @@ class WebRoot:
         config.set('SystemGenerated','blackhole_nzb_enabled',nzbBlackholeEnabled)
         config.set('SystemGenerated','blackhole_torrent_enabled',torrentBlackholeEnabled)
         config.set('SystemGenerated','torrent_kat_enabled',katEnabled)
+        config.set('SystemGenerated','torrent_tpb_enabled',tpbEnabled)
         config.set('SystemGenerated','default_search',defaultSearch)
         config.set('SystemGenerated','process_torrent_download_folder_enabled',processTorrentsDirectoryEnabled)
         config.set('SystemGenerated','nzb_completed',processNzbsDirectoryEnabled)

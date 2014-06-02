@@ -162,6 +162,10 @@ def CheckConfigForAllKeys():
     if(config.has_option('SystemGenerated','torrent_kat_enabled') == False):
         config.set('SystemGenerated','torrent_kat_enabled','0')
         changesMade = True  
+
+    if(config.has_option('SystemGenerated','torrent_tpb_enabled') == False):
+        config.set('SystemGenerated','torrent_tpb_enabled','0')
+        changesMade = True  
         
     if(config.has_option('SystemGenerated','process_torrent_download_folder_enabled') == False):
         config.set('SystemGenerated','process_torrent_download_folder_enabled','0')

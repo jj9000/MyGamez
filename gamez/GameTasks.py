@@ -26,7 +26,7 @@ class CostumOpener(urllib.FancyURLopener):
 
 class GameTasks():
 
-    def FindGames(self, manualSearchGame,nzbmatrixusername, nzbmatrixapi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath,isNZBSU,nzbsuapi,retention):
+    def FindGames(self, manualSearchGame,nzbmatrixusername, nzbmatrixapi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,isTorrentTPBEnabled,torrentBlackholePath,isNZBSU,nzbsuapi,retention):
         # First some variables
         config = ConfigParser.RawConfigParser()
         configfile = os.path.abspath(gamez.CONFIG_PATH)
@@ -95,11 +95,22 @@ class GameTasks():
                         LogEvent("NZBSU Settings Incomplete.")
 
                 if(isTorrentBlackholeEnabled == "1"):
-                     DebugLogEvent("Torrent Enable")
+                     DebugLogEvent("TorrentBlackHole Enable")
                      if(isTorrentKATEnabled == "1"):
-                		if(isDownloaded == False):
-                		    LogEvent("Checking for game [" + game_name + "] on KickAss Torrents")
-                		    isDownloaded = GameTasks().FindGameOnKAT(game_id,game_name,system,torrentBlackholePath,blacklistwords)
+                          LogEvent("KAT Enabled")
+                          if(isDownloaded is None or isDownloaded == False):
+                               LogEvent("Checking for game [" + game_name + "] on KickAss Torrents")
+                               isDownloaded = GameTasks().FindGameOnKAT(game_id,game_name,system,torrentBlackholePath,blacklistwords)
+                               LogEvent("Done checking for game [" + game_name + "] on KickAss Torrents")
+                               print isDownloaded
+                     if(isTorrentTPBEnabled == "1"):
+                          LogEvent("TPB Enabled")
+                          if(isDownloaded is None or isDownloaded == False):
+                               LogEvent("Checking for game [" + game_name + "] on ThePirateBay.se")
+                               isDownloaded = GameTasks().FindGameOnTPB(game_id,game_name,system,torrentBlackholePath,blacklistwords)
+                               LogEvent("Done checking for game [" + game_name + "] on ThePirateBay.se")
+                          else:
+                               print isDownloaded
             except:
                 continue
         return
@@ -319,6 +330,33 @@ class GameTasks():
     	
     def FindGameOnKAT(self,game_id,game_name,system,torrentBlackholePath,blacklistwords):
     	url = "http://www.kickass.to/json.php?q=" + game_name
+        LogEvent("Searching KAT! Url=" + url)
+    	try:
+            opener = urllib.FancyURLopener({})
+            responseObject = opener.open(url)
+            response = responseObject.read()
+            responseObject.close()
+            jsonObject = json.loads(response)
+            listObject = jsonObject['list']
+            for record in sorted(listObject, key=lambda a: a['seeds'], reverse=True):
+                title = record['title']
+                torrentLink = record['torrentLink']
+                category = record['category']
+                if(category == "Games"):
+                    if system.lower() in title.lower():
+                        BlackListedWordsexist=GameTasks().CheckBlackListedWords(system,title,blacklistwords)
+                        if(BlackListedWordsexist is False):
+                            result = GameTasks().DownloadTorrent(torrentLink,title,torrentBlackholePath)
+                            if(result == True):
+                                UpdateStatus(game_id,"Snatched")
+                                return result
+        except:
+            LogEvent("Unable to connect to KickAss Torrents")  
+            return
+
+    def FindGameOnTPB(self,game_id,game_name,system,torrentBlackholePath,blacklistwords):
+        LogEvent("Pretending to search TPB, really KAT")
+    	url = "http://www.kickass.to/json.php?q=" + game_name
     	try:
             opener = urllib.FancyURLopener({})
             responseObject = opener.open(url)
@@ -344,22 +382,39 @@ class GameTasks():
     	
     def DownloadTorrent(self,torrentUrl,title,torrentBlackholePath):
     	try:
-    	    dest = torrentBlackholePath + title + ".torrent"
+    	    LogEvent("Starting to get torrent")
+            destdir = os.path.normpath(torrentBlackholePath) + os.sep
+            legaltitle = GameTasks().LegalizeTitle(str(title))
+    	    dest = destdir + legaltitle + ".torrent"
     	    r = requests.get(torrentUrl)
             with open(dest, "wb") as code:
                 code.write(r.content)
     	    LogEvent("Torrent Added To Blackhole")
+        except NameError as e:
+            print e
     	except:
+            print "Unexpected error:", sys.exc_info()[0]
     	    LogEvent("Unable to download torrent to blackhole: " + url)
             return False
     	return True
 
+    def LegalizeTitle(self,title):
+        replaces = [(c, '_') for c in title if not c.isalnum() and not c in ["_", "-", ".", "[", "]", "(", ")"]]
+        newtitle = title
+        for r in replaces:
+            newtitle = newtitle.replace(r[0], r[1])
+        return newtitle
+
     def CheckBlackListedWords(self,system,title,blacklistwords):
         if(blacklistwords<>""):
             for badword in (blacklistwords):
+                if (len(badword) == 0):
+                    continue
                 if(badword.lower() in title.lower()):
+                    LogEvent("found bad word " + badword.lower() + " in " + title.lower())
                     return True
             return False
+        return False
 
     def CheckIfPostProcessExistsInSab(self,sabnzbdApi,sabnzbdHost,sabnzbdPort):
         
@@ -464,10 +519,11 @@ class GameTasks():
         nzbBlackholePath = config.get('Blackhole','nzb_blackhole_path').replace('"','')
         isTorrentBlackholeEnabled = config.get('SystemGenerated','blackhole_torrent_enabled').replace('"','')
         isTorrentKATEnabled = config.get('SystemGenerated','torrent_kat_enabled').replace('"','')
+        isTorrentTPBEnabled = config.get('SystemGenerated','torrent_tpb_enabled').replace('"','')
         torrentBlackholePath  = config.get('Blackhole','torrent_blackhole_path').replace('"','')
         retention = config.get('SystemGenerated','retention').replace('"','')
         manualSearchGame = dbid
         LogEvent("Searching for games")
-        GameTasks().FindGames(manualSearchGame,nzbMatrixUser,nzbMatrixApi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,torrentBlackholePath,isnzbsuEnable,nzbsuapi,retention)
+        GameTasks().FindGames(manualSearchGame,nzbMatrixUser,nzbMatrixApi,sabnzbdApi,sabnzbdHost,sabnzbdPort,newznabWiiCat,newznabApi,newznabHost,newznabPort,newznabXbox360Cat,newznabPS3Cat,newznabPCCat,sabnzbdCategory,isSabEnabled,isNzbMatrixEnabled,isNewznabEnabled,isNzbBlackholeEnabled,nzbBlackholePath,isTorrentBlackholeEnabled,isTorrentKATEnabled,isTorrentTPBEnabled,torrentBlackholePath,isnzbsuEnable,nzbsuapi,retention)
             
 
